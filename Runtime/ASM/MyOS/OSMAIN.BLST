@@ -1,0 +1,698 @@
+ 20)   4000 C3 17 45    		TEST: JP LCD_TEST    	;
+ 23)   4003 CB 21       		      SLA C	;
+ 24)   4005 CB 21       		      SLA C	;
+ 25)   4007 CB 21       		      SLA C	;
+ 26)   4009 41          		      LD B,C	;
+ 27)   400A 10 FE       		DEL0: DJNZ DEL0	;
+ 28)   400C C9          		      RET   	;
+ 32)   400D 1E 00       		    LD E,0  ;VH=0	;VH=0
+ 37)   400F 7B          		    LD A,E	;
+ 38)   4010 D3 05       		    OUT (LCD_CS),A	;
+ 39)   4012 7A          		    LD A,D  	;
+ 40)   4013 D3 05       		    OUT (LCD_CS),A	;
+ 41)   4015 C9          		    RET	;
+ 46)   4016 AF          		    XOR A	;
+ 47)   4017 D3 04       		    OUT (LCD_RS),A  ;RS LOW = COMMAND BYTE   	;RS LOW = COMMAND BYTE
+ 48)   4019 1E 00       		    LD E,0     	;
+ 49)   401B CD 0F 40    		    CALL LCD_WR_BUS	;
+ 50)   401E 3E 01       		    LD A,1	;
+ 51)   4020 D3 04       		    OUT (LCD_RS),A  ;RS HIGH  = DATA BYTE	;RS HIGH  = DATA BYTE
+ 52)   4022 C9          		    RET	;
+ 56)   4023 16 E2       		    LD D,0xE2         ;PLL multiplier, set PLL clock to 120M	;PLL multiplier, set PLL clock to 120M
+ 57)   4025 CD 16 40    		    CALL LCD_WR_COM   ;N=0x36 for 6.5M, 0x23 for 10M crystal	;N=0x36 for 6.5M, 0x23 for 10M crystal
+ 58)   4028 16 1E       		    LD D,0x1E	;
+ 59)   402A CD 0D 40    		    CALL LCD_WR_DAT	;
+ 60)   402D 16 02       		    LD D,0x02	;
+ 61)   402F CD 0D 40    		    CALL LCD_WR_DAT	;
+ 62)   4032 16 54       		    LD D,0x54	;
+ 63)   4034 CD 0D 40    		    CALL LCD_WR_DAT	;
+ 64)   4037 16 E0       		    LD D,0xE0         ; PLL enable    	; PLL enable
+ 65)   4039 CD 16 40    		    CALL LCD_WR_COM	;
+ 66)   403C 16 01       		    LD D,0x01	;
+ 67)   403E CD 0D 40    		    CALL LCD_WR_DAT	;
+ 68)   4041 01 0A 00    		    LD BC,10        ;delay(10);	;delay(10);
+ 69)   4044 CD 03 40    		    CALL DELAY	;
+ 70)   4047 16 E0       		    LD D,0xE0         ; PLL enable    	; PLL enable
+ 71)   4049 CD 16 40    		    CALL LCD_WR_COM   	;
+ 72)   404C 16 03       		    LD D,0x03	;
+ 73)   404E CD 0D 40    		    CALL LCD_WR_DAT	;
+ 74)   4051 01 0A 00    		    LD BC,10        ;delay(10);	;delay(10);
+ 75)   4054 CD 03 40    		    CALL DELAY    	;
+ 77)   4057 16 01       		    LD D,0x01         ; software reset  	; software reset
+ 78)   4059 CD 16 40    		    CALL LCD_WR_COM   	;
+ 79)   405C 01 64 00    		    LD BC,100       ;delay(100);	;delay(100);
+ 80)   405F CD 03 40    		    CALL DELAY        	;
+ 81)   4062 16 E6       		    LD D,0xE6         ;PLL setting for PCLK, depends on resolution  	;PLL setting for PCLK, depends on resolution
+ 82)   4064 CD 16 40    		    CALL LCD_WR_COM           	;
+ 83)   4067 16 03       		    LD D,0x03	;
+ 84)   4069 CD 0D 40    		    CALL LCD_WR_DAT   	;
+ 85)   406C 16 FF       		    LD D,0xFF	;
+ 86)   406E CD 0D 40    		    CALL LCD_WR_DAT       	;
+ 87)   4071 16 FF       		    LD D,0xFF	;
+ 88)   4073 CD 0D 40    		    CALL LCD_WR_DAT   	;
+ 90)   4076 16 E6       		    LD D,0xE6         ;LCD SPECIFICATION	;LCD SPECIFICATION
+ 91)   4078 CD 16 40    		    CALL LCD_WR_COM       	;
+ 92)   407B 16 20       		    LD D,0x20	;
+ 93)   407D CD 0D 40    		    CALL LCD_WR_DAT   	;
+ 94)   4080 16 00       		    LD D,0x00	;
+ 95)   4082 CD 0D 40    		    CALL LCD_WR_DAT       	;
+ 96)   4085 16 03       		    LD D,0x03         ;Set HDP  799	;Set HDP  799
+ 97)   4087 CD 0D 40    		    CALL LCD_WR_DAT   	;
+ 98)   408A 16 1F       		    LD D,0x1F	;
+ 99)   408C CD 0D 40    		    CALL LCD_WR_DAT   	;
+100)   408F 16 01       		    LD D,0x01         ;Set VDP  479	;Set VDP  479
+101)   4091 CD 0D 40    		    CALL LCD_WR_DAT   	;
+102)   4094 16 DF       		    LD D,0xDF	;
+103)   4096 CD 0D 40    		    CALL LCD_WR_DAT 	;
+104)   4099 16 00       		    LD D,0x00	;
+105)   409B CD 0D 40    		    CALL LCD_WR_DAT     	;
+108)   409E 16 B4       		    LD D,0xB4         ;HSYNC	;HSYNC
+109)   40A0 CD 16 40    		    CALL LCD_WR_COM       	;
+110)   40A3 16 03       		    LD D,0x03         ;Set HT 928	;Set HT 928
+111)   40A5 CD 0D 40    		    CALL LCD_WR_DAT   	;
+112)   40A8 16 A0       		    LD D,0xA0	;
+113)   40AA CD 0D 40    		    CALL LCD_WR_DAT       	;
+114)   40AD 16 00       		    LD D,0x00         ;Set HPS  46	;Set HPS  46
+115)   40AF CD 0D 40    		    CALL LCD_WR_DAT   	;
+116)   40B2 16 2E       		    LD D,0x2E	;
+117)   40B4 CD 0D 40    		    CALL LCD_WR_DAT   	;
+118)   40B7 16 30       		    LD D,0x30         ;Set HPW  48	;Set HPW  48
+119)   40B9 CD 0D 40    		    CALL LCD_WR_DAT   	;
+120)   40BC 16 00       		    LD D,0x00         ;Set LPS  15	;Set LPS  15
+121)   40BE CD 0D 40    		    CALL LCD_WR_DAT 	;
+122)   40C1 16 0F       		    LD D,0x0F	;
+123)   40C3 CD 0D 40    		    CALL LCD_WR_DAT   	;
+124)   40C6 16 00       		    LD D,0x00	;
+125)   40C8 CD 0D 40    		    CALL LCD_WR_DAT     	;
+127)   40CB 16 B6       		    LD D,0xB6         ;VSYNC	;VSYNC
+128)   40CD CD 16 40    		    CALL LCD_WR_COM       	;
+129)   40D0 16 02       		    LD D,0x02         ;Set VT 525	;Set VT 525
+130)   40D2 CD 0D 40    		    CALL LCD_WR_DAT   	;
+131)   40D5 16 0D       		    LD D,0x0D	;
+132)   40D7 CD 0D 40    		    CALL LCD_WR_DAT       	;
+133)   40DA 16 00       		    LD D,0x00         ;Set VPS  16	;Set VPS  16
+134)   40DC CD 0D 40    		    CALL LCD_WR_DAT   	;
+135)   40DF 16 10       		    LD D,0x10	;
+136)   40E1 CD 0D 40    		    CALL LCD_WR_DAT   	;
+137)   40E4 16 10       		    LD D,0x10         ;Set VPW  16	;Set VPW  16
+138)   40E6 CD 0D 40    		    CALL LCD_WR_DAT   	;
+139)   40E9 16 00       		    LD D,0x00         ;Set FPS  8	;Set FPS  8
+140)   40EB CD 0D 40    		    CALL LCD_WR_DAT 	;
+141)   40EE 16 08       		    LD D,0x08	;
+142)   40F0 CD 0D 40    		    CALL LCD_WR_DAT   	;
+144)   40F3 16 BA       		    LD D,0xBA         	;
+145)   40F5 CD 16 40    		    CALL LCD_WR_COM           	;
+146)   40F8 16 0F       		    LD D,0x0F	;
+147)   40FA CD 0D 40    		    CALL LCD_WR_DAT   ;GPIO[3:0] out 1	;GPIO[3:0] out 1
+149)   40FD 16 B8       		    LD D,0xB8         	;
+150)   40FF CD 16 40    		    CALL LCD_WR_COM           	;
+151)   4102 16 07       		    LD D,0x07         ;GPIO3=input, GPIO[2:0]=output	;GPIO3=input, GPIO[2:0]=output
+152)   4104 CD 0D 40    		    CALL LCD_WR_DAT         	;
+153)   4107 16 01       		    LD D,0x01         ;GPIO0 normal	;GPIO0 normal
+154)   4109 CD 0D 40    		    CALL LCD_WR_DAT             	;
+156)   410C 16 36       		    LD D,0x36         ;rotation	;rotation
+157)   410E CD 16 40    		    CALL LCD_WR_COM           	;
+158)   4111 16 2A       		    LD D,0x2A         	;
+159)   4113 CD 0D 40    		    CALL LCD_WR_DAT         	;
+161)   4116 16 F0       		    LD D,0xF0         ;pixel data interface	;pixel data interface
+162)   4118 CD 16 40    		    CALL LCD_WR_COM           	;
+163)   411B 16 03       		    LD D,0x03         ;CHANGE THIS FOR 8 BIT INTERFACE  	;CHANGE THIS FOR 8 BIT INTERFACE
+164)   411D CD 0D 40    		    CALL LCD_WR_DAT     	;
+166)   4120 01 01 00    		    LD BC,1       ;delay(1);	;delay(1);
+167)   4123 CD 03 40    		    CALL DELAY        	;
+169)   4126 16 B8       		    LD D,0xB8         ;pixel data interface	;pixel data interface
+170)   4128 CD 16 40    		    CALL LCD_WR_COM           	;
+171)   412B 16 0F       		    LD D,0x0F         ;GPIO is controlled by host GPIO[3:0]=output   GPIO[0]=1  LCD ON  GPIO[0]=1  LCD OFF	;GPIO is controlled by host GPIO[3:0]=output   GPIO[0]=1  LCD ON  GPIO[0]=1  LCD OFF
+172)   412D CD 0D 40    		    CALL LCD_WR_DAT   	;
+173)   4130 16 01       		    LD D,0x01         ;GPIO0 normal	;GPIO0 normal
+174)   4132 CD 0D 40    		    CALL LCD_WR_DAT   	;
+176)   4135 16 BA       		    LD D,0xBA         	;
+177)   4137 CD 16 40    		    CALL LCD_WR_COM           	;
+178)   413A 16 01       		    LD D,0x01         ;GPIO[0] out 1 --- LCD display on/off control PIN	;GPIO[0] out 1 --- LCD display on/off control PIN
+179)   413C CD 0D 40    		    CALL LCD_WR_DAT   	;
+181)   413F 21 00 00    		    LD HL,0	;
+182)   4142 E5          		    PUSH HL	;
+183)   4143 E5          		    PUSH HL	;
+184)   4144 21 1F 03    		    LD HL,799	;
+185)   4147 E5          		    PUSH HL	;
+186)   4148 21 DF 01    		    LD HL,479	;
+187)   414B E5          		    PUSH HL	;
+188)   414C CD 87 41    		    CALL LCD_SETXY	;
+189)   414F 21 08 00    		    LD HL,8       ;REMOVE 4 PARAMS FROM STACK	;REMOVE 4 PARAMS FROM STACK
+190)   4152 39          		    ADD HL,SP	;
+191)   4153 F9          		    LD SP,HL	;
+193)   4154 16 29       		    LD D,0x29         ;display on 	;display on
+194)   4156 CD 16 40    		    CALL LCD_WR_COM       	;
+195)   4159 16 BE       		    LD D,0xBE         ;set PWM for B/L	;set PWM for B/L
+196)   415B CD 16 40    		    CALL LCD_WR_COM                 	;
+197)   415E 16 F0       		    LD D,0xF0         	;
+198)   4160 CD 0D 40    		    CALL LCD_WR_DAT   	;
+199)   4163 16 01       		    LD D,0x01         	;
+200)   4165 CD 0D 40    		    CALL LCD_WR_DAT   	;
+201)   4168 16 F0       		    LD D,0xF0         	;
+202)   416A CD 0D 40    		    CALL LCD_WR_DAT   	;
+203)   416D 16 00       		    LD D,0x00         	;
+204)   416F CD 0D 40    		    CALL LCD_WR_DAT   	;
+205)   4172 16 00       		    LD D,0x00         	;
+206)   4174 CD 0D 40    		    CALL LCD_WR_DAT                   	;
+208)   4177 16 D0       		    LD D,0xD0         	;
+209)   4179 CD 16 40    		    CALL LCD_WR_COM                 	;
+210)   417C 16 0D       		    LD D,0x0D         	;
+211)   417E CD 0D 40    		    CALL LCD_WR_DAT         	;
+213)   4181 16 2C       		    LD D,0x2C       	;
+214)   4183 CD 16 40    		    CALL LCD_WR_COM 	;
+215)   4186 C9          		    RET	;
+232)   4187 DD 21 02 00 		    LD IX,2	;
+233)   418B DD 39       		    ADD IX,SP         	;
+234)   418D 16 2A       		    LD D,0x2A         ;SEND IX PARAMS	;SEND IX PARAMS
+235)   418F CD 16 40    		    CALL LCD_WR_COM    	;
+236)   4192 DD 56 07    		    LD D,(IX+7)	;
+237)   4195 CD 0D 40    		    CALL LCD_WR_DAT	;
+238)   4198 DD 56 06    		    LD D,(IX+6)	;
+239)   419B CD 0D 40    		    CALL LCD_WR_DAT	;
+240)   419E DD 56 03    		    LD D,(IX+3)	;
+241)   41A1 CD 0D 40    		    CALL LCD_WR_DAT	;
+242)   41A4 DD 56 02    		    LD D,(IX+2)	;
+243)   41A7 CD 0D 40    		    CALL LCD_WR_DAT       	;
+244)   41AA 16 2B       		    LD D,0x2B         ;SEND Y PARAMS	;SEND Y PARAMS
+245)   41AC CD 16 40    		    CALL LCD_WR_COM   	;
+246)   41AF DD 56 05    		    LD D,(IX+5)	;
+247)   41B2 CD 0D 40    		    CALL LCD_WR_DAT	;
+248)   41B5 DD 56 04    		    LD D,(IX+4)	;
+249)   41B8 CD 0D 40    		    CALL LCD_WR_DAT	;
+250)   41BB DD 56 01    		    LD D,(IX+1)	;
+251)   41BE CD 0D 40    		    CALL LCD_WR_DAT	;
+252)   41C1 DD 56 00    		    LD D,(IX)	;
+253)   41C4 CD 0D 40    		    CALL LCD_WR_DAT       	;
+254)   41C7 16 2C       		    LD D,0x2C         ;SEND DATA	;SEND DATA
+255)   41C9 CD 16 40    		    CALL LCD_WR_COM           	;
+256)   41CC C9          		    RET	;
+261)   41CD 54          		    LD D,H        	;
+262)   41CE CD 0D 40    		    CALL LCD_WR_DAT 	;
+263)   41D1 55          		    LD D,L	;
+264)   41D2 CD 0D 40    		    CALL LCD_WR_DAT 	;
+265)   41D5 C9          		    RET	;
+268)   41D6 DD 21 02 00 		    LD IX,2     ;setXY(x, y, x, y);	;setXY(x, y, x, y);
+269)   41DA DD 39       		    ADD IX,SP	;
+270)   41DC DD 66 03    		    LD H,(IX+3)   ;X	;X
+271)   41DF DD 6E 02    		    LD L,(IX+2)   ;X	;X
+272)   41E2 DD 56 01    		    LD D,(IX+1) ;Y	;Y
+273)   41E5 DD 5E 00    		    LD E,(IX) ;Y	;Y
+274)   41E8 E5          		    PUSH HL	;
+275)   41E9 D5          		    PUSH DE	;
+276)   41EA E5          		    PUSH HL	;
+277)   41EB D5          		    PUSH DE	;
+278)   41EC CD 87 41    		    CALL LCD_SETXY	;
+279)   41EF 21 08 00    		    LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+280)   41F2 39          		    ADD HL,SP	;
+281)   41F3 F9          		    LD SP,HL	;
+282)   41F4 2A 00 65    		    LD HL,(FCOLOR)	;
+283)   41F7 CD CD 41    		    CALL LCD_SETPIXEL	;
+284)   41FA CD FE 41    		    CALL LCD_CLRXY	;
+285)   41FD C9          		    RET	;
+288)   41FE 21 00 00    		     LD HL,0	;
+289)   4201 E5          		     PUSH HL	;
+290)   4202 E5          		     PUSH HL	;
+291)   4203 21 1F 03    		     LD HL,LCD_WIDTH	;
+292)   4206 E5          		     PUSH HL	;
+293)   4207 21 DF 01    		     LD HL,LCD_HEIGHT	;
+294)   420A E5          		     PUSH HL	;
+295)   420B CD 87 41    		     CALL LCD_SETXY	;
+296)   420E 21 08 00    		     LD HL,8        ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+297)   4211 39          		     ADD HL,SP	;
+298)   4212 F9          		     LD SP,HL	;
+299)   4213 C9          		     RET	;
+303)   4214 DD 21 02 00 		      LD IX,2	;
+304)   4218 DD 39       		      ADD IX,SP	;
+305)   421A DD 66 05    		      LD H,(IX+5)   ;X  	;X
+306)   421D DD 6E 04    		      LD L,(IX+4)   ;X	;X
+307)   4220 DD 56 03    		      LD D,(IX+3)   ;Y	;Y
+308)   4223 DD 5E 02    		      LD E,(IX+2)   ;Y	;Y
+309)   4226 DD 46 01    		      LD B,(IX+1)   ;LENGTH	;LENGTH
+310)   4229 DD 4E 00    		      LD C,(IX)     ;LENGTH	;LENGTH
+313)   422C E5          		      PUSH HL	;
+314)   422D 21 00 00    		      LD HL,0	;
+315)   4230 B7          		      OR A           ;CLEAR CARRY	;CLEAR CARRY
+316)   4231 ED 42       		      SBC HL,BC      ;CHECK IF LENGTH<0	;CHECK IF LENGTH<0
+317)   4233 38 0A       		      JR C,POSH1	;
+318)   4235 AF          		      XOR A          ;l=-l	;l=-l
+319)   4236 91          					SUB C	;
+320)   4237 4F          					LD C,A	;
+321)   4238 9F          					SBC A,A	;
+322)   4239 90          					SUB B	;
+323)   423A 47          					LD B,A	;
+324)   423B E1          					POP HL	;
+325)   423C ED 42       		      SBC HL,BC       ;x -= l;	;x -= l;
+326)   423E E5          		      PUSH HL                    	;
+327)   423F E1          		POSH1: POP HL	;
+328)   4240 E5          					PUSH HL	;
+329)   4241 D5          		      PUSH DE	;
+330)   4242 09          		      ADD HL,BC	;
+331)   4243 E5          		      PUSH HL	;
+332)   4244 D5          		      PUSH DE	;
+333)   4245 CD 87 41    		      CALL LCD_SETXY   ;setXY(x, y, x+l, y);	;setXY(x, y, x+l, y);
+334)   4248 21 08 00    		      LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+335)   424B 39          		      ADD HL,SP	;
+336)   424C F9          		      LD SP,HL	;
+337)   424D 2A 00 65    		      LD HL,(FCOLOR)    	;
+338)   4250 CD CD 41    		NXTH1: CALL LCD_SETPIXEL	;
+339)   4253 0B          		      DEC BC	;
+340)   4254 79          		      LD A,C	;
+341)   4255 B0          		      OR B	;
+342)   4256 20 F8       		      JR NZ, NXTH1     	;
+343)   4258 CD FE 41    		      CALL LCD_CLRXY	;
+344)   425B C9          		      RET	;
+349)   425C DD 21 02 00 		      LD IX,2	;
+350)   4260 DD 39       		      ADD IX,SP	;
+351)   4262 DD 56 05    		      LD D,(IX+5)   ;X  	;X
+352)   4265 DD 5E 04    		      LD E,(IX+4)   ;X	;X
+353)   4268 DD 66 03    		      LD H,(IX+3)   ;Y	;Y
+354)   426B DD 6E 02    		      LD L,(IX+2)   ;Y	;Y
+355)   426E DD 46 01    		      LD B,(IX+1)   ;LENGTH	;LENGTH
+356)   4271 DD 4E 00    		      LD C,(IX)     ;LENGTH     	;LENGTH
+357)   4274 E5          		      PUSH HL	;
+358)   4275 21 00 00    		      LD HL,0	;
+359)   4278 B7          		      OR A           ;CLEAR CARRY	;CLEAR CARRY
+360)   4279 ED 42       		      SBC HL,BC      ;CHECK IF LENGTH<0	;CHECK IF LENGTH<0
+361)   427B 38 0A       		      JR C,POSV1	;
+362)   427D AF          		      XOR A          ;l=-l	;l=-l
+363)   427E 91          					SUB C	;
+364)   427F 4F          					LD C,A	;
+365)   4280 9F          					SBC A,A	;
+366)   4281 90          					SUB B	;
+367)   4282 47          					LD B,A	;
+368)   4283 E1          					POP HL	;
+369)   4284 ED 42       		      SBC HL,BC       ;Y -= l;	;Y -= l;
+370)   4286 E5          		      PUSH HL                   	;
+371)   4287 E1          		POSV1: POP HL	;
+372)   4288 D5          					PUSH DE	;
+373)   4289 E5          		      PUSH HL	;
+374)   428A D5          		      PUSH DE	;
+375)   428B 09          		      ADD HL,BC	;
+376)   428C E5          		      PUSH HL	;
+377)   428D CD 87 41    		      CALL LCD_SETXY   ;setXY(x, y, x, y+l);	;setXY(x, y, x, y+l);
+378)   4290 21 08 00    		      LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+379)   4293 39          		      ADD HL,SP	;
+380)   4294 F9          		      LD SP,HL	;
+381)   4295 2A 00 65    		      LD HL,(FCOLOR)    	;
+382)   4298 CD CD 41    		NXTV1: CALL LCD_SETPIXEL	;
+383)   429B 0B          		      DEC BC	;
+384)   429C 79          		      LD A,C	;
+385)   429D B0          		      OR B	;
+386)   429E 20 F8       		      JR NZ, NXTV1     	;
+387)   42A0 CD FE 41    		      CALL LCD_CLRXY	;
+388)   42A3 C9          		      RET	;
+392)   42A4 DD 21 02 00 		      LD IX,2	;
+393)   42A8 DD 39       		      ADD IX,SP	;
+403)   42AA DD 66 05    		      LD H,(IX+5)   ;Y1	;Y1
+404)   42AD DD 6E 04    		      LD L,(IX+4)   ;Y1	;Y1
+405)   42B0 DD 56 01    		      LD D,(IX+1)   ;Y2	;Y2
+406)   42B3 DD 5E 00    		      LD E,(IX)     ;Y2	;Y2
+407)   42B6 B7          		      OR A	;
+408)   42B7 ED 52       		      SBC HL,DE	;
+409)   42B9 20 1A       		      JR NZ,YNOTEQ	;
+411)   42BB DD 46 07    		      LD B,(IX+7)   ;X1	;X1
+412)   42BE DD 4E 06    		      LD C,(IX+6)   ;X1	;X1
+413)   42C1 C5          		      PUSH BC       ;X1 1ST PARAM ON STACK	;X1 1ST PARAM ON STACK
+414)   42C2 D5          		      PUSH DE				;Y 2ND PARAM ON STACK	;Y 2ND PARAM ON STACK
+415)   42C3 DD 66 03    		      LD H,(IX+3)   ;X2	;X2
+416)   42C6 DD 6E 02    		      LD L,(IX+2)   ;X2       	;X2
+417)   42C9 ED 42       		      SBC HL,BC  	  ;X2-X1 = LENGTH OF HORIZ LINE	;X2-X1 = LENGTH OF HORIZ LINE
+418)   42CB E5          		      PUSH HL       ;LENGTH 3RD PARAM ON STACK 	;LENGTH 3RD PARAM ON STACK
+419)   42CC CD 14 42    		      CALL LCD_DRAWHLINE	;
+420)   42CF 21 06 00    		      LD HL,6       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+421)   42D2 39          		      ADD HL,SP	;
+422)   42D3 F9          		      LD SP,HL      	;
+423)   42D4 C9          		      RET	;
+425)   42D5 DD 66 07    		      LD H,(IX+7)   ;X1	;X1
+426)   42D8 DD 6E 06    		      LD L,(IX+6)   ;X1	;X1
+427)   42DB DD 56 03    		      LD D,(IX+3)   ;X2	;X2
+428)   42DE DD 5E 02    		      LD E,(IX+2)   ;X2 	;X2
+429)   42E1 B7          		      OR A	;
+430)   42E2 ED 52       		      SBC HL,DE	;
+431)   42E4 20 1A       		      JR NZ,XNOTEQ	;
+433)   42E6 D5          		      PUSH DE       ;X2=X1 1ST PARAM ON STACK	;X2=X1 1ST PARAM ON STACK
+434)   42E7 DD 46 05    		      LD B,(IX+5)   ;Y1	;Y1
+435)   42EA DD 4E 04    		      LD C,(IX+4)   ;Y1	;Y1
+436)   42ED C5          		      PUSH BC       ;Y1 2ND PARAM ON STACK	;Y1 2ND PARAM ON STACK
+437)   42EE DD 66 01    		      LD H,(IX+1)   ;Y2	;Y2
+438)   42F1 DD 6E 00    		      LD L,(IX)   ;Y2       	;Y2
+439)   42F4 ED 42       		      SBC HL,BC  	  ;Y2-Y1 = LENGTH OF VERT LINE	;Y2-Y1 = LENGTH OF VERT LINE
+440)   42F6 E5          		      PUSH HL       ;LENGTH 3RD PARAM ON STACK 	;LENGTH 3RD PARAM ON STACK
+441)   42F7 CD 5C 42    		      CALL LCD_DRAWVLINE	;
+442)   42FA 21 06 00    		      LD HL,6       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+443)   42FD 39          		      ADD HL,SP	;
+444)   42FE F9          		      LD SP,HL	;
+445)   42FF C9          		      RET	;
+448)   4300 38 04       		      JR C,X2GTX1	;
+450)   4302 AF          		      XOR A			;
+451)   4303 3D          		      DEC A  ;XSTEP=-1	;XSTEP=-1
+452)   4304 18 0D       		      JR DLNXT1	;
+455)   4306 D5          		      PUSH DE	;
+456)   4307 E1          		      POP HL	;
+457)   4308 DD 56 07    		      LD D,(IX+7)   ;X1	;X1
+458)   430B DD 5E 06    		      LD E,(IX+6)   ;X1 	;X1
+459)   430E B7          		      OR A     	;
+460)   430F ED 52       		      SBC HL,DE     ;X2-X1 ON HL	;X2-X1 ON HL
+462)   4311 3E 01       		      LD A,1        ;XSTEP=1	;XSTEP=1
+464)   4313 06 00       		      LD B,0	;
+465)   4315 0E 00       		      LD C,0	;
+466)   4317 C5          		      PUSH BC       ;T	;T
+467)   4318 E5          		      PUSH HL       ;DX	;DX
+468)   4319 FE 01       		      CP 1	;
+469)   431B 28 02       		      JR Z,DLXMINUS1	;
+470)   431D 06 FF       		      LD B,0XFF	;
+471)   431F 4F          		DLXMINUS1:LD C,A      	;
+472)   4320 C5          		      PUSH BC       ;XSTEP	;XSTEP
+473)   4321 DD 66 05    		      LD H,(IX+5)   ;Y1	;Y1
+474)   4324 DD 6E 04    		      LD L,(IX+4)   ;Y1	;Y1
+475)   4327 DD 56 01    		      LD D,(IX+1)   ;Y2	;Y2
+476)   432A DD 5E 00    		      LD E,(IX)     ;Y2      	;Y2
+477)   432D B7          		      OR A	;
+478)   432E ED 52       		      SBC HL,DE	;
+479)   4330 38 04       		      JR C,Y2GTY1	;
+481)   4332 AF          		      XOR A	;
+482)   4333 3D          		      DEC A         ;YSTEP=-1	;YSTEP=-1
+483)   4334 18 0F       		      JR DLNXT2	;
+486)   4336 D5          		      PUSH DE	;
+487)   4337 E1          		      POP HL	;
+488)   4338 DD 56 05    		      LD D,(IX+5)   ;Y1	;Y1
+489)   433B DD 5E 04    		      LD E,(IX+4)   ;Y1  	;Y1
+490)   433E B7          		      OR A	;
+491)   433F ED 52       		      SBC HL,DE  	;
+493)   4341 06 00       		      LD B,0	;
+494)   4343 3E 01       		      LD A,1        ;YSTEP=1	;YSTEP=1
+496)   4345 FE 01       		      CP 1	;
+497)   4347 28 02       		      JR Z,DLYMINUS1	;
+498)   4349 06 FF       		      LD B,0XFF	;
+500)   434B 4F          		      LD C,A      	;
+501)   434C E5          		      PUSH HL       ;DY	;DY
+502)   434D C5          		      PUSH BC       ;YSTEP   	;YSTEP
+503)   434E FD 21 00 00 		      LD IY,0	;
+504)   4352 FD 39       		      ADD IY,SP	;
+519)   4354 FD 56 07    		      LD D,(IY+7)    ;DX	;DX
+520)   4357 FD 5E 06    		      LD E,(IY+6)    ;DX	;DX
+521)   435A B7          		      OR A	;
+522)   435B ED 52       		      SBC HL,DE      ;DY-DX	;DY-DX
+523)   435D DA F7 43    		      JP C,DXGTDY	;
+524)   4360 CA F7 43    		      JP Z,DXGTDY	;
+526)   4363 19          		      ADD HL,DE      ;HL=DY	;HL=DY
+527)   4364 44          		      LD B,H	;
+528)   4365 4D          		      LD C,L	;
+529)   4366 CB 38       		      SRL B	;
+530)   4368 CB 19       		      RR C           ;(dy >> 1)	;(dy >> 1)
+531)   436A 21 00 00    		      LD HL,0	;
+532)   436D ED 42       		      SBC HL,BC      ;t = - (dy >> 1);	;t = - (dy >> 1);
+533)   436F FD 74 09    		      LD (IY+9),H    ;SAVE T	;SAVE T
+534)   4372 FD 75 08    		      LD (IY+8),L    ;SAVE T	;SAVE T
+536)   4375 DD 56 05    		      LD D,(IX+5)   ;ROW	;ROW
+537)   4378 DD 5E 04    		      LD E,(IX+4)   ;ROW=Y1	;ROW=Y1
+538)   437B DD 66 07    		      LD H,(IX+7)   ;COL	;COL
+539)   437E DD 6E 06    		      LD L,(IX+6)   ;COL=X1	;COL=X1
+540)   4381 D5          		      PUSH DE	;
+541)   4382 DD E5       		      PUSH IX	;
+542)   4384 E5          		      PUSH HL	;
+543)   4385 D5          		      PUSH DE	;
+544)   4386 E5          		      PUSH HL	;
+545)   4387 D5          		      PUSH DE	;
+546)   4388 CD 87 41    		      CALL LCD_SETXY	;
+547)   438B 21 08 00    		      LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+548)   438E 39          		      ADD HL,SP     ;	;
+549)   438F F9          		      LD SP,HL      	;
+550)   4390 2A 00 65    		      LD HL,(FCOLOR)    	;
+551)   4393 CD CD 41    		      CALL LCD_SETPIXEL	;
+552)   4396 DD E1       		      POP IX	;
+553)   4398 D1          		      POP DE	;
+554)   4399 DD 66 01    		      LD H,(IX+1)   ;Y2	;Y2
+555)   439C DD 6E 00    		      LD L,(IX)     ;Y2 	;Y2
+556)   439F ED 52       		      SBC HL,DE     ; ROW=Y2	; ROW=Y2
+557)   43A1 CA 8A 44    		      JP Z,DLEXIT	;
+558)   43A4 FD 46 01    		      LD B,(IY+1)   ;YSTEP HI	;YSTEP HI
+559)   43A7 FD 4E 00    		      LD C,(IY)     ;YSTEP LO	;YSTEP LO
+560)   43AA EB          		      EX DE,HL	;
+561)   43AB 09          		      ADD HL,BC     ;row += ystep;	;row += ystep;
+562)   43AC DD 74 05    		      LD (IX+5),H   ;SAVE ROW	;SAVE ROW
+563)   43AF DD 75 04    		      LD (IX+4),L   ;   	;
+565)   43B2 FD 56 09    		      LD D,(IY+9)   ; T	; T
+566)   43B5 FD 5E 08    		      LD E,(IY+8)   ; T      	; T
+567)   43B8 FD 66 07    		      LD H,(IY+7)   ;DX	;DX
+568)   43BB FD 6E 06    		      LD L,(IY+6)   ;DX	;DX
+569)   43BE 19          		      ADD HL,DE	;
+570)   43BF FD 74 09    		      LD (IY+9),H   ;t += dx;	;t += dx;
+571)   43C2 FD 75 08    		      LD (IY+8),L	;
+572)   43C5 EB          		      EX DE,HL	;
+573)   43C6 21 00 00    		      LD HL,0	;
+574)   43C9 ED 52       		      SBC HL,DE	;
+575)   43CB 30 A8       		      JR NC,DLAGN1      	;
+576)   43CD FD 46 05    		      LD B,(IY+5)   ;XSTEP HI	;XSTEP HI
+577)   43D0 FD 4E 04    		      LD C,(IY+4)   ;XSTEP LO	;XSTEP LO
+578)   43D3 DD 66 07    		      LD H,(IX+7)   ;COL HI	;COL HI
+579)   43D6 DD 6E 06    		      LD L,(IX+6)   ;COL LO	;COL LO
+580)   43D9 09          		      ADD HL,BC     ;col += xstep;	;col += xstep;
+581)   43DA DD 74 07    		      LD (IX+7),H   ;SAVE COL	;SAVE COL
+582)   43DD DD 75 06    		      LD (IX+6),L   ;         	;
+584)   43E0 FD 66 09    		      LD H,(IY+9)   ; T	; T
+585)   43E3 FD 6E 08    		      LD L,(IY+8)   ; T      	; T
+586)   43E6 FD 46 03    		      LD B,(IY+3)   ;DY	;DY
+587)   43E9 FD 4E 02    		      LD C,(IY+2)   ;DY	;DY
+588)   43EC ED 42       		      SBC HL,BC	;
+589)   43EE FD 74 09    		      LD (IY+9),H   ;t -= dY;	;t -= dY;
+590)   43F1 FD 75 08    		      LD (IY+8),L								;
+591)   43F4 C3 75 43    		      JP DLAGN1	;
+593)   43F7 19          		      ADD HL,DE      ;HL=DY DE=DX	;HL=DY DE=DX
+594)   43F8 42          		      LD B,D	;
+595)   43F9 4B          		      LD C,E	;
+596)   43FA CB 38       		      SRL B	;
+597)   43FC CB 19       		      RR C           ;(dX >> 1)	;(dX >> 1)
+598)   43FE 21 00 00    		      LD HL,0	;
+599)   4401 ED 42       		      SBC HL,BC      ;t = - (dy >> 1);	;t = - (dy >> 1);
+600)   4403 FD 74 09    		      LD (IY+9),H    ;SAVE T	;SAVE T
+601)   4406 FD 75 08    		      LD (IY+8),L    ;SAVE T	;SAVE T
+603)   4409 DD 56 05    		      LD D,(IX+5)   ;ROW	;ROW
+604)   440C DD 5E 04    		      LD E,(IX+4)   ;ROW=Y1	;ROW=Y1
+605)   440F DD 66 07    		      LD H,(IX+7)   ;COL	;COL
+606)   4412 DD 6E 06    		      LD L,(IX+6)   ;COL=X1	;COL=X1
+607)   4415 E5          		      PUSH HL       ;SAVE COL	;SAVE COL
+608)   4416 DD E5       		      PUSH IX	;
+609)   4418 E5          		      PUSH HL	;
+610)   4419 D5          		      PUSH DE	;
+611)   441A E5          		      PUSH HL	;
+612)   441B D5          		      PUSH DE	;
+613)   441C CD 87 41    		      CALL LCD_SETXY	;
+614)   441F 21 08 00    		      LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+615)   4422 39          		      ADD HL,SP     ;	;
+616)   4423 F9          		      LD SP,HL      	;
+617)   4424 2A 00 65    		      LD HL,(FCOLOR)    	;
+618)   4427 CD CD 41    		      CALL LCD_SETPIXEL	;
+619)   442A DD E1       		      POP IX	;
+620)   442C D1          		      POP DE        ;RETRIEVE COL	;RETRIEVE COL
+621)   442D DD 66 03    		      LD H,(IX+3)   ;X2	;X2
+622)   4430 DD 6E 02    		      LD L,(IX+2)   ;X2 	;X2
+623)   4433 ED 52       		      SBC HL,DE     ; COL=X2?	; COL=X2?
+624)   4435 28 53       		      JR Z,DLEXIT	;
+625)   4437 EB          		      EX DE,HL      ;HL=COL	;HL=COL
+626)   4438 FD 46 05    		      LD B,(IY+5)   ;XSTEP HI	;XSTEP HI
+627)   443B FD 4E 04    		      LD C,(IY+4)   ;XSTEP LO	;XSTEP LO
+628)   443E 09          		      ADD HL,BC     ;col += xstep;	;col += xstep;
+629)   443F DD 74 07    		      LD (IX+7),H   ;SAVE COL	;SAVE COL
+630)   4442 DD 75 06    		      LD (IX+6),L   ;   	;
+631)   4445 FD 56 09    		      LD D,(IY+9)   ; T	; T
+632)   4448 FD 5E 08    		      LD E,(IY+8)   ; T      	; T
+633)   444B FD 66 03    		      LD H,(IY+3)   ;DY	;DY
+634)   444E FD 6E 02    		      LD L,(IY+2)   ;DY	;DY
+635)   4451 19          		      ADD HL,DE	;
+636)   4452 FD 74 09    		      LD (IY+9),H   ;t += dY;	;t += dY;
+637)   4455 FD 75 08    		      LD (IY+8),L	;
+638)   4458 EB          		      EX DE,HL      ;T=DE	;T=DE
+639)   4459 21 00 00    		      LD HL,0	;
+640)   445C ED 52       		      SBC HL,DE	;
+641)   445E 30 A9       		      JR NC,DLAGN2      	;
+642)   4460 FD 46 01    		      LD B,(IY+1)   ;YSTEP HI	;YSTEP HI
+643)   4463 FD 4E 00    		      LD C,(IY)     ;YSTEP LO	;YSTEP LO
+644)   4466 DD 66 05    		      LD H,(IX+5)   ;ROW HI	;ROW HI
+645)   4469 DD 6E 04    		      LD L,(IX+4)   ;ROW LO	;ROW LO
+646)   446C 09          		      ADD HL,BC     ;ROW += Ystep;	;ROW += Ystep;
+647)   446D DD 74 05    		      LD (IX+5),H   ;SAVE COL	;SAVE COL
+648)   4470 DD 75 04    		      LD (IX+4),L   ;         	;
+650)   4473 FD 66 09    		      LD H,(IY+9)   ; T	; T
+651)   4476 FD 6E 08    		      LD L,(IY+8)   ; T      	; T
+652)   4479 FD 46 07    		      LD B,(IY+7)   ;DX	;DX
+653)   447C FD 4E 06    		      LD C,(IY+6)   ;DX	;DX
+654)   447F ED 42       		      SBC HL,BC	;
+655)   4481 FD 74 09    		      LD (IY+9),H   ;t -= dX;	;t -= dX;
+656)   4484 FD 75 08    		      LD (IY+8),L								;
+657)   4487 C3 09 44    		      JP DLAGN2	;
+660)   448A 21 0A 00    		      LD HL,10      ;REMOVE 10 IY PARAMS FROM STACK	;REMOVE 10 IY PARAMS FROM STACK
+661)   448D 39          		      ADD HL,SP     ;	;
+662)   448E F9          		      LD SP,HL           	;
+663)   448F C9          		      RET          	;
+670)   4490 FE 0A       		      CP 0X0A	;
+671)   4492 C8          		      RET Z	;
+672)   4493 FE 0D       		      CP 0X0D   ;CHECK FOR ENTER	;CHECK FOR ENTER
+673)   4495 20 06       		      JR NZ,PRCH_DOPRN	;
+674)   4497 21 04 65    		      LD HL,CURSORX	;
+675)   449A C3 10 45    		      JP PRCH_NEWLN 	;
+677)   449D F5          		      PUSH AF  ;SAVE CHAR TO STACK	;SAVE CHAR TO STACK
+678)   449E 32 06 65    		      LD (LASTCHAR),A ;SAVE LAST PRINTED CHAR	;SAVE LAST PRINTED CHAR
+679)   44A1 0E 01       		      LD C,1	;
+680)   44A3 3A 04 65    		      LD A,(CURSORX)	;
+682)   44A6 06 08       		      LD B,FONT_WIDTH	;
+683)   44A8 16 00       		      LD D,0	;
+684)   44AA 5F          		      LD E,A	;
+685)   44AB 21 00 00    		      LD HL,0	;
+687)   44AE ED 5A       		      ADC HL,DE	;
+688)   44B0 10 FC       		      DJNZ PRCH_AGN1	;
+689)   44B2 E5          		      PUSH HL       ;1ST PARAM X1 & 3RD PARAM	;1ST PARAM X1 & 3RD PARAM
+690)   44B3 3C          		      INC A	;
+691)   44B4 0D          		      DEC C	;
+692)   44B5 28 EF       		      JR Z,PRCH_AGN1A	;
+693)   44B7 3A 05 65    		      LD A,(CURSORY)	;
+694)   44BA 0E 01       		      LD C,1	;
+696)   44BC 06 0A       		      LD B,FONT_HEIGHT 	;
+697)   44BE 16 00       		      LD D,0	;
+698)   44C0 5F          		      LD E,A	;
+699)   44C1 21 00 00    		      LD HL,0	;
+701)   44C4 ED 5A       		      ADC HL,DE	;
+702)   44C6 10 FC       		      DJNZ PRCH_AGN2      	;
+703)   44C8 0D          		      DEC C	;
+704)   44C9 20 07       		      JR NZ,PRCH_AGN2B	;
+705)   44CB D1          		      POP DE        ;3RD PARAM X2	;3RD PARAM X2
+706)   44CC E5          		      PUSH HL       ;2ND PARAM Y1	;2ND PARAM Y1
+707)   44CD 1B          		      DEC DE        ;3RD PARAM - 1	;3RD PARAM - 1
+708)   44CE D5          		      PUSH DE       ;3RD PARAM X2	;3RD PARAM X2
+709)   44CF 3C          		      INC A	;
+710)   44D0 18 EA       		      JR PRCH_AGN2A	;
+712)   44D2 2B          		      DEC HL        ;4TH PARAM -1  	;4TH PARAM -1
+713)   44D3 E5          		      PUSH HL				;4TH PARAM Y2	;4TH PARAM Y2
+714)   44D4 CD 87 41    		      CALL LCD_SETXY	;
+715)   44D7 21 08 00    		      LD HL,8	;
+716)   44DA 39          		      ADD HL,SP	;
+717)   44DB F9          		      LD SP,HL      ;SKIP 4 PARAMS 8 BYTES	;SKIP 4 PARAMS 8 BYTES
+718)   44DC F1          		      POP AF        ;CHAR TO PRINT FROM STACK	;CHAR TO PRINT FROM STACK
+719)   44DD 21 00 46    		      LD HL,FONT_ADDR	;
+720)   44E0 16 00       		      LD D,0	;
+721)   44E2 5F          		      LD E,A	;
+722)   44E3 ED 5A       		      ADC HL,DE     ;THIS IS THE CHAR ADDRESS	;THIS IS THE CHAR ADDRESS
+723)   44E5 E5          		      PUSH HL	;
+724)   44E6 D1          		      POP DE        ; CHAR ADDRESS ON DE	; CHAR ADDRESS ON DE
+725)   44E7 0E 0A       		      LD C,FONT_HEIGHT   ; TOTAL FONT LINES	; TOTAL FONT LINES
+727)   44E9 1A          		      LD A,(DE)           ;FONT 8BIT PATTERN FOR A LINE	;FONT 8BIT PATTERN FOR A LINE
+728)   44EA 06 07       		      LD B,FONT_WIDTH-1	;
+730)   44EC CB 27       		      SLA A               ;CHECK BIT FOR 1=FCOLOR OR 0=BCOLOR	;CHECK BIT FOR 1=FCOLOR OR 0=BCOLOR
+731)   44EE 38 05       		      JR C,FORECOLOR	;
+732)   44F0 2A 02 65    		      LD HL,(BCOLOR)	;
+733)   44F3 18 03       		      JR PRCH_CONT	;
+735)   44F5 2A 00 65    		      LD HL,(FCOLOR)      	;
+737)   44F8 F5          		      PUSH AF	;
+738)   44F9 D5          		      PUSH DE	;
+739)   44FA CD CD 41    		      CALL LCD_SETPIXEL	;
+740)   44FD D1          		      POP DE	;
+741)   44FE F1          		      POP AF      	;
+742)   44FF 10 EB       		      DJNZ PRCH_AGN4	;
+743)   4501 14          		      INC D             ;ADD 256 FOR NEXT CHAR PATTERN	;ADD 256 FOR NEXT CHAR PATTERN
+744)   4502 0D          		      DEC C	;
+745)   4503 20 E4       		      JR NZ,PRCH_AGN3	;
+747)   4505 21 04 65    		      LD HL,CURSORX	;
+748)   4508 7E          		      LD A,(HL)	;
+749)   4509 3C          		      INC A	;
+750)   450A FE 50       		      CP 80	;
+751)   450C 28 02       		      JR Z,PRCH_NEWLN  ;NEW LINE	;NEW LINE
+752)   450E 77          		      LD (HL),A	;
+753)   450F C9          		      RET	;
+756)   4510 AF          		      XOR A  	;
+757)   4511 77          		      LD (HL),A   	;
+758)   4512 23          		      INC HL	;
+759)   4513 7E          		      LD A,(HL)	;
+760)   4514 3C          		      INC A       	;
+761)   4515 77          		      LD (HL),A	;
+765)   4516 C9          		      RET	;
+769)   4517 3E 41       		    LD A,65	;
+770)   4519 CD 90 44    		    CALL LCD_PRINTCHAR	;
+771)   451C 21 04 65    		    LD HL,CURSORX	;
+772)   451F 34          		    INC (HL)	;
+773)   4520 3E 42       		    LD A,66	;
+774)   4522 CD 90 44    		    CALL LCD_PRINTCHAR	;
+776)   4525 C9          		    RET	;
+778)   4526 21 0A 00    		    LD HL,10	;
+779)   4529 01 D2 00    		    LD BC,210	;
+780)   452C C5          		    PUSH BC	;
+781)   452D E5          		    PUSH HL	;
+782)   452E E5          		    PUSH HL	;
+783)   452F C5          		    PUSH BC	;
+784)   4530 CD A4 42    		    CALL LCD_DRAWLINE 	;
+785)   4533 21 08 00    		    LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+786)   4536 39          		    ADD HL,SP	;
+787)   4537 F9          		    LD SP,HL    	;
+793)   4538 21 0A 00    		    LD HL,10	;
+794)   453B 01 D2 00    		    LD BC,210	;
+795)   453E E5          		    PUSH HL	;
+796)   453F E5          		    PUSH HL	;
+797)   4540 C5          		    PUSH BC	;
+798)   4541 C5          		    PUSH BC	;
+799)   4542 CD A4 42    		    CALL LCD_DRAWLINE 	;
+800)   4545 21 08 00    		    LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+801)   4548 39          		    ADD HL,SP	;
+802)   4549 F9          		    LD SP,HL    	;
+806)   454A 21 0A 00    		    LD HL,10	;
+807)   454D 01 D2 00    		    LD BC,210	;
+808)   4550 E5          		    PUSH HL	;
+809)   4551 E5          		    PUSH HL	;
+810)   4552 C5          		    PUSH BC	;
+811)   4553 E5          		    PUSH HL	;
+812)   4554 CD A4 42    		    CALL LCD_DRAWLINE 	;
+813)   4557 21 08 00    		    LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+814)   455A 39          		    ADD HL,SP	;
+815)   455B F9          		    LD SP,HL	;
+816)   455C 21 0A 00    		    LD HL,10	;
+817)   455F 01 D2 00    		    LD BC,210	;
+818)   4562 E5          		    PUSH HL	;
+819)   4563 E5          		    PUSH HL	;
+820)   4564 E5          		    PUSH HL	;
+821)   4565 C5          		    PUSH BC	;
+822)   4566 CD A4 42    		    CALL LCD_DRAWLINE 	;
+823)   4569 21 08 00    		    LD HL,8       ;REMOVE PARAMS FROM STACK	;REMOVE PARAMS FROM STACK
+824)   456C 39          		    ADD HL,SP	;
+825)   456D F9          		    LD SP,HL    	;
+826)   456E C9          		    RET	;
+829)   456F 00 00 00 00 		    ALIGN 256	;
+829)   4573 00 00 00 00 		    ALIGN 256	;
+829)   4577 00 00 00 00 		    ALIGN 256	;
+829)   457B 00 00 00 00 		    ALIGN 256	;
+829)   457F 00 00 00 00 		    ALIGN 256	;
+829)   4583 00 00 00 00 		    ALIGN 256	;
+829)   4587 00 00 00 00 		    ALIGN 256	;
+829)   458B 00 00 00 00 		    ALIGN 256	;
+829)   458F 00 00 00 00 		    ALIGN 256	;
+829)   4593 00 00 00 00 		    ALIGN 256	;
+829)   4597 00 00 00 00 		    ALIGN 256	;
+829)   459B 00 00 00 00 		    ALIGN 256	;
+829)   459F 00 00 00 00 		    ALIGN 256	;
+829)   45A3 00 00 00 00 		    ALIGN 256	;
+829)   45A7 00 00 00 00 		    ALIGN 256	;
+829)   45AB 00 00 00 00 		    ALIGN 256	;
+829)   45AF 00 00 00 00 		    ALIGN 256	;
+829)   45B3 00 00 00 00 		    ALIGN 256	;
+829)   45B7 00 00 00 00 		    ALIGN 256	;
+829)   45BB 00 00 00 00 		    ALIGN 256	;
+829)   45BF 00 00 00 00 		    ALIGN 256	;
+829)   45C3 00 00 00 00 		    ALIGN 256	;
+829)   45C7 00 00 00 00 		    ALIGN 256	;
+829)   45CB 00 00 00 00 		    ALIGN 256	;
+829)   45CF 00 00 00 00 		    ALIGN 256	;
+829)   45D3 00 00 00 00 		    ALIGN 256	;
+829)   45D7 00 00 00 00 		    ALIGN 256	;
+829)   45DB 00 00 00 00 		    ALIGN 256	;
+829)   45DF 00 00 00 00 		    ALIGN 256	;
+829)   45E3 00 00 00 00 		    ALIGN 256	;
+829)   45E7 00 00 00 00 		    ALIGN 256	;
+829)   45EB 00 00 00 00 		    ALIGN 256	;
+829)   45EF 00 00 00 00 		    ALIGN 256	;
+829)   45F3 00 00 00 00 		    ALIGN 256	;
+829)   45F7 00 00 00 00 		    ALIGN 256	;
+829)   45FB 00 00 00 00 		    ALIGN 256	;
+829)   45FF 00          		    ALIGN 256	;
+834)   6500 55 55       		    FCOLOR   DEFW 0X5555 	;
+835)   6502 AA AA       		    BCOLOR   DEFW 0XAAAA	;
+836)   6504 00          		    CURSORX  DEFB 0    ;0-79	;0-79
+837)   6505 00          		    CURSORY  DEFB 0    ;0-47	;0-47
+838)   6506 00          		    LASTCHAR DEFB 0; 	;
