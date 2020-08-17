@@ -229,17 +229,17 @@ procedure TNBInOutSupport.DoLastCommand;
        Color:TColor;
        Begin
          case LCDCommand of
-           SETXY_X:if di=8 then
+           SETXY_X:if di=4 then
                      Begin
-                       setX1:=dataBytes[1] shl 8 OR dataBytes[3];
-                       setX2:=dataBytes[5] shl 8 OR dataBytes[7];
+                       setX1:=dataBytes[0] shl 8 OR dataBytes[1];
+                       setX2:=dataBytes[2] shl 8 OR dataBytes[3];
                        if setX1>setX2 then swap(setX1,setX2);
                        Kx:=setX1;
                      End;
-           SETXY_Y:if di=8 then
+           SETXY_Y:if di=4 then
                      Begin
-                       setY1:=dataBytes[1] shl 8 OR dataBytes[3];
-                       setY2:=dataBytes[5] shl 8 OR dataBytes[7];
+                       setY1:=dataBytes[0] shl 8 OR dataBytes[1];
+                       setY2:=dataBytes[2] shl 8 OR dataBytes[3];
                        if setY1>setY2 then swap(setY1,setY2);
                        Ky:=setY1;
 
@@ -247,10 +247,10 @@ procedure TNBInOutSupport.DoLastCommand;
                        BytesExpected:=(abs(setX2-setX1)+1)*(abs(setY2-setY1)+1)-1;
                      End;
            SETXY:Begin
-                   if di=4 then //exit;  //2 bytes for each color
+                   if di=2 then //exit;  //2 bytes for each color
                    Begin
                     //translate color 556 rgb
-                    Color:=getColor(dataBytes[1],dataBytes[3]);
+                    Color:=getColor(dataBytes[0],dataBytes[1]);
                     di:=0;
                     addr:=Ky*VideoW+kx;
                     if (ky>479) or (kx>799) then exit;
@@ -280,6 +280,7 @@ procedure TNBInOutSupport.DoLastCommand;
 
        Procedure SetLCDCommand;
        Begin
+         di:=0;
          case lastData of
            $2a:LCDCommand:= SETXY_X; //4 bytes  x1,x2
            $2b:LCDCommand:= SETXY_Y; //4 bytes  y1,y2
@@ -288,7 +289,7 @@ procedure TNBInOutSupport.DoLastCommand;
          Begin
             LCDCommand:= NONE;
          End;
-         di:=0;
+
          end;
 
        End;

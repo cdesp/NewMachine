@@ -43,9 +43,10 @@
 @LISTON:		DEFS    1               ;LISTO & OPT FLAG
 @INCREM:		DEFS    1               ;AUTO INCREMENT
 ;
-; Added by me
+; Added FOR OS
 ;
 @FLAGS			DEFS	1		; Flags: B7=ESC PRESSED, B6=ESC DISABLED
+@OSVARS     DEFS 50   ; 50 BYTES FOR OS VARIABLES
 @USER				EQU $
 
 			ENDMODULE

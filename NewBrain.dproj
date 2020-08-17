@@ -54,7 +54,7 @@
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
         <SanitizedProjectName>NewBrain</SanitizedProjectName>
-        <DCC_UnitSearchPath>C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\tpapro_5.00\run;C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\delphix\Source;C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\jdled;C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\ExpEval;C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\Others;C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\regexp\Source;C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\VGLib\Units;C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\tpapro_5.00\version 4 units in queue for upgrade;C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Components\ts;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>G:\_Programming\Comps_10.4\tpapro_5.00\run;G:\_Programming\Comps_10.4\delphix\Source;G:\_Programming\Comps_10.4\jdled;G:\_Programming\Comps_10.4\ExpEval;G:\_Programming\Comps_10.4\Others;G:\_Programming\Comps_10.4\regexp\Source;G:\_Programming\Comps_10.4\VGLib\Units;G:\_Programming\Comps_10.4\tpapro_5.00\version 4 units in queue for upgrade;G:\_Programming\Comps_10.4\ts;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;DataSnapServerMidas;DBXDb2Driver;DBXInterBaseDriver;vclactnband;vclFireDAC;DataSnapFireDAC;svnui;tethering;JvGlobus;FireDACADSDriver;JvPluginSystem;DBXMSSQLDriver;JvMM;DatasnapConnectorsFreePascal;FireDACMSSQLDriver;vcltouch;JvBands;vcldb;bindcompfmx;svn;Intraweb;DBXOracleDriver;JvNet;JvJans;inetdb;JvAppFrm;FmxTeeUI;emsedge;JvDotNetCtrls;fmx;fmxdae;vclib;JvWizards;FireDACDBXDriver;dbexpress;IndyCore;vclx;JvPageComps;dsnap;DataSnapCommon;JvDB;DataSnapConnectors;VCLRESTComponents;JclDeveloperTools;A407_R120;vclie;bindengine;DBXMySQLDriver;FireDACOracleDriver;FireDACMySQLDriver;DBXFirebirdDriver;JvCmp;JvHMI;FireDACCommonODBC;DataSnapClient;bindcompdbx;IndyIPCommon;JvCustom;vcl;DBXSybaseASEDriver;IndyIPServer;JvXPCtrls;IndySystem;FireDACDb2Driver;dsnapcon;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;TeeDB;JDLedD6;Jcl;JvCore;emshosting;JvCrypt;FireDACPgDriver;ibmonitor;FireDACASADriver;DBXOdbcDriver;FireDACTDataDriver;FMXTee;DbxCommonDriver;JvDlgs;JvRuntimeDesign;ibxpress;Tee;JvManagedThreads;DataSnapServer;xmlrtl;DataSnapNativeClient;fmxobj;vclwinx;ibxbindings;rtl;FireDACDSDriver;DbxClientDriver;JvTimeFramework;DBXSybaseASADriver;CustomIPTransport;vcldsnap;JvSystem;JvStdCtrls;bindcomp;appanalytics;DBXInformixDriver;IndyIPClient;bindcompvcl;TeeUI;JvPascalInterpreter;dbxcds;VclSmp;JvDocking;adortl;FireDACODBCDriver;JclVcl;DataSnapIndy10ServerTransport;dsnapxml;DataSnapProviderClient;dbrtl;inetdbxpress;FireDACMongoDBDriver;IndyProtocols;JvControls;JvPrintPreview;JclContainers;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
@@ -84,7 +84,7 @@
         <Icon_MainIcon>NewBrain_Icon.ico</Icon_MainIcon>
         <Debugger_DebugSourcePath>G:\_Programming\NB Emulator\Emulation\Z80Package\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
         <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
-        <DCC_ExeOutput>C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Projects\NewMachine\Runtime\</DCC_ExeOutput>
+        <DCC_ExeOutput>G:\_Programming\NewMachine\Runtime\</DCC_ExeOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -227,10 +227,10 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k270.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp270.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k270.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp270.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k270.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp270.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
                 <Source>
                     <Source Name="MainSource">NewBrain.dpr</Source>
