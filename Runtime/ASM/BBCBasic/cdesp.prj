@@ -3,6 +3,5 @@ main.z80
 exec.z80
 eval.z80
 fpp.z80
-sorry.z80
 patch.z80
 ram.z80

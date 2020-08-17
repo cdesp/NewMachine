@@ -8,13 +8,21 @@
 
     ORG 0x4000 
     
-    ;global vars
-    COUNT EQU  0x62FB       ;PRINT POSITION
+    ;global vars FROM BBC BASIC
     ACCS   EQU 0x6000       ;STRING INPUT BUFFER
-    BUFFER EQU 0x6100       ;STRING INPUT BUFFER
-    OSVARS EQU 0x6301       ;OS VARIABLES IN RAM
+    ESCAPE EQU 0x0DE4       ;ESCAPE ROUTINE ON BBC BASIC
+    CRLF   EQU 0x088F       ;CRLF ROUTINE ON BBC BASIC
+    EXTERR EQU 0x0712       ;EXTERR ROUTINE ON BBC BASIC
+    OSVARS EQU 0x6300       ;OS VARIABLES IN RAM
+    CR  	 EQU 0DH
+    LF		 EQU 0AH
+    ES		 EQU 1BH    
     
     ;LOCAL CONSTS
+    PORT_STM_IO 		EQU	0x00			; The IO port for serial terminal IO
+    PORT_STM_FLAGS		EQU	0x07			; Flags		
+    
+    
     LCD_RS EQU 04;  ;PORT TO CONTROL RS PIN
     LCD_CS EQU 05;  ;PORT TO CONTROL CS PIN
     LCD_WIDTH  EQU 799
@@ -24,7 +32,290 @@
    
     
     
+      JP MYOS_CLRSCN
+      JP MYOS_PUTIME
+      JP MYOS_GETIME
+      JP MYOS_PUTCSR
+      JP MYOS_GETCSR
+      JP MYOS_OSRDCH
+      JP MYOS_PROMPT
+      JP MYOS_OSWRCH
+      JP MYOS_OSKEY
+      JP MYOS_OSINIT
+      JP MYOS_OSLINE
+      JP MYOS_OSCLI
+      JP MYOS_OSBPUT 
+      JP MYOS_OSBGET 
+      JP MYOS_OSSTAT 
+      JP MYOS_OSSHUT 
+      JP MYOS_OSOPEN 
+      JP MYOS_OSCALL 
+      JP MYOS_OSSAVE 
+      JP MYOS_OSLOAD 
+      JP MYOS_GETPTR 
+      JP MYOS_PUTPTR 
+      JP MYOS_GETEXT 
+      JP MYOS_RESET 
+      JP MYOS_TRAP
+      JP MYOS_LTRAP  
+      JP MYOS_CLG
+      JP MYOS_COLOUR
+      JP MYOS_DRAW
+      JP MYOS_ENVEL
+      JP MYOS_GCOL
+      JP MYOS_MODE
+      JP MYOS_MOVE
+      JP MYOS_PLOT
+      JP MYOS_SOUND
+      JP MYOS_ADVAL
+      JP MYOS_POINT
+      JP MYOS_GETIMS
+      JP MYOS_PUTIMS    
+      
+
+      
+      
 TEST: JP LCD_TEST    
+    
+MYOS_CLRSCN:        ; CLRSCN: clears the screen.
+           RET
+MYOS_PUTIME:        ; PUTIME: set current time to DE:HL, in centiseconds.
+		       RET
+MYOS_GETIME:        ; GETIME: return current time in DE:HL, in centiseconds.
+       		 LD DE, 0
+ 	  		   LD HL, 0
+			     RET		       
+MYOS_PUTCSR:		    ; PUTCSR: move to cursor to x=DE, y=HL
+           RET
+MYOS_GETCSR:		    ; GETCSR: return cursor position in x=DE, y=HL
+           LD DE,0
+			     LD HL,0
+			     RET
+MYOS_OSRDCH:        ; OSRDCH: read a character in from the keyboard	
+           IN A,(PORT_STM_IO)
+			     RET		
+MYOS_PROMPT: 	      ; PROMPT: output the input prompt	
+           LD A,'>'			     
+MYOS_OSWRCH:		    ; OSWRCH: write a character out to the serial port
+           OUT (0),A  
+           PUSH AF
+           PUSH BC
+           PUSH DE
+					 PUSH HL
+           CALL LCD_PRINTCHAR
+           POP HL
+           POP DE
+           POP BC
+           POP AF
+			     RET 
+;OSKEY - Read key with time-limit, test for ESCape.
+;Main function is carried out in user patch.
+;   Inputs: HL = time limit (centiseconds)
+;  Outputs: Carry reset if time-out
+;           If carry set A = character
+; Destroys: A,H,L,F
+;
+MYOS_OSKEY:			
+            DEC HL 
+			      LD A,H
+			      OR L
+			      RET Z 
+			      IN A,(PORT_STM_IO)
+			      JR Z,MYOS_OSKEY
+			      CP 0x1B			; ESC
+			      SCF 
+			      RET NZ
+ESCSET: 		PUSH    HL
+        		LD      HL,FLAGS
+        		BIT     6,(HL)          ; ESC DISABLED?
+        		JR      NZ,ESCDIS
+        		SET     7,(HL)          ; SET ESCAPE FLAG
+ESCDIS: 		POP     HL
+        		RET	
+ESCTEST:		IN A,(PORT_STM_IO)
+		      	OR A
+		      	RET Z
+		      	CP 0x1B			; ESC	
+	      		JR Z,ESCSET
+	       		RET
+
+MYOS_TRAP:			CALL ESCTEST
+MYOS_LTRAP:			LD A,(FLAGS)
+			          OR A
+		           	RET P
+	          		LD HL,FLAGS 
+		          	RES 7,(HL)
+		          	JP ESCAPE          
+;OSINIT - Initialise RAM mapping etc.
+;   Outputs: DE = initial value of HIMEM (top of RAM)
+;            HL = initial value of PAGE (user program)
+;            Z-flag reset indicates AUTO-RUN.
+;  Destroys: A,D,E,H,L,F
+;
+MYOS_OSINIT: 		
+            XOR A
+         		LD DE,0xFFFF		;DE = HIMEM
+         		LD E,A             	;PAGE BOUNDARY
+         		LD HL,@USER
+         		RET	
+;
+;OSLINE - Read/edit a complete line, terminated by CR.
+;   Inputs: HL addresses destination buffer.
+;           (L=0)
+;  Outputs: Buffer filled, terminated by CR.
+;           A=0.
+; Destroys: A,B,C,D,E,H,L,F
+;
+MYOS_OSLINE:	
+             CALL READ_CHAR
+			       JR Z,MYOS_OSLINE
+			       OR A 
+			       JR Z,MYOS_OSLINE 
+			       LD (HL),A
+			       INC HL
+			       CP 0x0D
+			       JR Z,L1 
+			       CALL MYOS_OSWRCH
+			       JR MYOS_OSLINE 
+L1:    			 CALL @CRLF
+			       AND A
+			       RET 
+      
+;
+;OSCLI - Process an "operating system" command
+;
+MYOS_OSCLI: 
+      CALL    SKIPSP
+			CP      CR
+			RET     Z
+			CP      '|'
+			RET     Z
+			CP      '.'
+			JP      Z,DOT           ;*.
+			EX      DE,HL
+			LD      HL,COMDS
+OSCLI0:			LD      A,(DE)
+			CALL    UPPRC
+			CP      (HL)
+			JR      Z,OSCLI2
+			JR      C,HUH
+OSCLI1:			BIT     7,(HL)
+			INC     HL
+			JR      Z,OSCLI1
+			INC     HL
+			INC     HL
+			JR      OSCLI0
+;
+OSCLI2:			PUSH    DE
+OSCLI3:			INC     DE
+			INC     HL
+			LD      A,(DE)
+			CALL    UPPRC
+			CP      '.'             ;ABBREVIATED?
+			JR      Z,OSCLI4
+			XOR     (HL)
+			JR      Z,OSCLI3
+			CP      80H
+			JR      Z,OSCLI4
+			POP     DE
+			JR      OSCLI1
+;
+OSCLI4:			POP     AF
+		        INC     DE
+OSCLI5:			BIT     7,(HL)
+			INC     HL
+			JR      Z,OSCLI5
+			LD      A,(HL)
+			INC     HL
+			LD      H,(HL)
+			LD      L,A
+			PUSH    HL
+			EX      DE,HL
+			JP      SKIPSP
+
+HUH:    		LD      A,254
+        		CALL    EXTERR
+        		DEFM    'Bad command'
+        		DEFB    0			
+
+SKIPSP:			LD      A,(HL)
+        		CP      ' '
+        		RET     NZ
+        		INC     HL
+        		JR      SKIPSP	
+
+UPPRC:  		AND     7FH
+			CP      '`'
+			RET     C
+			AND     5FH             ;CONVERT TO UPPER CASE
+			RET					
+
+; OSCLI - *.
+DOT:			RET
+
+; OSCLI - *BYE
+;
+BYE:			JP 0
+
+COMDS:  		DEFM    'BY'
+			DEFB    'E'+80H
+			DEFW    BYE
+			DEFB	0FFH
+  
+MYOS_OSBPUT 
+MYOS_OSBGET 
+MYOS_OSSTAT 
+MYOS_OSSHUT 
+MYOS_OSOPEN 
+MYOS_OSCALL 
+MYOS_OSSAVE 
+MYOS_OSLOAD 
+MYOS_GETPTR 
+MYOS_PUTPTR 
+MYOS_GETEXT 
+MYOS_RESET: 
+            RET
+            
+MYOS_CLG:
+MYOS_COLOUR:
+MYOS_DRAW:
+MYOS_ENVEL:
+MYOS_GCOL:
+MYOS_MODE:
+MYOS_MOVE:
+MYOS_PLOT:
+MYOS_SOUND:
+MYOS_ADVAL:
+MYOS_POINT:
+MYOS_GETIMS:
+MYOS_PUTIMS:
+			XOR     A
+			CALL    EXTERR
+			DEFM    'Sorry'
+			DEFB    0            
+      
+      
+; Print a single character
+; A: ASCII character
+;
+Print_Char:		OUT (PORT_STM_IO),A 
+				CALL LCD_PRINTCHAR
+			RET 
+
+; Read a character - waits for input
+; A: ASCII character
+;
+Read_Char:		IN A,(PORT_STM_FLAGS)
+			AND 0x01
+			JR Z,Read_Char
+Read_Char_NB:		IN A,(PORT_STM_IO)
+			RET       
+      
+
+      
+      
+      
+;=======================               
     
 DELAY:    ;TODO CHANGE THIS TO BE ACCURATE  
       SLA C
@@ -668,11 +959,6 @@ DLEXIT:
       LD SP,HL           
       RET          
 
-      ; 4 BYTES SO LCD_PRINTSCREEN IS ON 4490
-			NOP
-			NOP
-			NOP
-			NOP
 
 LCD_PRINTCHAR:
       ;A THE CHAR TO BE PRINTED ON CURSORX AND CURSORY
@@ -873,12 +1159,13 @@ LCD_TEST:  ; TEST LCD
     @FONT_ADDR EQU $   ; ON A PAGE BOUNDARY
 
 
-  ORG OSVARS  ; RAM PARAMETERS
+  ORG OSVARS  ; 
+    FLAGS		 DEFS	1		; Flags: B7=ESC PRESSED, B6=ESC DISABLED
     FCOLOR   DEFW 0X5555 ;FOREGROUND COLOR
     BCOLOR   DEFW 0XAAAA ;BACKGROUND COLOR
     CURSORX  DEFB 0    ;0-79
     CURSORY  DEFB 0    ;0-47
     LASTCHAR DEFB 0; 
-    
+    USER	 	 EQU $
     
     ENDMODULE

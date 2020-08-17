@@ -439,7 +439,7 @@ Begin
   end
   else
   Begin
-    nbscreen.PaintLetter(posx,posy,byte(s[1]));
+   // nbscreen.PaintLetter(posx,posy,byte(s[1]));
     inc(posx);
     if posx>99 then       //100 chars horizontally
     Begin

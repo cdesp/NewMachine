@@ -227,7 +227,7 @@ begin
   For i:=1 to 10 do
    CreatePage(i); // Exp ram 96k
 
-  LoadRom(20,'build4.bin');  //BBC BASIC + OS MAIN INTERFACE COMMANDS
+  LoadRom(20,'build6.bin');  //BBC BASIC + OS MAIN INTERFACE COMMANDS
   LoadRom(30,'OSMAIN.bin');  //OS MAIN COMMANDS
 
 
@@ -258,7 +258,7 @@ begin
  // nbmem.SetRomForce(hextoint('B323'),Hextoint('05'));
 
   //LOAD CHARSET TO MEMORY
-  move:=$4600; //17920
+  move:=$4800; //17920
   for i := 0 to 2560 do
   Begin
     nbmem.SetRomForce(i+move,CharArr[i]);
@@ -271,7 +271,7 @@ begin
   nbmem.SetRomForce($6303,$00);    //BACKCOLOR
   nbmem.SetRomForce($6304,$00);
   nbmem.SetRomForce($6305,00);  //CURSOR X
-  nbmem.SetRomForce($6306,10);  //CURSOR Y
+  nbmem.SetRomForce($6306,00);  //CURSOR Y
   fnewbrain.WithExpansion1.checked:=false;
   PageEnabled:=false;
 end;

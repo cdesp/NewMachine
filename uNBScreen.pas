@@ -535,7 +535,7 @@ var x,y,nender:Integer;
      Fnewbrain.ClientWidth:=2*(fnewbrain.newscr.Left-fnewbrain.Panel6.Left)+ VideoW +200   ;//+ScreenXOffset*2;
      FormOffst:= fnewbrain.panel1.Height+fnewbrain.panel2.Height+fnewbrain.StatusBar1.Height;  //48;// = led+Statusbar+4 bytes =25+19+4
      EMUScrheight:=520; //should never change cause in 8x8 we show 30 lines not 25
-     fnewbrain.clientheight:=2*(fnewbrain.newscr.top)+FormOffst+VideoH+265;//+ScreenYOffset*2;//4 bytes around the real screen
+     fnewbrain.clientheight:=2*(fnewbrain.newscr.top)+FormOffst+VideoH+100;//+ScreenYOffset*2;//4 bytes around the real screen
     End;
 
 
