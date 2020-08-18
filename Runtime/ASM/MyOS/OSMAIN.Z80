@@ -10,17 +10,23 @@
     
     ;global vars FROM BBC BASIC
     ACCS   EQU 0x6000       ;STRING INPUT BUFFER
+    RANDOM EQU ACCS+0x2F6   ;RANDOM SEED MUST BE NON ZERO 5 BYTES
+    TOP    EQU ACCS+0x2DE   ;START OF BASIC PROGRAM
+    PAGE   EQU ACCS+0x2DC   ;END OF BASIC PROGRAM
+    OSVARS EQU 0x6300       ;OS VARIABLES IN RAM
     ESCAPE EQU 0x0DE4       ;ESCAPE ROUTINE ON BBC BASIC
     CRLF   EQU 0x088F       ;CRLF ROUTINE ON BBC BASIC
     EXTERR EQU 0x0712       ;EXTERR ROUTINE ON BBC BASIC
-    OSVARS EQU 0x6300       ;OS VARIABLES IN RAM
     CR  	 EQU 0DH
     LF		 EQU 0AH
     ES		 EQU 1BH    
     
     ;LOCAL CONSTS
     PORT_STM_IO 		EQU	0x00			; The IO port for serial terminal IO
-    PORT_STM_FLAGS		EQU	0x07			; Flags		
+    PORT_STM_FLAGS	EQU	0x07			; Flags		
+    PORT_TAPE       EQU 0X20      ; SAVE/LOAD PORT 1 BYTE=0xDD 2ND BYTE=COMMAND 
+    COMMD_SAVE      EQU 10
+    COMMD_LOAD      EQU 20;
     
     
     LCD_RS EQU 04;  ;PORT TO CONTROL RS PIN
@@ -153,10 +159,15 @@ MYOS_LTRAP:			LD A,(FLAGS)
 ;  Destroys: A,D,E,H,L,F
 ;
 MYOS_OSINIT: 		
+            LD HL,RANDOM
+            LD A,0x06
+            LD (HL),A
+            LD A,0xBB
+            LD (HL),A
             XOR A
          		LD DE,0xFFFF		;DE = HIMEM
          		LD E,A             	;PAGE BOUNDARY
-         		LD HL,@USER
+         		LD HL,@USER         		
          		RET	
 ;
 ;OSLINE - Read/edit a complete line, terminated by CR.
@@ -262,17 +273,89 @@ COMDS:  		DEFM    'BY'
 			DEFW    BYE
 			DEFB	0FFH
   
-MYOS_OSBPUT 
-MYOS_OSBGET 
-MYOS_OSSTAT 
-MYOS_OSSHUT 
-MYOS_OSOPEN 
-MYOS_OSCALL 
-MYOS_OSSAVE 
-MYOS_OSLOAD 
-MYOS_GETPTR 
-MYOS_PUTPTR 
-MYOS_GETEXT 
+MYOS_OSSAVE:
+            ;bc = length of program
+            ;hl = ACCS =FILENAME ENDS WITH 0X0D
+            ;TOP = CONTAINS START OF BASIC PROGRAM LD HL,(TOP)
+            ;OUT SAVE COMMAND (TWO BYTES)            
+            ;OUT THE FILENAME 0X0D TERMINATED
+            ;OUT THE LENGTH (TWO BYTES)            
+            ;OUT THE BYTES
+            ;COMMAND
+            LD A,0xDD
+            OUT (PORT_TAPE),A
+            LD A,COMMD_SAVE
+            OUT (PORT_TAPE),A
+            ;FILENAME
+OSSV_NXT:   LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            CP 0x0D
+            JR NZ,OSSV_NXT
+            ;LENGTH
+            LD A,C
+            OUT (PORT_TAPE),A
+            LD A,B
+            OUT (PORT_TAPE),A
+            ;BYTES
+            LD HL,(PAGE)
+OSSV_NXT2:  LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            DEC BC
+            LD A,B
+            OR C
+            JR NZ,OSSV_NXT2                        
+            RET              
+MYOS_OSLOAD:
+            ;OUT LOAD COMMAND (TWO BYTES)
+            ;OUT THE FILENAME 0X0D TERMINATED
+            ;IN THE LENGTH (TWO BYTES)
+            ;IN THE BYTES 
+            LD A,0xDD
+            OUT (PORT_TAPE),A
+            LD A,COMMD_LOAD
+            OUT (PORT_TAPE),A
+            ;FILENAME
+OSLD_NXT:   LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            CP 0x0D
+            JR NZ,OSLD_NXT
+            ;LENGTH READ
+            IN A,(PORT_TAPE)
+            LD C,A
+            IN A,(PORT_TAPE)
+            LD B,A
+            ;BYTES
+            LD HL,(PAGE)                        
+OSLD_NXT2:  IN A,(PORT_TAPE)
+            LD (HL),A
+            INC HL
+            DEC BC
+            LD A,B
+            OR C
+            JR NZ,OSLD_NXT2                        
+            LD B,H
+            LD C,L
+            LD HL,TOP ;SAVE TOP OF BASIC 
+            LD (HL),C
+            INC HL
+            LD (HL),B            
+            SCF       ;SET C = NO ERROR            
+            RET   
+            
+  
+  
+MYOS_OSBPUT:
+MYOS_OSBGET: 
+MYOS_OSSTAT: 
+MYOS_OSSHUT: 
+MYOS_OSOPEN: 
+MYOS_OSCALL:   
+MYOS_GETPTR: 
+MYOS_PUTPTR: 
+MYOS_GETEXT: 
 MYOS_RESET: 
             RET
             

@@ -38,11 +38,19 @@ uses upccomms,classes,graphics;
 {$i 'dsp.inc'}
 
 type
+
+  TSvLdStat=(SVNONE,COMMD,FNAME,BTLEN,BYTES);
+
   TNBInOutSupport=Class
   private
 
     LastDevice: TPCPort;
-
+    SvLdstat:TSvLdStat;
+    SvLdCommd:Byte;
+    SvLdFname:String;
+    SvLdLen:Integer;
+    SvLdFile:TFileStream;
+    SvLdInLenHI:boolean;
 
     procedure DoPort0Out(Value: Byte);
     procedure getregisters;
@@ -52,6 +60,8 @@ type
 
     procedure DoPort5Out(Value: Byte);
     procedure DoLastCommand;
+    function DoPort32In(Value: Byte): Byte;
+    procedure DoPort32Out(Value: Byte);
 
 
 
@@ -70,6 +80,12 @@ type
   End;
 
 
+CONST
+    BASICPATH='.\BASIC\';
+    COMMD_SAVE=10;
+    COMMD_LOAD=20;
+
+
 Var
 
        NBIO:TNBInOutSupport=nil;
@@ -84,7 +100,12 @@ begin
      inherited;
 
      KeyPressed:=$80;
-    
+     SvLdstat:=SVNONE;
+     SvLdCommd:=0;
+     SvLdFname:='';
+     SvLdLen:=-1;
+     SvLdFile:=nil;
+     SvLdInLenHI:=false;
 end;
 
 
@@ -123,6 +144,7 @@ begin
    case port of
       0: Result:=DoPort0In(Value);
       7: Result:=DoPort7In(Value);
+     32: Result:=DoPort32In(Value);
    end;
 
 end;
@@ -133,10 +155,96 @@ begin
       0: DoPort0Out(Value);
       4: DoPort4Out(Value);
       5: DoPort5Out(Value);
+     32: DoPort32Out(Value);
    end;
 end;
 
 
+
+function TNBInOutSupport.DoPort32In(Value: Byte): Byte;
+var btread:Integer;
+Begin
+   case SvLdstat of
+     BTLEN:Begin
+             if SvLdFile=nil then
+             Begin
+              try
+               SvLdFile:=TFileStream.Create(BASICPATH+SvLdFname,fmOpenRead);
+              except
+                //todo:return an error filename not found
+              end;
+             End;
+             if svldinlenHI then
+             begin
+                result:=(SvLdFile.Size shr 8) and $FF;
+                SvLdstat:=BYTES;
+             end
+             else
+             Begin
+                result:=SvLdFile.Size and $FF;
+                SvLdInLenHI:=true;
+             End;
+           End;
+     BYTES:Begin
+             if SvLdFile=nil then
+             begin
+               //todo:send an error
+               result:=0;
+               exit;
+             end;
+             btread:=SvLdFile.read(result,1);
+             if (btread=0) or (SvLdFile.Position=SvLdFile.Size) then
+             begin
+               freeandnil(SvLdFile);
+               SvLdLen:=-1;
+               SvLdInLenHI:=false;
+               SvLdstat:=SVNONE;
+               SvLdFname:='';
+             end;
+           End;
+   end;
+
+End;
+
+procedure TNBInOutSupport.DoPort32Out(Value:Byte);
+Begin
+   case SvLdstat of
+     SVNONE:if value=$DD then
+             SvLdstat:=COMMD
+            else
+             SvLdstat:=SVNONE;//should never come here
+     COMMD:Begin
+             SvLdstat:=FNAME;
+             SvLdCommd:=Value;
+           End;
+     FNAME:if value<>$0D then
+            SvLdFname:=SvLdFname+chr(Value)
+           else
+            SvLdstat:=BTLEN;
+     BTLEN:if SvLdLen=-1 then
+               SvLdLen:=Value
+           else
+           Begin
+               SvLdLen:= SvLdLen+Value shl 8;
+               SvLdstat:=BYTES;
+           End;
+     BYTES:Begin
+             if SvLdFile=nil then
+             Begin
+               SvLdFile:=TFileStream.Create(BASICPATH+SvLdFname,fmCreate or fmOpenWrite);
+             End;
+             SvLdFile.Write(value,1);
+             if SvLdFile.Size=SvLdLen then
+             begin
+               freeandnil(SvLdFile);
+               SvLdLen:=-1;
+               SvLdstat:=SVNONE;
+               SvLdFname:='';
+             end;
+           End;
+   end;
+
+End;
 
 procedure TNBInOutSupport.DoPort0Out(Value:Byte);
 Begin

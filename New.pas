@@ -790,7 +790,7 @@ begin
       55:result:=38;    //&
       56:result:=42;   //*
       57:result:=40;    //(
-      58:result:=41;    //)
+      48:result:=41;    //)
 
       186:result:=58; // :
       107,187:result:=43; //+

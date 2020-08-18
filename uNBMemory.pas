@@ -272,6 +272,8 @@ begin
   nbmem.SetRomForce($6304,$00);
   nbmem.SetRomForce($6305,00);  //CURSOR X
   nbmem.SetRomForce($6306,00);  //CURSOR Y
+
+
   fnewbrain.WithExpansion1.checked:=false;
   PageEnabled:=false;
 end;

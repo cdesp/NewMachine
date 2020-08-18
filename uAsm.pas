@@ -1122,23 +1122,30 @@ end;
 Function TCompiledList.GetValidLabel(p: PCmpInst;Var Lbl:String):Boolean;
 Var p1,p2:String;
     l1,l2:String;
+    negix:boolean;
 Begin
       l1:=p.Label1Exp;
       l2:=p.Label2Exp;
 
       if ContainsIXIY(l1,p1,p2)  then
       Begin
+        negix:=pos('-',l1)>0;
         if p2<>'' then
           l1:=p2
         Else
           l1:=p1;
+        if negix then //it is ix-n
+         l1:='-'+l1;
       End;
       if ContainsIXIY(l2,p1,p2) then
       Begin
+        negix:=pos('-',l2)>0;
         if p2<>'' then
           l2:=p2
         Else
           l2:=p1;
+        if negix then //it is ix-n
+         l2:='-'+l2;
       End;
       Lbl:=l1;//Default;
       if IsRegister(l1) and Not IsRegister(l2) then
