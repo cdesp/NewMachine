@@ -52,7 +52,7 @@
       JP MYOS_OSWRCH
       JP MYOS_OSKEY
       JP MYOS_OSINIT
-      JP MYOS_OSLINE2
+      JP MYOS_OSLINE
       JP MYOS_OSCLI
       JP MYOS_OSBPUT 
       JP MYOS_OSBGET 
@@ -144,9 +144,19 @@ WRCH:      LD A,E
            PUSH BC
            PUSH DE
 					 PUSH HL
-					 ;CALL LCD_REMOVECURSOR
+					 
+           PUSH AF
+           PUSH BC
+           PUSH DE
+					 PUSH HL
+					 CALL LCD_RMVCURS
+           POP HL
+           POP DE
+           POP BC
+           POP AF
            CALL LCD_PRINTCHAR
-          ; CALL LCD_PRINTCURSOR
+           CALL LCD_PRNCURS
+           
            POP HL
            POP DE
            POP BC
@@ -220,28 +230,6 @@ MYOS_OSINIT:
          		LD E,A             	;PAGE BOUNDARY
          		LD HL,@USER         		
          		RET	
-;
-;OSLINE - Read/edit a complete line, terminated by CR.
-;   Inputs: HL addresses destination buffer.
-;           (L=0)
-;  Outputs: Buffer filled, terminated by CR.
-;           A=0.
-; Destroys: A,B,C,D,E,H,L,F
-;
-MYOS_OSLINE:	
-             CALL GETKEY
-			       JR Z,MYOS_OSLINE
-			       OR A 
-			       JR Z,MYOS_OSLINE 
-			       LD (HL),A
-			       INC HL
-			       CP 0x0D
-			       JR Z,OSL_L1 
-			       CALL MYOS_OSWRCH
-			       JR MYOS_OSLINE 
-OSL_L1:			 CALL @CRLF
-			       AND A
-			       RET 
       
 ;
 ;OSCLI - Process an "operating system" command
@@ -1092,6 +1080,8 @@ DLEXIT:
       RET          
 
 
+
+
 LCD_PRINTCHAR:
       ;A THE CHAR TO BE PRINTED ON CURSORX AND CURSORY
       ;SETXY(CURSORX*FONT_WIDTH,CURSORY*FONT_HEIGHT,(CURSORX+1)*FONT_WIDTH,(CURSORY+1)*FONT_HEIGHT)
@@ -1193,7 +1183,7 @@ PRCH_AGN2B:
       LD C,FONT_HEIGHT   ; TOTAL FONT LINES
 PRCH_AGN3:      
       LD A,(DE)           ;FONT 8BIT PATTERN FOR A LINE
-      LD B,FONT_WIDTH-1      
+      LD B,FONT_WIDTH      
 PRCH_AGN4:      
       SLA A               ;CHECK BIT FOR 1=FCOLOR OR 0=BCOLOR
       JR C,FORECOLOR
@@ -1231,7 +1221,6 @@ PRCH_NEWLN:
              
           
       RET
-
 
 LCD_TEST:  ; TEST LCD
     LD A,65
@@ -1292,9 +1281,82 @@ LCD_TEST:  ; TEST LCD
     ADD HL,SP
     LD SP,HL    
     RET
+;
+LCD_RMVCURS:
+      ;REMOVES THE CURSOR FROM PREVIOUS POSITION
+   ;   LD A,(CURSORX)
+   ;   LD H,A
+   ;   LD A,(CURSORY)
+   ;   LD L,A
+   ;   PUSH HL             ;SAVE CURSOR
+   ;   LD A,(PRECSRX)     ;REPLACE CURSX AND Y WITH THE PREVIOUS ONES
+   ;   LD (CURSORX),A
+   ;   LD A,(PRECSRY)
+   ;   LD (CURSORY),A
+      LD HL,(BCOLOR);      
+      JR LCD_SETCURS
+   ;   POP HL              ;LOAD CURSOR
+   ;   LD A,H
+   ;   LD (CURSORX),A
+   ;   LD A,L
+   ;   LD (CURSORY),A
+    ;  RET
+      
 
+LCD_PRNCURS:     
+      ;ADD A CURSOR ON NEW POSITION
+      LD HL,(FCOLOR)      ;COLOR PARAM      
+      
+LCD_SETCURS:
+      PUSH HL             ;COLOR PARAM
+      LD A,(CURSORX)
+      LD B,FONT_WIDTH
+      LD D,0
+      LD E,A
+      LD HL,0
+      OR A                ;CLEAR CARRY
+SCUR_AGN1:
+      ADC HL,DE
+      DJNZ SCUR_AGN1      ;HL = DE * B 
+      PUSH HL             ;1ST PARAM X1
+      LD BC,FONT_WIDTH
+      ADC HL,BC           ;NEXT CHAR
+      DEC HL              ;MINUS 1
+      PUSH HL             ;SAVE 3RD PARAM X2      
+      LD A,(CURSORY)      
+      LD B,FONT_HEIGHT 
+      LD D,0
+      LD E,A
+      LD HL,0
+SCUR_AGN2:
+      ADC HL,DE
+      DJNZ SCUR_AGN2      ;HL=B*DE
+      LD C,FONT_HEIGHT-2  ;2 PIXEL HEIGTH CURSOR       
+      LD B,0
+      ADC HL,BC           ;ADD FONT_HEIGHT-2 PIXELS
+      POP DE              ;RETREIVE 3RD PARAM ON DE
+      PUSH HL             ;2ND PARAM Y1
+      PUSH DE             ;3RD PARAM X2
+      ;INC HL
+      INC HL              ; Y2 ADD THE LAST +2 PIXELS  
+      PUSH HL             ;4TH PARAM Y2
+      CALL LCD_SETXY
+      LD HL,8
+      ADD HL,SP
+      LD SP,HL            ;SKIP 4 PARAMS 8 BYTES            
+      ;SEND THE PIXELS = 2*FONT_WIDTH   
+      POP HL              ;GET THE COLOR
+      LD B,2*FONT_WIDTH   ;2*8=16
+SCUR_AGN3:
+      CALL LCD_SETPIXEL   ;DESTROYS D,A
+      DJNZ SCUR_AGN3                            
+      LD A,(CURSORX)
+      LD (PRECSRX),A      ; SAVE CURSOR TO PREVIOUSX
+      LD A,(CURSORY)
+      LD (PRECSRY),A      ; SAVE CURSOR TO PREVIOUSX      
+      RET
 
-
+			
 ;
 ;OSLINE - Read/edit a complete line, terminated by CR.
 ;   Inputs: HL addresses destination buffer.
@@ -1303,7 +1365,7 @@ LCD_TEST:  ; TEST LCD
 ;           A=0.
 ; Destroys: A,B,C,D,E,H,L,F
 ;
-MYOS_OSLINE2: ;LD      IX,200H
+MYOS_OSLINE: 
         LD      A,(FLAGS)
         BIT     3,A             ;EDIT MODE?
         JR      Z,OSLIN1
@@ -1483,6 +1545,9 @@ STOP:   LD      C,0             ;STOP REPEAT
 ;
 EDITST: DEFM    'EDIT'
 LISTST: DEFM    'LIST'
+
+
+
 
 
     ALIGN 256

@@ -352,7 +352,7 @@ procedure TNBInOutSupport.DoLastCommand;
                        Ky:=setY1;
 
 
-                       BytesExpected:=(abs(setX2-setX1)+1)*(abs(setY2-setY1)+1)-1;
+                       BytesExpected:=(abs(setX2-setX1)+1)*(abs(setY2-setY1)+1);
                      End;
            SETXY:Begin
                    if di=2 then //exit;  //2 bytes for each color
@@ -369,7 +369,7 @@ procedure TNBInOutSupport.DoLastCommand;
 
                    END;
                     inc(Kx);  dec(BytesExpected);
-                    if Kx>=setX2 then
+                    if Kx>setX2 then   //WAS >=
                     Begin
                       Kx:=setX1;
                       inc(Ky);
