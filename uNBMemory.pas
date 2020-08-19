@@ -258,7 +258,7 @@ begin
  // nbmem.SetRomForce(hextoint('B323'),Hextoint('05'));
 
   //LOAD CHARSET TO MEMORY
-  move:=$4800; //17920
+  move:=$4900;  //18944
   for i := 0 to 2560 do
   Begin
     nbmem.SetRomForce(i+move,CharArr[i]);

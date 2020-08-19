@@ -802,6 +802,8 @@ begin
       219:result:=123; //{
       221:result:=125; //}
       222:result:=34;
+      39:result:=7;//->
+      37:result:=5;//<-
 
      else result:=key;
    end;
@@ -824,10 +826,15 @@ begin
       221:result:=93; //]
       222:result:=96; //'
       65..90:result:=key+32;
-      39:result:=9;//->
-      37:result:=8;//<-
+      39:result:=3;//->
+      37:result:=4;//<-
       38:result:=11;//pano
       40:result:=10;//kato
+      36:result:=9;//home
+      46:result:=2;//del
+      8: result:=6;//backspase
+      45:result:=1;//insert
+
 
      else result:=key;
    end;
@@ -856,9 +863,7 @@ begin
     inc(nbdel);
     Exit;
   End;
-  shft:=Shift;
-  mykey:=translatekey(key);
-  ODS('KEY='+inttostr(key)+' NEW='+inttostr(mykey));
+ 
  // nbkeyboard.PCKeyUp(Key,Shift);
 end;
 
@@ -1008,7 +1013,7 @@ Var Pretick:Cardinal=0;
     CkTm:Cardinal=0;
     cpcnt,ckcnt:integer;
     emudel:Integer=1;
-    CPUStates:longint=4000000;
+    CPUStates:longint=20000000; //4mhZ
 
 
 var copcnt:cardinal=0;
@@ -1226,7 +1231,11 @@ begin
     ashift:=ashift+[ssCtrl];
    if getasynckeystate(VK_RControl)<>0 then
     ashift:=ashift+[ssAlt];
-   nbKeyboard.PCKeyDown(Key,AShift);
+
+   //nbKeyboard.PCKeyDown(Key,AShift);
+    shft:=Shift;
+    mykey:=translatekey(key);
+    ODS('KEY='+inttostr(key)+' NEW='+inttostr(mykey));
 end;
 
 Function ReverseBits(b1:Byte):Byte;

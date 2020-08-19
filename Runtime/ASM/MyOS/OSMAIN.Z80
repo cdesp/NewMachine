@@ -10,6 +10,7 @@
     
     ;global vars FROM BBC BASIC
     ACCS   EQU 0x6000       ;STRING INPUT BUFFER
+    ERRLIN EQU ACCS+0x2F4   ;
     RANDOM EQU ACCS+0x2F6   ;RANDOM SEED MUST BE NON ZERO 5 BYTES
     TOP    EQU ACCS+0x2DE   ;START OF BASIC PROGRAM
     PAGE   EQU ACCS+0x2DC   ;END OF BASIC PROGRAM
@@ -17,9 +18,12 @@
     ESCAPE EQU 0x0DE4       ;ESCAPE ROUTINE ON BBC BASIC
     CRLF   EQU 0x088F       ;CRLF ROUTINE ON BBC BASIC
     EXTERR EQU 0x0712       ;EXTERR ROUTINE ON BBC BASIC
+    
     CR  	 EQU 0DH
     LF		 EQU 0AH
     ES		 EQU 1BH    
+    BS     EQU 08H
+    ESC    EQU 1BH
     
     ;LOCAL CONSTS
     PORT_STM_IO 		EQU	0x00			; The IO port for serial terminal IO
@@ -48,7 +52,7 @@
       JP MYOS_OSWRCH
       JP MYOS_OSKEY
       JP MYOS_OSINIT
-      JP MYOS_OSLINE
+      JP MYOS_OSLINE2
       JP MYOS_OSCLI
       JP MYOS_OSBPUT 
       JP MYOS_OSBGET 
@@ -97,23 +101,63 @@ MYOS_GETCSR:		    ; GETCSR: return cursor position in x=DE, y=HL
            LD DE,0
 			     LD HL,0
 			     RET
+KEYGET:		LD      B,80 ;SCREEN WIDTH IN CHARS	     
 MYOS_OSRDCH:        ; OSRDCH: read a character in from the keyboard	
-           IN A,(PORT_STM_IO)
+           ;IN A,(PORT_STM_IO)
+        	 PUSH    HL
+           SBC     HL,HL           ;HL=0
+           CALL    MYOS_OSKEY
+           POP     HL
+           RET     C
+           JR      MYOS_OSRDCH           
 			     RET		
+MYOS_OSWRCH:		    ; OSWRCH: write a character to the screen            
+			     PUSH    AF
+           PUSH    DE
+           PUSH    HL
+           LD      E,A
+           CALL    ESCTEST
+           CALL    EDPUT
+           POP     HL
+           POP     DE
+           POP     AF
+           RET
+;
+EDPUT:  LD      A,(FLAGS)
+        BIT     3,A
+        JR      Z,WRCH
+        LD      A,E
+        CP      ' '
+        RET     C
+        LD      HL,(EDPTR)
+        LD      (HL),E
+        INC     L
+        RET     Z
+        LD      (EDPTR),HL
+        RET           
+           
 MYOS_PROMPT: 	      ; PROMPT: output the input prompt	
-           LD A,'>'			     
-MYOS_OSWRCH:		    ; OSWRCH: write a character out to the serial port
-           OUT (0),A  
+           LD E,'>'			     
+WRCH:      LD A,E
+           OUT (0),A      
            PUSH AF
            PUSH BC
            PUSH DE
 					 PUSH HL
+					 ;CALL LCD_REMOVECURSOR
            CALL LCD_PRINTCHAR
+          ; CALL LCD_PRINTCURSOR
            POP HL
            POP DE
            POP BC
            POP AF
 			     RET 
+;
+TOGGLE: LD      A,(FLAGS)
+        XOR     00000100B
+        LD      (FLAGS),A
+        RET
+;
 ;OSKEY - Read key with time-limit, test for ESCape.
 ;Main function is carried out in user patch.
 ;   Inputs: HL = time limit (centiseconds)
@@ -121,16 +165,21 @@ MYOS_OSWRCH:		    ; OSWRCH: write a character out to the serial port
 ;           If carry set A = character
 ; Destroys: A,H,L,F
 ;
-MYOS_OSKEY:			
-            DEC HL 
-			      LD A,H
-			      OR L
-			      RET Z 
-			      IN A,(PORT_STM_IO)
-			      JR Z,MYOS_OSKEY
-			      CP 0x1B			; ESC
-			      SCF 
-			      RET NZ
+MYOS_OSKEY:	PUSH    HL
+            LD      HL,INKEY
+            LD      A,(HL)
+            LD      (HL),0
+            POP     HL
+            OR      A
+            SCF
+            RET     NZ		
+            ;PUSH    DE
+            CALL    GETKEY
+            ;POP     DE
+            RET     NC
+            CP      ESC
+            SCF
+            RET     NZ                        
 ESCSET: 		PUSH    HL
         		LD      HL,FLAGS
         		BIT     6,(HL)          ; ESC DISABLED?
@@ -143,15 +192,17 @@ ESCTEST:		IN A,(PORT_STM_IO)
 		      	RET Z
 		      	CP 0x1B			; ESC	
 	      		JR Z,ESCSET
+	      		LD (INKEY),A
 	       		RET
 
 MYOS_TRAP:			CALL ESCTEST
 MYOS_LTRAP:			LD A,(FLAGS)
 			          OR A
 		           	RET P
-	          		LD HL,FLAGS 
+ABORT:       		LD HL,FLAGS 
 		          	RES 7,(HL)
 		          	JP ESCAPE          
+;		          	
 ;OSINIT - Initialise RAM mapping etc.
 ;   Outputs: DE = initial value of HIMEM (top of RAM)
 ;            HL = initial value of PAGE (user program)
@@ -178,17 +229,17 @@ MYOS_OSINIT:
 ; Destroys: A,B,C,D,E,H,L,F
 ;
 MYOS_OSLINE:	
-             CALL READ_CHAR
+             CALL GETKEY
 			       JR Z,MYOS_OSLINE
 			       OR A 
 			       JR Z,MYOS_OSLINE 
 			       LD (HL),A
 			       INC HL
 			       CP 0x0D
-			       JR Z,L1 
+			       JR Z,OSL_L1 
 			       CALL MYOS_OSWRCH
 			       JR MYOS_OSLINE 
-L1:    			 CALL @CRLF
+OSL_L1:			 CALL @CRLF
 			       AND A
 			       RET 
       
@@ -378,21 +429,16 @@ MYOS_PUTIMS:
 			DEFB    0            
       
       
-; Print a single character
-; A: ASCII character
-;
-Print_Char:		OUT (PORT_STM_IO),A 
-				CALL LCD_PRINTCHAR
-			RET 
 
 ; Read a character - waits for input
 ; A: ASCII character
 ;
-Read_Char:		IN A,(PORT_STM_FLAGS)
-			AND 0x01
-			JR Z,Read_Char
-Read_Char_NB:		IN A,(PORT_STM_IO)
-			RET       
+GETKEY:		  IN A,(PORT_STM_FLAGS)
+			      AND 0x01
+			      JR Z,GETKEY
+GETKEY_NB:  IN A,(PORT_STM_IO)
+            SCF
+			      RET       
       
 
       
@@ -416,13 +462,15 @@ LCD_WR_DAT16:;TWO PARAMS
      
 LCD_WR_DAT:        
 LCD_WR_BUS:  ;ONE PARAM VL
-             ;PASS BY REGISTER D=VL             
+             ;PASS BY REGISTER D=VL 
+             ;DESTROYS A            
     LD A,D  
     OUT (LCD_CS),A
     RET
 
 LCD_WR_COM:;ONE PARAM VL
            ;PASS BY REGISTER D=VL
+           ;DESTROYS A
     
     XOR A
     OUT (LCD_RS),A  ;RS LOW = COMMAND BYTE      
@@ -638,6 +686,7 @@ LCD_SETXY:    ;SET WINDOW ON LCD TO FILL WITH BYTES
 
 LCD_SETPIXEL: ;SEND A 16 BIT VALUE FOR COLOR
               ;COLOR VALUE ON HL  VH & VL
+              ;DESTROYS D,A
     LD D,H        
     CALL LCD_WR_DAT 
     LD D,L
@@ -1056,8 +1105,15 @@ LCD_PRINTCHAR:
       LD HL,CURSORX
       JP PRCH_NEWLN 
 PRCH_DOBCKSPC:
-      LD HL,CURSORX
+      LD HL,CURSORX      
       LD A,(HL)
+      JR C,DOREALBCKSPC
+      ;IF C IS NOT SET THEN GO LEFT
+      CP 1      ;COMPARE WITH COLUMN 1 CAUSE OF THE PROMPT ON COLUMN 0
+      RET Z
+      DEC (HL)
+      RET      
+DOREALBCKSPC:
       CP 1      ;COMPARE WITH COLUMN 1 CAUSE OF THE PROMPT ON COLUMN 0
       JR Z,PRCH_DOBCKSPC2     ;IF 0 WE ARE ON THE 1ST COLUMN SO NOTHING TO DO JUST DELETE THE 8=BS FROM BUFFER
       DEC (HL)  ;GO 1 POSITION BACK
@@ -1097,11 +1153,11 @@ PRCH_AGN1A:
       LD HL,0
 PRCH_AGN1:
       ADC HL,DE
-      DJNZ PRCH_AGN1
+      DJNZ PRCH_AGN1 ;HL=DE*B
       PUSH HL       ;1ST PARAM X1 & 3RD PARAM
       INC A
       DEC C
-      JR Z,PRCH_AGN1A
+      JR Z,PRCH_AGN1A ;AGAIN FOR 3RD PARAM
       LD A,(CURSORY)
       LD C,1
 PRCH_AGN2A:
@@ -1137,7 +1193,7 @@ PRCH_AGN2B:
       LD C,FONT_HEIGHT   ; TOTAL FONT LINES
 PRCH_AGN3:      
       LD A,(DE)           ;FONT 8BIT PATTERN FOR A LINE
-      LD B,FONT_WIDTH-1
+      LD B,FONT_WIDTH-1      
 PRCH_AGN4:      
       SLA A               ;CHECK BIT FOR 1=FCOLOR OR 0=BCOLOR
       JR C,FORECOLOR
@@ -1147,7 +1203,7 @@ FORECOLOR:
       LD HL,(FCOLOR)      
 PRCH_CONT:
       PUSH AF
-      PUSH DE
+      PUSH DE             ;TODO:PROBABLY NOT NEEDED HERE 
       CALL LCD_SETPIXEL
       POP DE
       POP AF      
@@ -1238,6 +1294,197 @@ LCD_TEST:  ; TEST LCD
     RET
 
 
+
+;
+;OSLINE - Read/edit a complete line, terminated by CR.
+;   Inputs: HL addresses destination buffer.
+;           (L=0)
+;  Outputs: Buffer filled, terminated by CR.
+;           A=0.
+; Destroys: A,B,C,D,E,H,L,F
+;
+MYOS_OSLINE2: ;LD      IX,200H
+        LD      A,(FLAGS)
+        BIT     3,A             ;EDIT MODE?
+        JR      Z,OSLIN1
+        RES     3,A
+        LD      (FLAGS),A
+        LD      HL,(EDPTR)
+        CP      L
+OSLIN1: LD      A,CR
+        LD      (HL),A
+        CALL    NZ,MYOS_OSWRCH
+        LD      L,0
+        LD      C,L             ;REPEAT FLAG
+        JR      Z,OSWAIT        ;SUPPRESS UNWANTED SPACE
+UPDATE: LD      B,0
+UPD1:   LD      A,(HL)
+        INC     B
+        INC     HL
+        CP      CR
+        PUSH    AF
+        PUSH    HL
+        LD      E,A
+        CALL    NZ,WRCH         ;FAST WRCH
+        POP     HL
+        POP     AF
+        JR      NZ,UPD1
+        LD      A,' '
+        CALL    MYOS_OSWRCH
+        LD      E,BS
+UPD2:   PUSH    HL
+        CALL    WRCH            ;FAST WRCH
+        POP     HL
+        DEC     HL
+        DJNZ    UPD2
+OSWAIT: LD      A,C
+        DEC     B
+        JR      Z,LIMIT
+        OR      A               ;REPEAT COMMAND?
+LIMIT:  CALL    Z,KEYGET        ;READ KEYBOARD
+        LD      C,A             ;SAVE FOR REPEAT
+        LD      DE,OSWAIT       ;RETURN ADDRESS
+        PUSH    DE
+        LD      A,(FLAGS)
+        OR      A               ;TEST FOR ESCAPE
+        LD      A,C
+        JP      M,OSEXIT
+        CP      11         ;CURSOR UP     (IX-11)
+        JP      Z,LEFT
+        CP      10         ;CURSOR DOWN   (IX-10)
+        JP      Z,RIGHT
+        LD      B,0
+        CP      5          ;CLEAR LEFT    (IX-5)
+        JR      Z,BACK
+        CP      9          ;START OF LINE (IX-9)
+        JR      Z,LEFT
+        CP      7          ;CLEAR RIGHT   (IX-7)
+        JR      Z,DELETE
+        CP      8          ;END OF LINE   (IX-8)
+        JP      Z,RIGHT
+        LD      C,0             ;INHIBIT REPEAT
+        CP      'P' AND 1FH
+        JP      Z,TOGGLE
+        CP      6          ;DELETE LEFT   (IX-6)
+        JR      Z,BACK
+        CP      4          ;CURSOR LEFT   (IX-4)
+        JR      Z,LEFT
+        CP      2          ;DELETE RIGHT  (IX-2)
+        JR      Z,DELETE
+        CP      1          ;INSERT SPACE  (IX-1)
+        JR      Z,INSERT
+        CP      3          ;CURSOR RIGHT  (IX-3)
+        JR      Z,RIGHT
+        CP      ' '             ;PRINTING CHARACTER
+        JR      NC,SAVECH
+        CP      CR              ;ENTER LINE
+        RET     NZ
+OSEXIT: LD      A,(HL)
+        CALL    MYOS_OSWRCH          ;WRITE REST OF LINE
+        INC     HL
+        SUB     CR
+        JR      NZ,OSEXIT
+        POP     DE              ;DITCH RETURN ADDRESS
+        CP      C
+        JP      NZ,ABORT        ;ESCAPE
+        LD      A,LF
+        CALL    MYOS_OSWRCH
+        LD      DE,(ERRLIN)
+        XOR     A
+        LD      L,A
+        LD      (EDPTR),HL
+        CP      D
+        RET     NZ
+        CP      E
+        RET     NZ
+        LD      DE,EDITST
+        LD      B,4
+CMPARE: LD      A,(DE)
+        CP      (HL)
+        LD      A,0
+        RET     NZ
+        INC     HL
+        INC     DE
+        LD      A,(HL)
+        CP      '.'
+        JR      Z,ABBR
+        DJNZ    CMPARE
+ABBR:   XOR     A
+        LD      B,A
+        LD      C,L
+        LD      L,A
+        LD      DE,LISTST
+        EX      DE,HL
+        LDIR
+        LD      HL,FLAGS
+        SET     3,(HL)
+        RET
+;
+BACK:   SCF                     ;DELETE LEFT
+LEFT:   INC     L               ;CURSOR LEFT
+        DEC     L
+        JR      Z,STOP
+        LD      A,BS
+        CALL    MYOS_OSWRCH
+        DEC     L
+        RET     NC
+DELETE: LD      A,(HL)          ;DELETE RIGHT
+        CP      CR
+        JR      Z,STOP
+        LD      D,H
+        LD      E,L
+DEL1:   INC     DE
+        LD      A,(DE)
+        DEC     DE
+        LD      (DE),A
+        INC     DE
+        CP      CR
+        JR      NZ,DEL1
+DEL2:   POP     DE              ;DITCH
+        JP      UPDATE
+;
+INSERT: LD      A,CR            ;INSERT SPACE
+        CP      (HL)
+        RET     Z
+        LD      D,H
+        LD      E,254
+INS1:   INC     DE
+        LD      (DE),A
+        DEC     DE
+        LD      A,E
+        CP      L
+        DEC     DE
+        LD      A,(DE)
+        JR      NZ,INS1
+        LD      (HL),' '
+        JR      DEL2
+;
+RIGHT:  LD      A,(HL)          ;CURSOR RIGHT
+        CP      CR
+        JR      Z,STOP
+SAVECH: LD      D,(HL)          ;PRINTING CHARACTER
+        LD      (HL),A
+        INC     L
+        JR      Z,WONTGO        ;LINE TOO LONG
+        CALL    MYOS_OSWRCH
+        LD      A,CR
+        CP      D
+        RET     NZ
+        LD      (HL),A
+        RET
+;
+WONTGO: DEC     L
+        LD      (HL),CR
+       ; LD      A,BEL
+       ; CALL    MYOS_OSWRCH          ;BEEP!
+STOP:   LD      C,0             ;STOP REPEAT
+        RET
+;
+;
+EDITST: DEFM    'EDIT'
+LISTST: DEFM    'LIST'
+
+
     ALIGN 256
     @FONT_ADDR EQU $   ; ON A PAGE BOUNDARY
 
@@ -1248,7 +1495,12 @@ LCD_TEST:  ; TEST LCD
     BCOLOR   DEFW 0XAAAA ;BACKGROUND COLOR
     CURSORX  DEFB 0    ;0-79
     CURSORY  DEFB 0    ;0-47
+    PRECSRX  DEFB 0    ;0-79
+    PRECSRY  DEFB 0    ;0-47    
     LASTCHAR DEFB 0; 
+    EDPTR    DEFW 0
+    OPTVAL   DEFB 0
+    INKEY    DEFB 0
     USER	 	 EQU $
     
     ENDMODULE

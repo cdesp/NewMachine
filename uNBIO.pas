@@ -255,7 +255,7 @@ End;
 
 function TNBInOutSupport.DoPort0In(Value: Byte): Byte;
 Begin
- ODS('Port 0 IN ='+inttostr(mykey));
+ //ODS('Port 0 IN ='+inttostr(mykey));
 
  result:=mykey;
  mykey:=0;
