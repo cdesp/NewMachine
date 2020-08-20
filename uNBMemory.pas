@@ -228,7 +228,7 @@ begin
    CreatePage(i); // Exp ram 96k
 
   LoadRom(20,'build6.bin');  //BBC BASIC + OS MAIN INTERFACE COMMANDS
-  LoadRom(30,'OSMAIN.bin');  //OS MAIN COMMANDS
+  LoadRom(30,'MYOS1.bin');  //OS MAIN COMMANDS
 
 
 

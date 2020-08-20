@@ -608,34 +608,34 @@ var
 Begin
  fnewbrain.thrEmulate.enabled:=false;
 {$IFDEF NBDEBUG}
- sp:=  z80_get_reg(Z80_REG_SP);
- if pclist=nil then
- Begin
-  pclist:=tlist.create;
-  splist:=tlist.create;
-  pclist.Capacity:= MAxHist;
-  splist.Capacity:= MAxHist;
- End;
- if nti>10 then
- Begin
-   nti:=0;
-   if splist.count>MAxHist then
-   Begin
-    splist.delete(0);
-    splist.Add(Pointer(sp));
-   End
-   Else
-    splist.Add(Pointer(sp));
-   if pclist.count>MAxHist then
-   Begin
-    pclist.delete(0);
-    pclist.Add(Pointer(pc));
-   End
-   Else
-    pclist.Add(Pointer(pc));
-  End
-  Else
-   inc(nti);
+// sp:=  z80_get_reg(Z80_REG_SP);
+// if pclist=nil then
+// Begin
+//  pclist:=tlist.create;
+//  splist:=tlist.create;
+//  pclist.Capacity:= MAxHist;
+//  splist.Capacity:= MAxHist;
+// End;
+// if nti>10 then
+// Begin
+//   nti:=0;
+//   if splist.count>MAxHist then
+//   Begin
+//    splist.delete(0);
+//    splist.Add(Pointer(sp));
+//   End
+//   Else
+//    splist.Add(Pointer(sp));
+//   if pclist.count>MAxHist then
+//   Begin
+//    pclist.delete(0);
+//    pclist.Add(Pointer(pc));
+//   End
+//   Else
+//    pclist.Add(Pointer(pc));
+//  End
+//  Else
+//   inc(nti);
 {$ENDIF}
   newdebug.checkbreak(pc);
   Prepc:=pc;
@@ -742,6 +742,9 @@ begin
 
 //---- Z80 Engine interface
 
+
+//newdebug.bpnts.items.add('48E1');
+//newdebug.bpnts.items.add('48EE');
 
  // newdebug.bpnts.items.add('B785');
  // newdebug.bpnts.items.add('E162');

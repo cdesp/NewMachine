@@ -1,0 +1,72 @@
+;
+LCD_RMVCURS:
+      ;REMOVES THE CURSOR FROM PREVIOUS POSITION
+      LD A,(CURSORX)
+      LD H,A
+      LD A,(CURSORY)
+      LD L,A
+      PUSH HL             ;SAVE CURSOR
+      LD A,(PRECSRX)     ;REPLACE CURSX AND Y WITH THE PREVIOUS ONES
+      LD (CURSORX),A
+      LD A,(PRECSRY)
+      LD (CURSORY),A
+      LD HL,(BCOLOR);
+      PUSH HL             ;COLOR PARAM
+      CALL LCD_SETCURS
+      POP HL              ;LOAD CURSOR
+      LD A,H
+      LD (CURSORX),A
+      LD A,L
+      LD (CURSORY),A
+      RET
+      
+
+LCD_PRNCURS:     
+      ;ADD A CURSOR ON NEW POSITION
+      LD HL,(FCOLOR)      ;COLOR PARAM
+      PUSH HL           
+      
+LCD_SETCURS:
+      LD A,(CURSORX)
+      LD B,FONT_WIDTH
+      LD D,0
+      LD E,A
+      LD HL,0
+SCUR_AGN1:
+      ADC HL,DE
+      DJNZ SCUR_AGN1      ;HL = DE * B 
+      PUSH HL             ;1ST PARAM X1
+      ADC HL,DE
+      PUSH HL             ;SAVE 3RD PARAM X2      
+      LD A,(CURSORY)      
+      LD B,FONT_HEIGHT 
+      LD D,0
+      LD E,A
+      LD HL,0
+SCUR_AGN2:
+      ADC HL,DE
+      DJNZ SCUR_AGN2      ;HL=B*DE
+      LD C,FONT_HEIGHT-2  ;2 PIXEL HEIGTH CURSOR       
+      LD B,0
+      ADC HL,BC           ;ADD FONT_HEIGHT-2 PIXELS
+      POP DE              ;RETREIVE 3RD PARAM ON DE
+      PUSH HL             ;2ND PARAM Y1
+      PUSH DE             ;3RD PARAM X2
+      INC HL
+      INC HL              ; Y2 ADD THE LAST +2 PIXELS  
+      PUSH HL             ;4TH PARAM Y2
+      CALL LCD_SETXY
+      LD HL,8
+      ADD HL,SP
+      LD SP,HL            ;SKIP 4 PARAMS 8 BYTES            
+      ;SEND THE PIXELS = 2*FONT_WIDTH   
+      POP HL              ;GET THE COLOR
+      LD B,2*FONT_WIDTH   ;2*8=16
+SCUR_AGN3:
+      CALL LCD_SETPIXEL   ;DESTROYS D,A
+      DJNZ SCUR_AGN3                            
+      LD A,(CURSORX)
+      LD (PRECSRX),A      ; SAVE CURSOR TO PREVIOUSX
+      LD A,(CURSORY)
+      LD (PRECSRY),A      ; SAVE CURSOR TO PREVIOUSX      
+      RET
