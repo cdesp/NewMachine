@@ -11,10 +11,7 @@
 
 			MODULE BUILD
 
-			CALL    TELL
-			DEFM	"CDESP Modular Computer 1.0"
-			DEFB	0AH,0DH,0AH,0DH
-			DEFB    0
+			
 
 
 

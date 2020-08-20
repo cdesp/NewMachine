@@ -247,12 +247,12 @@ Begin
 
     PaintFlags;
 
-    TextOut(Col1,18*h,'COPCTL: '+getbinaryfrombyte(nbmem.ROM[$3b]));
-    TextOut(Col1,19*h,'COPST : '+getbinaryfrombyte(nbmem.ROM[$3c]));
-    TextOut(Col1,20*h,'ENREG1: '+getbinaryfrombyte(nbmem.ROM[$24]));
-    TextOut(Col1,21*h,'IOPUC : '+inttohex(nbmem.ROM[$25],2));
-    s:=inttohex(nbmem.ROM[$1f],2)+inttohex(nbmem.ROM[$1e],2);
-    TextOut(Col1,22*h,'SAVE1 : '+s);
+  //  TextOut(Col1,18*h,'COPCTL: '+getbinaryfrombyte(nbmem.ROM[$3b]));
+  //  TextOut(Col1,19*h,'COPST : '+getbinaryfrombyte(nbmem.ROM[$3c]));
+  //  TextOut(Col1,20*h,'ENREG1: '+getbinaryfrombyte(nbmem.ROM[$24]));
+  //  TextOut(Col1,21*h,'IOPUC : '+inttohex(nbmem.ROM[$25],2));
+  //  s:=inttohex(nbmem.ROM[$1f],2)+inttohex(nbmem.ROM[$1e],2);
+  //  TextOut(Col1,22*h,'SAVE1 : '+s);
   //  TextOut(Col1,23*h,'EL    : '+inttohex(EL,4));
   //  TextOut(Col1,24*h,'LL    : '+inttohex(LL,4));
   //  TextOut(Col1,25*h,'LN    : '+inttohex(LN,4));
@@ -262,23 +262,23 @@ Begin
   //  TextOut(Col1,29*h,'EXFLAG: '+getbinaryfrombyte(EXFLAGS));
   //  TextOut(Col1,30*h,'INPB  : '+inttohex(inpb,4));
   //  TextOut(Col1,31*h,'INPC  : '+inttohex(inpc,4));
-    s:=inttohex(nbmem.ROM[$5b],2)+inttohex(nbmem.ROM[$5a],2);
-    TextOut(Col1,32*h,'TVCUR : '+s);
-    s:=inttohex(nbmem.ROM[$5d],2)+inttohex(nbmem.ROM[$5c],2);
-    TextOut(Col1,33*h,'TVRAM : '+s);
-    s:=inttohex(nbmem.ROM[$05],2)+inttohex(nbmem.ROM[$04],2);
-    TextOut(Col1,34*h,'B3PRM : '+s);
-    s:=inttohex(nbmem.ROM[$38],2)+inttohex(nbmem.ROM[$3A],2)+inttohex(nbmem.ROM[$39],2);
-    TextOut(Col1,35*h,'RST56 : '+s);
-    s:=inttohex(nbmem.ROM[$2d],2)+inttohex(nbmem.ROM[$2c],2);
-    TextOut(Col1,36*h,'GSPR  : '+s);
-    s:=inttohex(nbmem.ROM[$07],2)+inttohex(nbmem.ROM[$06],2);
-    TextOut(Col1,37*h,'B4    : '+s);
-    s:=inttohex(nbmem.ROM[$57],2)+inttohex(nbmem.ROM[$56],2);
-    TextOut(Col1,38*h,'STRTAB: '+s);
-    s:=inttohex(nbmem.ROM[$65],2)+inttohex(nbmem.ROM[$64],2);
-    TextOut(Col1,39*h,'STRTOP: '+s);
-    TextOut(Col1,40*h,'ENREG2: '+getbinaryfrombyte(nbmem.ROM[$B6]));
+  //  s:=inttohex(nbmem.ROM[$5b],2)+inttohex(nbmem.ROM[$5a],2);
+  //  TextOut(Col1,32*h,'TVCUR : '+s);
+  //  s:=inttohex(nbmem.ROM[$5d],2)+inttohex(nbmem.ROM[$5c],2);
+  //  TextOut(Col1,33*h,'TVRAM : '+s);
+  //  s:=inttohex(nbmem.ROM[$05],2)+inttohex(nbmem.ROM[$04],2);
+  //  TextOut(Col1,34*h,'B3PRM : '+s);
+  //  s:=inttohex(nbmem.ROM[$38],2)+inttohex(nbmem.ROM[$3A],2)+inttohex(nbmem.ROM[$39],2);
+  //  TextOut(Col1,35*h,'RST56 : '+s);
+  //  s:=inttohex(nbmem.ROM[$2d],2)+inttohex(nbmem.ROM[$2c],2);
+  //  TextOut(Col1,36*h,'GSPR  : '+s);
+  //  s:=inttohex(nbmem.ROM[$07],2)+inttohex(nbmem.ROM[$06],2);
+  // TextOut(Col1,37*h,'B4    : '+s);
+  //  s:=inttohex(nbmem.ROM[$57],2)+inttohex(nbmem.ROM[$56],2);
+  //  TextOut(Col1,38*h,'STRTAB: '+s);
+  //  s:=inttohex(nbmem.ROM[$65],2)+inttohex(nbmem.ROM[$64],2);
+  //  TextOut(Col1,39*h,'STRTOP: '+s);
+  //  TextOut(Col1,40*h,'ENREG2: '+getbinaryfrombyte(nbmem.ROM[$B6]));
 
     if Breaked or stopped then
      TextOut(Col1,41*h,'Breakpoint reached');
@@ -287,27 +287,27 @@ Begin
 
   //  TextOut(Col2,30*h,'TVMode: '+inttostr(TVMode));
 
-    s:=inttohex(nbmem.ROM[120],2)+inttohex(nbmem.ROM[119],2);
-    TextOut(Col2,31*h,'CHRROM: '+s);
+  //  s:=inttohex(nbmem.ROM[120],2)+inttohex(nbmem.ROM[119],2);
+  //  TextOut(Col2,31*h,'CHRROM: '+s);
 
-    s:=inttohex(nbmem.ROM[85],2)+inttohex(nbmem.ROM[84],2)
-       +inttohex(nbmem.ROM[83],2)+inttohex(nbmem.ROM[82],2);
-    TextOut(Col2,1*h,'CL/CK : '+s);
-    s:=inttohex(nbmem.ROM[107],2)+inttohex(nbmem.ROM[106],2)
-       +inttohex(nbmem.ROM[105],2);
-    TextOut(Col2,2*h,'FICLK : '+s);
-    s:=inttohex(nbmem.ROM[21],2)+inttohex(nbmem.ROM[20],2);
-    TextOut(Col2,3*h,'SAVE2 : '+s);
-    s:=inttohex(nbmem.ROM[23],2)+inttohex(nbmem.ROM[22],2);
-    TextOut(Col2,4*h,'SAVE3 : '+s);
-    s:=inttohex(nbmem.ROM[$3D],2);
-    TextOut(Col2,6*h,'COPBF : '+s);
-    s:=inttohex(nbmem.ROM[$51],2)+inttohex(nbmem.ROM[$50],2);
-    TextOut(Col2,7*h,'CHSUM : '+s);
+  //  s:=inttohex(nbmem.ROM[85],2)+inttohex(nbmem.ROM[84],2)
+  //     +inttohex(nbmem.ROM[83],2)+inttohex(nbmem.ROM[82],2);
+  //  TextOut(Col2,1*h,'CL/CK : '+s);
+  //  s:=inttohex(nbmem.ROM[107],2)+inttohex(nbmem.ROM[106],2)
+   //    +inttohex(nbmem.ROM[105],2);
+    //TextOut(Col2,2*h,'FICLK : '+s);
+  //  s:=inttohex(nbmem.ROM[21],2)+inttohex(nbmem.ROM[20],2);
+  //  TextOut(Col2,3*h,'SAVE2 : '+s);
+  //  s:=inttohex(nbmem.ROM[23],2)+inttohex(nbmem.ROM[22],2);
+  //  TextOut(Col2,4*h,'SAVE3 : '+s);
+  //  s:=inttohex(nbmem.ROM[$3D],2);
+  //  TextOut(Col2,6*h,'COPBF : '+s);
+  //  s:=inttohex(nbmem.ROM[$51],2)+inttohex(nbmem.ROM[$50],2);
+  //  TextOut(Col2,7*h,'CHSUM : '+s);
 
-    TextOut(Col2,37*h,'TV0   : '+inttostr(nbmem.rom[13]));
-    TextOut(Col2,38*h,'TV2   : '+getbinaryfrombyte(nbmem.rom[14]));
-    TextOut(Col2,39*h,'TV1   : '+inttostr(nbmem.rom[15]));
+  //  TextOut(Col2,37*h,'TV0   : '+inttostr(nbmem.rom[13]));
+  //  TextOut(Col2,38*h,'TV2   : '+getbinaryfrombyte(nbmem.rom[14]));
+  //  TextOut(Col2,39*h,'TV1   : '+inttostr(nbmem.rom[15]));
   //  TextOut(Col3,39*h,'TV4   : '+inttostr(TV4));
 
     For i:=0 to 7 do

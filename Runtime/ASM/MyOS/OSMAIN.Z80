@@ -18,6 +18,7 @@
     ESCAPE EQU 0x0DE4       ;ESCAPE ROUTINE ON BBC BASIC
     CRLF   EQU 0x088F       ;CRLF ROUTINE ON BBC BASIC
     EXTERR EQU 0x0712       ;EXTERR ROUTINE ON BBC BASIC
+    TELL   EQU 3149         ;PRINT A MESSAGE ON SCREEN THROUGH BBC BASIC
       
     
     
@@ -73,8 +74,8 @@
       
 TEST: JP LCD_TEST    
     
-MYOS_CLRSCN:        ; CLRSCN: clears the screen.
-           RET
+MYOS_CLRSCN:JP LCD_CLRSCR        ; CLRSCN: clears the screen.
+            
 MYOS_PUTIME:        ; PUTIME: set current time to DE:HL, in centiseconds.
 		       RET
 MYOS_GETIME:        ; GETIME: return current time in DE:HL, in centiseconds.
@@ -212,6 +213,8 @@ MYOS_OSINIT:
             LD (HL),A
             LD A,0xBB
             LD (HL),A
+            LD HL,0
+            LD (CURSORX),HL  ; CURSOR X 7 Y ZEROED            
             LD DE,COL_RED   ; SET FCOLOR AND BCOLOR DEFAULT VALUES
             LD HL,FCOLOR
             LD (HL),E
@@ -223,7 +226,9 @@ MYOS_OSINIT:
             INC HL
             LD (HL),D                       
             ;PRINT MYOS MESSAGE HERE
-            
+					  CALL    TELL
+						DEFM	"CDESP Modular Computer 1.0"
+						DEFB	0AH,0DH,0AH,0DH,00H
             XOR A
          		LD DE,0xFFFF		;DE = HIMEM
          		LD E,A             	;PAGE BOUNDARY

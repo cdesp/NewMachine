@@ -718,23 +718,21 @@ PRCH_SKIP1:
 PRCH_DOPRN:
       PUSH AF  ;SAVE CHAR TO STACK
       LD (LASTCHAR),A ;SAVE LAST PRINTED CHAR
-      LD C,1
       LD A,(CURSORX)
-PRCH_AGN1A:
       LD B,FONT_WIDTH
       LD D,0
       LD E,A
       LD HL,0
+      OR A          ; CLEAR CARRY
 PRCH_AGN1:
       ADC HL,DE
       DJNZ PRCH_AGN1 ;HL=DE*B
-      PUSH HL       ;1ST PARAM X1 & 3RD PARAM
-      INC A
-      DEC C
-      JR Z,PRCH_AGN1A ;AGAIN FOR 3RD PARAM
+      PUSH HL       ;1ST PARAM X1
+      LD DE,FONT_WIDTH 
+      ADC HL,DE      
+      DEC HL
+      PUSH HL       ;SAVE 3RD PARAM X2
       LD A,(CURSORY)
-      LD C,1
-PRCH_AGN2A:
       LD B,FONT_HEIGHT 
       LD D,0
       LD E,A
@@ -742,15 +740,11 @@ PRCH_AGN2A:
 PRCH_AGN2:
       ADC HL,DE
       DJNZ PRCH_AGN2      
-      DEC C
-      JR NZ,PRCH_AGN2B
-      POP DE        ;3RD PARAM X2
+      POP DE        ;RETREIVE 3RD PARAM X2
       PUSH HL       ;2ND PARAM Y1
-      DEC DE        ;3RD PARAM - 1
       PUSH DE       ;3RD PARAM X2
-      INC A
-      JR PRCH_AGN2A
-PRCH_AGN2B:    
+      LD DE,FONT_HEIGHT
+      ADC HL,DE     ;CALC 4TH PARAM      
       DEC HL        ;4TH PARAM -1  
       PUSH HL				;4TH PARAM Y2
       CALL LCD_SETXY
@@ -902,7 +896,8 @@ CS_AGN1:
      DJNZ CS_AGN2
      DEC C
      JR NZ,CS_AGN2 
-     HALT        
+     LD HL,0                   ;RESET CURSOR AT 0,0
+     LD (CURSORX),HL       
      RET
 
 

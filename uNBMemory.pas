@@ -266,12 +266,12 @@ begin
 
 
  // nbmem.SetRomForce(hextoint('310F'),Hextoint('FF'));   //for HIMEM = FFFF
-  nbmem.SetRomForce($6301,$00);    //FORECOLOR  //OSVARS
-  nbmem.SetRomForce($6302,$F8);
-  nbmem.SetRomForce($6303,$33);    //BACKCOLOR
-  nbmem.SetRomForce($6304,$10);
-  nbmem.SetRomForce($6305,00);  //CURSOR X
-  nbmem.SetRomForce($6306,00);  //CURSOR Y
+//  nbmem.SetRomForce($6301,$00);    //FORECOLOR  //OSVARS
+//  nbmem.SetRomForce($6302,$F8);
+//  nbmem.SetRomForce($6303,$33);    //BACKCOLOR
+//  nbmem.SetRomForce($6304,$10);
+//  nbmem.SetRomForce($6305,00);  //CURSOR X
+//  nbmem.SetRomForce($6306,00);  //CURSOR Y
 
 
   fnewbrain.WithExpansion1.checked:=false;
