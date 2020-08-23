@@ -139,6 +139,7 @@ type
     thrEmulate: TDXTimer;
     Memo1: TMemo;
     thrVideo: TTimer;
+    timptimer: TTimer;
     procedure Button1Click(Sender: TObject);
     procedure Start1Click(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word;
@@ -198,6 +199,7 @@ type
     procedure thrEmulateTimer(Sender: TObject; LagCount: Integer);
     procedure newscrResize(Sender: TObject);
     procedure thrVideoTimer(Sender: TObject);
+    procedure timptimerTimer(Sender: TObject);
 
 
   private
@@ -225,6 +227,7 @@ type
     procedure DoOnidle(sender: TObject; var Done: Boolean);
     function getDebugging: Boolean;
     procedure setDebugging(const Value: Boolean);
+    procedure doImport;
 
   public
     { Public declarations }
@@ -1042,6 +1045,8 @@ begin
    nbscreen.PaintVideo;
 end;
 
+
+
 procedure TfNewBrain.DoEmulation(st:integer=40000);
 var dif,tr:Real;
     idif,tmdif:Integer;
@@ -1377,6 +1382,27 @@ begin
  fnewbrain.statusbar1.Panels[3].text:=s;
 end;
 
+procedure TfNewBrain.timptimerTimer(Sender: TObject);
+var ch:char;
+Begin
+   if  length(kbuf)=0 then  timptimer.Enabled:=false
+   else
+   if mykey=0 then
+   Begin
+      ch:=kbuf[1];
+      kbuf:=copy(kbuf,2,maxint);
+      mykey:=ord(ch);
+   end;
+
+end;
+
+procedure TfNewBrain.doImport;
+
+Begin
+ timptimer.enabled:=true;
+end;
+
+
 procedure TfNewBrain.LoadTextFile1Click(Sender: TObject);
 Var sl:Tstringlist;
     fpath:String;
@@ -1391,16 +1417,15 @@ try
    sl:=Tstringlist.create;
    try
     sl.loadfromfile(opdlg.FileName);
-   kbuf:=#13#10+'Open#0,0,"l200"'+#13#10+#13#10+sl.text+
-     #13#10+'Importing Finished...';
+   kbuf:=sl.text;
    finally
     sl.free;
    end;
    kbufc:=1;
-   nbkeyboard.import(kbuf);
-//   keybFileinp:=true;
-//   doImport;
-  // ShowMessage('Import Finished');
+  // nbkeyboard.import(kbuf);
+   keybFileinp:=true;
+   doImport;
+   ShowMessage('Import Finished');
  End;
 Finally
   opdlg.free;

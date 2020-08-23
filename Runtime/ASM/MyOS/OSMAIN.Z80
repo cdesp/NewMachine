@@ -10,15 +10,17 @@
     INCLUDE \MYOS\CONSTS.INC
     
     ;global vars FROM BBC BASIC
-    ACCS   EQU 0x6000       ;STRING INPUT BUFFER
-    ERRLIN EQU ACCS+0x2F4   ;
-    RANDOM EQU ACCS+0x2F6   ;RANDOM SEED MUST BE NON ZERO 5 BYTES
-    TOP    EQU ACCS+0x2DE   ;START OF BASIC PROGRAM
-    PAGE   EQU ACCS+0x2DC   ;END OF BASIC PROGRAM    
-    ESCAPE EQU 0x0DE4       ;ESCAPE ROUTINE ON BBC BASIC
-    CRLF   EQU 0x088F       ;CRLF ROUTINE ON BBC BASIC
-    EXTERR EQU 0x0712       ;EXTERR ROUTINE ON BBC BASIC
-    TELL   EQU 3149         ;PRINT A MESSAGE ON SCREEN THROUGH BBC BASIC
+    @ACCS   EQU 0x6000       ;STRING INPUT BUFFER
+    @ERRLIN EQU ACCS+0x2F4   ;
+    @RANDOM EQU ACCS+0x2F6   ;RANDOM SEED MUST BE NON ZERO 5 BYTES
+    @TOP    EQU ACCS+0x2DE   ;START OF BASIC PROGRAM
+    @PAGE   EQU ACCS+0x2DC   ;END OF BASIC PROGRAM    
+    @ESCAPE EQU 0x0DE4       ;ESCAPE ROUTINE ON BBC BASIC
+    @CRLF   EQU 0x088F       ;CRLF ROUTINE ON BBC BASIC
+    @EXTERR EQU 0x0712       ;EXTERR ROUTINE ON BBC BASIC
+    @TELL   EQU 3149         ;PRINT A MESSAGE ON SCREEN THROUGH BBC BASIC
+    @XEQ    EQU 0x0D0A       ;DO BASIC NEXT COMMAND
+    @EXPRI  EQU 0x1EB6       ;PARSE PARAMETER 
       
     
     
@@ -83,10 +85,23 @@ MYOS_GETIME:        ; GETIME: return current time in DE:HL, in centiseconds.
  	  		   LD HL, 0
 			     RET		       
 MYOS_PUTCSR:		    ; PUTCSR: move to cursor to x=DE, y=HL
+           LD H,E
+           PUSH HL
+           CALL LCD_RMVCURS
+           POP HL
+           LD A,H
+           LD (CURSORX),A
+           LD A,L
+           LD (CURSORY),A
+           CALL LCD_PRNCURS                      
            RET
 MYOS_GETCSR:		    ; GETCSR: return cursor position in x=DE, y=HL
-           LD DE,0
-			     LD HL,0
+           LD D,0
+           LD A,(CURSORX)
+           LD E,A
+           LD H,0
+           LD A,(CURSORY)
+			     LD L,A
 			     RET
 KEYGET:		LD      B,80 ;SCREEN WIDTH IN CHARS	     
 MYOS_OSRDCH:        ; OSRDCH: read a character in from the keyboard	
@@ -215,18 +230,27 @@ MYOS_OSINIT:
             LD (HL),A
             LD HL,0
             LD (CURSORX),HL  ; CURSOR X 7 Y ZEROED            
-            LD DE,COL_RED   ; SET FCOLOR AND BCOLOR DEFAULT VALUES
+            LD DE,COL_WHITE   ; SET FCOLOR AND BCOLOR DEFAULT VALUES
             LD HL,FCOLOR
             LD (HL),E
             INC HL
             LD (HL),D
             INC HL
-            LD DE,COL_BLUE
+            LD DE,COL_BLACK
             LD (HL),E
             INC HL
-            LD (HL),D                       
+            LD (HL),D                                   
+            LD DE,FCOLPAL
+            CALL COPYPAL
+            LD DE,BCOLPAL            
+            CALL COPYPAL
+            JR OSFINSH;
+COPYPAL:    LD HL,COL_PALET   
+            LD BC,8*2         ;SHOULD ADD 8 MORE COLORS 
+            LDIR
+            RET
             ;PRINT MYOS MESSAGE HERE
-					  CALL    TELL
+OSFINSH:    CALL    TELL
 						DEFM	"CDESP Modular Computer 1.0"
 						DEFB	0AH,0DH,0AH,0DH,00H
             XOR A
@@ -234,6 +258,14 @@ MYOS_OSINIT:
          		LD E,A             	;PAGE BOUNDARY
          		LD HL,@USER         		
          		RET	
+COL_PALET:  DW COL_BLACK
+            DW COL_RED
+            DW COL_GREEN
+            DW COL_YELLOW
+            DW COL_BLUE
+            DW COL_MAGENTA
+            DW COL_CYAN
+            DW COL_WHITE            
       
 ;
 ;OSCLI - Process an "operating system" command
@@ -401,9 +433,16 @@ MYOS_PUTPTR:
 MYOS_GETEXT: 
 MYOS_RESET: 
             RET
+     
+MYOS_CLG: CALL LCD_CLRSCR
+          JP XEQ           ;RETURN TO BASIC    
+
+     
+MYOS_COLOUR:  CALL LCD_COLOUR     
+              JP XEQ           ;RETURN TO BASIC    
             
-MYOS_CLG:
-MYOS_COLOUR:
+
+
 MYOS_DRAW:
 MYOS_ENVEL:
 MYOS_GCOL:

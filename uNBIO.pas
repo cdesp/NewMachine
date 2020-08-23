@@ -325,7 +325,7 @@ function getColor(ch,cl:Byte):tcolor;
 var r,g,b:byte;
 Begin
   r:=ch and $F8;
-  g:=ch shl 5 and ((cl and $3f) shr 6);
+  g:=ch shl 5 OR ((cl and $C0) shr 3); //3 BITS FROM HI AND 2 FROM LOW
   b:=(cl and $3f) SHL 2;
   result:= TORGB(r,g,b);
 End;

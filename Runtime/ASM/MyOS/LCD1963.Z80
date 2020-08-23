@@ -5,8 +5,15 @@
        INCLUDE MYOS\CONSTS.INC
 
        ;COLOR
-       @COL_RED   EQU 0xF800
-       @COL_BLUE  EQU 0x1033
+       @COL_BLACK   EQU 0x0000
+       @COL_RED     EQU 0xF800
+       @COL_GREEN   EQU 0x07C0
+       @COL_YELLOW  EQU 0xFFC0
+       @COL_BLUE    EQU 0x003F
+       @COL_MAGENTA EQU 0xF863
+       @COL_CYAN    EQU 0x07FF       
+       @COL_WHITE   EQU 0xFFFF
+       
 
        
        ;LOCAL CONSTS       
@@ -899,6 +906,71 @@ CS_AGN1:
      LD HL,0                   ;RESET CURSOR AT 0,0
      LD (CURSORX),HL       
      RET
+;
+; SET LOGICAL COLOR 1 OF 15 POSITIONS
+@LCD_COLOUR:
+     CALL EXPRI
+     EXX
+     LD A,(IY)
+     CP 0x0D
+     JR Z,COLSEL
+     CP ','
+     JR NZ,COLERR
+     ;SET A NEW COLOR ON FCOLOR PALLETE
+     PUSH HL       ;SAVE 1ST PARAM
+     INC IY        ;NEXT PARAM
+     CALL EXPRI
+     EXX
+     POP DE        ;RESTORE 1ST PARAM ON DE HL HAS THE 2ND
+     LD A,E
+     SUB 128
+     JR C,COLFC
+     LD E,A
+     LD IX,BCOLPAL
+     JR DOPALCOL
+COLFC: LD IX,FCOLPAL
+DOPALCOL:
+     LD A,E
+     CP 15			  ;MAX 16 COLORS
+     JR NC,COLERR
+     ADD IX,DE     
+     ADD IX,DE     ;2*DE CAUSE ITS A 2 BYTE ARRAY
+     LD (IX),L    ;SAVE THE NEW COLOR 
+     LD (IX+1),H  
+     RET  
+COLSEL:
+     ;SELECT A NEW FCOLOR FROM THE PALLETE
+     PUSH HL
+     POP DE     
+     LD A,E
+     SUB 128        ;CHECK MSB
+     JR C,CFC
+     LD E,A
+     LD IX,BCOLPAL  ;BACKCOLOR
+     LD HL,BCOLOR
+     JR SFC
+CFC: LD IX,FCOLPAL  ;FRONTCOLOR
+     LD HL,FCOLOR
+SFC: LD A,E
+     CP 15			  ;MAX 16 COLORS
+     JR NC,COLERR
+     ADD IX,DE
+     ADD IX,DE
+     LD D,(IX)
+     LD E,(IX+1)     
+     LD (HL),D  ;SAVE AGAIN 
+     INC HL     
+     LD (HL),E       
+     RET
+          
+COLERR:
+		 XOR     A
+		 CALL    EXTERR
+		 DEFM    'param error'
+		 DEFB    0     
+
+
+;=============================
 
 
 @LCD_TEST:  ; TEST LCD

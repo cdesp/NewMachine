@@ -1754,4 +1754,11 @@ object fNewBrain: TfNewBrain
     Left = 248
     Top = 267
   end
+  object timptimer: TTimer
+    Enabled = False
+    Interval = 20
+    OnTimer = timptimerTimer
+    Left = 384
+    Top = 235
+  end
 end

@@ -258,7 +258,7 @@ begin
  // nbmem.SetRomForce(hextoint('B323'),Hextoint('05'));
 
   //LOAD CHARSET TO MEMORY
-  move:=$4A00;  //18944
+  move:=$4B00;  //19200
   for i := 0 to 2560 do
   Begin
     nbmem.SetRomForce(i+move,CharArr[i]);
@@ -268,8 +268,8 @@ begin
  // nbmem.SetRomForce(hextoint('310F'),Hextoint('FF'));   //for HIMEM = FFFF
 //  nbmem.SetRomForce($6301,$00);    //FORECOLOR  //OSVARS
 //  nbmem.SetRomForce($6302,$F8);
-//  nbmem.SetRomForce($6303,$33);    //BACKCOLOR
-//  nbmem.SetRomForce($6304,$10);
+//  nbmem.SetRomForce($6303,$3F);    //BACKCOLOR
+//  nbmem.SetRomForce($6304,$00);
 //  nbmem.SetRomForce($6305,00);  //CURSOR X
 //  nbmem.SetRomForce($6306,00);  //CURSOR Y
 

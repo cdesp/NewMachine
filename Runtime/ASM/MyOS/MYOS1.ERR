@@ -1,3 +1,11 @@
+(1) PASS 2:Expression [COL_BLACK] is invalid. OPIDX=3		 at line:270   [OSMAIN.Z80]
+(2) PASS 2:Expression [COL_RED] is invalid. OPIDX=3		 at line:271   [OSMAIN.Z80]
+(3) PASS 2:Expression [COL_GREEN] is invalid. OPIDX=3		 at line:272   [OSMAIN.Z80]
+(4) PASS 2:Expression [COL_YELLOW] is invalid. OPIDX=3		 at line:273   [OSMAIN.Z80]
+(5) PASS 2:Expression [COL_BLUE] is invalid. OPIDX=3		 at line:274   [OSMAIN.Z80]
+(6) PASS 2:Expression [COL_MAGENTA] is invalid. OPIDX=3		 at line:275   [OSMAIN.Z80]
+(7) PASS 2:Expression [COL_CYAN] is invalid. OPIDX=3		 at line:276   [OSMAIN.Z80]
+(8) PASS 2:Expression [COL_WHITE] is invalid. OPIDX=3		 at line:277   [OSMAIN.Z80]
 
 
 --------------------------
