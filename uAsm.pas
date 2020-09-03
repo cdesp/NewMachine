@@ -108,6 +108,7 @@ Type
      zPartCMD: string;
      zPartArg1: string;
      zPartArg2: string;
+    FProjectPath: string;
     function ReplaceIntCharToString(var S: String): Boolean;
     procedure IncludeFile(fn: String);
     Class function DelimIsBetween(s: String; p: Integer; Delims: String;
@@ -116,8 +117,6 @@ Type
     procedure ClearItems;
     function IsGlobalLabel(Lbl: String): Boolean;
     procedure AddLabel(Lbs: String; Value: Integer=ASMNOTFOUND);
-    function GetLabelStr(Lbl: String): string;
-    function GetLabel(Lbl: String): Integer;
     function IsSpecialKeyword(Cmd: String): Boolean;
     function ContainsIX(Arg: String; var p1, p2: String): Boolean;
     function ContainsIY(Arg: String; var p1, p2: String): Boolean;
@@ -143,7 +142,6 @@ Type
     procedure splitZ80Command(s: string);
     function CheckCommand: Boolean;
     function CheckPseudoOps: Boolean;
-    procedure ADDError(e: String);
     procedure NbParsEval1GetValue(Sender: TObject; Identifier: string;
       var Value: Extended; var Undefined: Boolean);
      Function NewCmd:PCmpInst;
@@ -152,10 +150,10 @@ Type
      class function GetFirstPart(var S, part1: String; Delimeters: string; const
          AsWord: Boolean = False;WasString:Boolean=False): Boolean;
      function ISCmdRelative: Boolean;
-     function LabelExists(Lbl:String): Boolean;
      procedure SetDollar(const Value: Integer);
      function SplitCommand(const Txt: string): Boolean;
     procedure checkboolean(var s: string);
+    procedure SetProjectPath(const Value: string);
    protected
      procedure DoOnCompileMessage(const MSG: string); virtual;
      procedure DoOnCompileProgress(const Pass, cPos, PosMax: Integer); virtual;
@@ -165,8 +163,12 @@ Type
      Destructor Destroy;Override;
      Constructor Create;Virtual;
      procedure Compile2(Txt: string);
+     procedure ADDError(e: String);
     procedure DoPass2(IsLinking: Boolean = False);
     function getcompilationastext: String;
+    function GetLabelStr(Lbl: String): string;
+    function GetLabel(Lbl: String): Integer;
+    function LabelExists(Lbl:String): Boolean;
      function ISKeyword(Cmd: String): Boolean;
      procedure MakeAbsolute(NewDollar: Integer);
      property Dollar: Integer read GetDollar write SetDollar;
@@ -178,6 +180,7 @@ Type
          FOnCompileMessage;
      property OnCompileProgress: TOnCompileProgress read FOnCompileProgress write
          FOnCompileProgress;
+     property ProjectPath:string read FProjectPath write SetProjectPath;
    end;
 
 Var
@@ -220,10 +223,15 @@ End;
 Procedure TCompiledList.IncludeFile(fn:String);
 Var sl:Tstringlist;
     i:Integer;
+    mypath:string;
 Begin
+  if fProjectpath='' then
+   mypath:=AppPath+DefaultAsmDir
+  else mypath:=FProjectPath;
+
   sl:=Tstringlist.create;
   TRy
-    sl.LoadFromFile(AppPath+DefaultAsmDir+fn);
+    sl.LoadFromFile(mypath+fn);
 
 
     for i := 0 to sl.Count - 1 do
@@ -487,7 +495,8 @@ Begin
        p.OrigCmd:=CurText;
       End;
       p.Bytes[p.ByteCnt]:=b;
-      Dollar:=Dollar+1;
+      if not (opidx  in [4]) OR (B>0) then
+       Dollar:=Dollar+1;
       p.Status:=csCMDOK;
 End;
 
@@ -958,6 +967,7 @@ begin
   FDollar:=-1;
   IsRelative:=true;
   LastDollar:=-1;
+  FProjectPath:='';
 end;
 
 Function TCompiledList.CheckCommand:Boolean;
@@ -1519,7 +1529,12 @@ Begin
                               end;
                             end
                             else
-                             AddError(PassStr+':Expression ['+p.Label1Exp+'] is invalid. OPIDX='+inttostr(p.CMDIDX));
+                            begin
+                             if IsProject then
+                              AddLog(PassStr+':Expression ['+p.Label1Exp+'] not found. Check again in PASS 3 ???')
+                             else
+                              AddError(PassStr+':Expression ['+p.Label1Exp+'] is invalid. OPIDX='+inttostr(p.CMDIDX));
+                            end;
 
 
                           End//End Pseudo op
@@ -1661,10 +1676,12 @@ begin
       inc(i);
    end;
 
-  if not IsRelative then
-    DoPass2
-  Else
-    ADDLOG('****** File is Relative Skipp Pass 2 - Linker needed ******',False);
+  DoPass2;
+
+//  if not IsRelative then
+//    DoPass2
+//  Else
+//    ADDLOG('****** File is Relative Skipp Pass 2 - Linker needed ******',False);
 
   ADDLOG('',False);
   ADDLOG('---------------------------------------------------------',False);
@@ -1950,6 +1967,12 @@ procedure TCompiledList.SetDollar(const Value: Integer);
 begin
   FDollar := Value;
   AddLabel('DOLLAR',FDollar);
+end;
+
+procedure TCompiledList.SetProjectPath(const Value: string);
+begin
+  if FProjectPath='' then  //only one set
+    FProjectPath := Value;
 end;
 
 procedure TCompiledList.checkboolean(var s:string);

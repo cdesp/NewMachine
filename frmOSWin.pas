@@ -111,6 +111,8 @@ uses uNBTypes,uNBMemory,uNBScreen;
 
 Procedure TfOSWin.ShowCOP;
 Begin
+  if not assigned(nbmem) then exit;
+
   EDCopCtl.Text:=getbinaryfrombyte(nbmem.ROM[$3b]);
   EDCopST.Text :=getbinaryfrombyte(nbmem.ROM[$3c]);
   EdEnReg1.Text:=getbinaryfrombyte(nbmem.ROM[$24]);
@@ -120,6 +122,9 @@ end;
 Procedure TfOSWin.ShowSCREEN;
 Var s:String;
 Begin
+         if not assigned(nbmem) then exit;
+
+
  // EdEL.Text:= inttohex(nbscreen.EL,4);
  // EdLL.Text:= inttohex(nbscreen.LL,4);
  // EdLN.Text:= inttohex(nbscreen.LN,4);
@@ -146,6 +151,8 @@ end;
 Procedure TfOSWin.ShowVarious;
 var s:String;
 Begin
+ if not assigned(nbmem) then exit;
+
  EdENREG2.Text:=getbinaryfrombyte(nbmem.ROM[$B6]);
  s:=inttohex(nbmem.ROM[85],2)+inttohex(nbmem.ROM[84],2)
        +inttohex(nbmem.ROM[83],2)+inttohex(nbmem.ROM[82],2);

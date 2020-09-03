@@ -7,7 +7,7 @@
 ; Modinfo:
 ;
 			;ORG 0x9000
-			ORG 0x0000
+			ORG 0x4000
 
 			MODULE BUILD
 

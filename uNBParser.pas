@@ -87,9 +87,13 @@ begin
 
   if not done then //check for labels
   Begin
-    done:= AsmLabels.LabelExists(eval) ;
+    done:=compiler.LabelExists(eval);
     if Done then
-        Value:= AsmLabels.GetLabel(Eval);
+      Value:= compiler.GetLabel(eval);
+
+    //done:= AsmLabels.LabelExists(eval) ;
+   // if Done then
+     //   Value:= AsmLabels.GetLabel(Eval);
   end;
 
   Evaluated:=Evaluated and done;
@@ -98,9 +102,13 @@ end;
 procedure TNBParser.DoOnGetVar(Sender: TObject; Variable: string;
   var Value: Double; var Done: Boolean);
 begin
-  done:= AsmLabels.LabelExists(Variable) ;
-  if done then 
-   Value:= AsmLabels.GetLabel(Variable);
+    done:=compiler.LabelExists(Variable);
+    if Done then
+      Value:= compiler.GetLabel(Variable);
+
+//  done:= AsmLabels.LabelExists(Variable) ;
+//  if done then
+//   Value:= AsmLabels.GetLabel(Variable);
 end;
 
 procedure TNBParser.FindHexValues(var expr:string);

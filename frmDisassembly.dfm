@@ -929,7 +929,7 @@ object frmdis: Tfrmdis
         Top = 41
         Width = 836
         Height = 675
-        ActivePage = TSMessages
+        ActivePage = TabSheet1
         Align = alClient
         DoubleBuffered = True
         Font.Charset = DEFAULT_CHARSET
@@ -1190,8 +1190,8 @@ object frmdis: Tfrmdis
             ShowHint = True
           end
           object Label12: TLabel
-            Left = 625
-            Top = 107
+            Left = 689
+            Top = 76
             Width = 16
             Height = 13
             Caption = '0/0'
@@ -1287,15 +1287,15 @@ object frmdis: Tfrmdis
           end
           object Edit5: TEdit
             Left = 410
-            Top = 104
+            Top = 77
             Width = 121
             Height = 21
             TabOrder = 8
             Text = 'N'
           end
           object Button4: TButton
-            Left = 544
-            Top = 102
+            Left = 608
+            Top = 73
             Width = 75
             Height = 25
             Caption = 'Send CHARS'
@@ -1305,7 +1305,7 @@ object frmdis: Tfrmdis
           object CheckBox2: TCheckBox
             Left = 544
             Top = 79
-            Width = 97
+            Width = 58
             Height = 17
             Caption = 'Send CR'
             TabOrder = 10
@@ -1366,8 +1366,8 @@ object frmdis: Tfrmdis
             OnClick = Button9Click
           end
           object Button10: TButton
-            Left = 664
-            Top = 104
+            Left = 608
+            Top = 95
             Width = 75
             Height = 25
             Caption = 'Abort'
@@ -1422,6 +1422,15 @@ object frmdis: Tfrmdis
             TabOrder = 22
             Text = '255'
             TextHint = 'LENGTH BYTES'
+          end
+          object Button14: TButton
+            Left = 488
+            Top = 107
+            Width = 75
+            Height = 54
+            Caption = 'Convert color'
+            TabOrder = 23
+            OnClick = Button14Click
           end
         end
       end

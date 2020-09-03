@@ -556,7 +556,6 @@ object fNewBrain: TfNewBrain
       end
       object Disassembly1: TMenuItem
         Caption = 'Assembly/Disassembly'
-        Enabled = False
         ShortCut = 120
         OnClick = Disassembly1Click
       end

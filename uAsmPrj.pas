@@ -76,6 +76,7 @@ Type
 
      function DoLink(lnkFiles, APath: String): Boolean;
     function GetLinkResult: string;
+    procedure clear;
     Published
      property OnBeforeCompile: TOnBefAftCompile read FOnBeforeCompile write
          FOnBeforeCompile;
@@ -122,9 +123,10 @@ end;
 
 procedure TAsmFile.DoCompile(const AFile: string);
 Var sl:Tstringlist;
-    s:String;
+    s,PRJPATH:String;
 begin
   FileName:=AFile;
+  prjpath:=extractfilepath(Filename);
   uasm.AsmLabels.Clear;
   uasm.GlobalLabels.Clear;
   SetProps;
@@ -135,6 +137,7 @@ begin
   finally
     sl.free;
   end;
+  Compiler.ProjectPath:=prjpath;
   Compiler.Compile2(s);
   GetProps;
 end;
@@ -142,12 +145,18 @@ end;
 
 { TProjectLinker }
 
-constructor TProjectLinker.Create;
+procedure TProjectLinker.clear;
 begin
+   Errors:='';
    Files:=TStringList.Create;
    FinalCompiler:=TCompiledList.create;
    asmFiles:=nil;
    LastDollar:=-1;
+end;
+
+constructor TProjectLinker.Create;
+begin
+  clear;
 end;
 
 destructor TProjectLinker.destroy;
@@ -178,7 +187,12 @@ Procedure TProjectLinker.DoCompile(Asmfile:TAsmFile;Fn:String);
 Begin
    DoOnBeforeCompile(AsmFile,Fn);
    asmfile.Compiler.MakeAbsolute(LastDollar);
-   asmfile.DoCompile(SourcePath+Fn);
+   if not fileexists(fn) then
+   Begin
+     asmfile.Compiler.AddError('File ['+fn+'] not found');
+   End
+   else
+    asmfile.DoCompile(SourcePath+Fn);
    DoOnAfterCompile(AsmFile,Fn);
 end;
 
@@ -208,10 +222,16 @@ begin
      Dec(I);
   end;
 
+  for i := Files.Count - 1 downto 0 do
+  Begin
+   if Files[i]='' then files.Delete(i)
+   else
+     if stringreplace(Files[i],#9,'',[rfReplaceAll])='' then files.Delete(i);
+  end;
+
   //Compile Pass1 and Pass 2 (Not Relative)
   for i := 0 to Files.Count - 1 do
   Begin
-
    asmfile:=TAsmFile.create;
    asmfiles.Add(asmfile);
    try
@@ -308,6 +328,7 @@ begin
    finally
       asmFile.free;
    end;
+
 end;
 
 function TProjectLinker.GetLinkResult: string;

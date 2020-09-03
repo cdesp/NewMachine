@@ -169,6 +169,7 @@ type
     Button13: TButton;
     Edit6: TEdit;
     Edit7: TEdit;
+    Button14: TButton;
     procedure asmTextKeyPress(Sender: TObject; var Key: Char);
     procedure asmTextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure BinTextKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -233,7 +234,9 @@ type
     procedure Button12Click(Sender: TObject);
     procedure Button13Click(Sender: TObject);
     procedure SpeedButton10Click(Sender: TObject);
+    procedure Button14Click(Sender: TObject);
   private
+    msgref:integer;
     cx,cy:Integer;
     ActMem:TMemo;
     ChrX: Integer;
@@ -710,9 +713,12 @@ begin
   DatPage:=-2;
   cbpages.items.Clear;
   cbpages.items.Add('-1_NoPaging');
-  for i:=0 to 255 do
-   if nbmem.NBPages[i]<>nil then
-    cbpages.items.Add(Inttostr(nbmem.NBPages[i]^.Page)+'_'+nbmem.NBPages[i]^.Name);
+  if assigned(nbmem) then
+  begin
+    for i:=0 to 255 do
+     if nbmem.NBPages[i]<>nil then
+      cbpages.items.Add(Inttostr(nbmem.NBPages[i]^.Page)+'_'+nbmem.NBPages[i]^.Name);
+  end;
   cbpages.ItemIndex:=0;
   cbPagesChange(nil);
   CommentsChanged:=False;
@@ -1210,7 +1216,8 @@ begin
    sl.SaveToFile('PATCH.txt');
  finally
    sl.Free;
-   fnewbrain.ResumeEmul;
+   if assigned(nbmem) then
+     fnewbrain.ResumeEmul;
  end;
  Showmessage('PATCH FILE CREATED!!!');
 end;
@@ -1280,6 +1287,7 @@ Var i:integer;
     errs:String;
 begin
 Errors:=0;
+ msgref:=0;
 if not isproject then
 Begin
  memMessages.Lines.Clear;
@@ -1315,6 +1323,8 @@ else
 Begin
  memMessages.Lines.Clear;
  memErrors.Lines.Clear;
+ ProjectLinker.clear;
+
  ProjectLinker.OnBeforeCompile:=DoBefCompile;
  ProjectLinker.OnAfterCompile:=DoAftCompile;
  ProjectLinker.DoLink(projtext.Lines.CommaText,ExtractFilePath(OpenTextFileDialog1.FileName));
@@ -1328,12 +1338,16 @@ Begin
  MemErrors.Lines.Add('');
  MemErrors.Lines.CommaText:=MemErrors.Lines.CommaText+ProjectLinker.GetLinkResult;
  Errors:=Compiler.Errors;
+ ShowCompErrors;
 
- if Errors=0 then 
+ if Errors=0 then
    Statusbar1.Panels[2].Text:='Project Link Has Ended !!! '
   Else
    Statusbar1.Panels[2].Text:='ERRORS DETECTED !!! ';
  ShowCompiledCode;
+
+ memMessages.Lines.EndUpdate;
+ SendMessage(memMessages.handle, WM_VSCROLL, SB_TOP, 0);
 
  if Errors>0 then
    PageControl2.ActivePage:= TSErrors
@@ -1529,6 +1543,88 @@ begin
   s.Free;
    adterminal1.Active:=true;
    BUTTON11.Tag:=0;
+end;
+
+
+function Pow(i, k: Integer): Integer;
+var
+  j, Count: Integer;
+begin
+  if k>0 then j:=2
+    else j:=1;
+  for Count:=1 to k-1 do
+    j:=j*2;
+  Result:=j;
+end;
+
+function BinToDec(Str: string): Integer;
+var
+  Len, Res, i: Integer;
+  Error: Boolean;
+begin
+  Error:=False;
+  Len:=Length(Str);
+  Res:=0;
+  for i:=1 to Len do
+    if (Str[i]='0')or(Str[i]='1') then
+      Res:=Res+Pow(2, Len-i)*StrToInt(Str[i])
+    else
+    begin
+      MessageDlg('It is not a binary number', mtInformation, [mbOK], 0);
+      Error:=True;
+      Break;
+    end;
+  if Error=True then Result:=0
+    else Result:=Res;
+end;
+
+function rgb888to666(d:longint):word;
+var
+ dr,dg,db,rnew,gnew,bnew,gup,glo:byte;
+ rgb:word;
+
+Begin
+ dr:=d shr 16;
+ dg:=d shr 8;
+ db:=d;
+
+ //r5,r4,r3,r2,r1,r0  r5 allways 0
+ //g5,g4,g3,g2,g1,g0  g2 allways 0
+ //b5,b4,b3,b2,b1,b0
+
+ bnew:= db and BinToDec('11111100'); //shift 2 right to lower byte
+ rnew:= dr and BinToDec('11111000'); //shift left to upperbyte
+ gnew:= (dg and BinToDec('11101100')); //omit bit 2 of 6pack
+ gup:= (gnew shr 5) and BinToDec('00000111');
+ glo:=(gnew shl 4) and BinToDec('11000000');
+
+ rgb:=((rnew+gup) shl 8)+(glo+(bnew shr 2));
+
+ result:= rgb;
+end;
+
+procedure Tfrmdis.Button14Click(Sender: TObject);
+var cols:string;
+    col,newcol:longint;
+begin
+   if InputQuery('Color RGB 888','Color',cols) then
+   Begin
+    if cols[1]='$' then
+     col:=HexToInt(cols)
+   ELSE
+    try
+      col:=strtoint(cols);
+    except
+      try
+       col:=HexToInt(cols);
+      except
+      end;
+    end;
+
+    newcol:=rgb888to666(col);
+    showmessage(inttohex(newcol));
+   End;
+
 end;
 
 //Send a Program through RS232 to NBLaptop
@@ -1829,7 +1925,7 @@ begin
   Accept:= (Source.Control is TfCPUWin) or (Source.Control is TfOSWin);
 end;
 
-var msgref:integer=0;
+
 
 procedure Tfrmdis.DoCompMes(Sender:TObject;msg:String);
 Var i:integer;
@@ -1998,6 +2094,13 @@ begin
    ShowMessage('Errors were found!!');
    Exit;
  end;
+ if not assigned(nbmem) then
+ Begin
+   ShowMessage('Start the emulation first!!');
+   Exit;
+ end;
+
+
  //What About Rom ??
  RomWriteable:=true;
  fnewbrain.Suspendemul;
@@ -2111,7 +2214,8 @@ begin
  finally
    sl.Free;
    sf.Free;
-   fnewbrain.ResumeEmul;
+   if assigned(nbmem) then
+     fnewbrain.ResumeEmul;
  end;
   Showmessage(inttostr(totbytes)+' bytes put in file!!!');
  End;

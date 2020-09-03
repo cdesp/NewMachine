@@ -708,7 +708,7 @@ begin
   LoadBinaryFileInMemory1.enabled:=true;
   LoadTextFile1.enabled:=true;
   Restart1.enabled:=true;
-  Disassembly1.enabled:=true;
+  //Disassembly1.enabled:=true;
   //Start Emulation
   BootOk:=false;
   try
