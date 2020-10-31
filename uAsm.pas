@@ -194,7 +194,7 @@ Var
 Function CreateCompiler(Init:Boolean=true):TCompiledList;
 
 implementation
-uses udisasm,sysutils,uStrings,windows,uNBParser,uNBTypes, FatExpression;
+uses udisasm,sysutils,uStrings,windows,uNBParser,uNBTypes, FatExpression,frmDisassembly;
 
 Const MaxKW=18;
       MaxSpecialKW=4;
@@ -226,7 +226,11 @@ Var sl:Tstringlist;
     mypath:string;
 Begin
   if fProjectpath='' then
-   mypath:=AppPath+DefaultAsmDir
+  Begin
+   if WorkingDir='' then
+     mypath:=AppPath+DefaultAsmDir
+   else mypath:= WorkingDir;
+  End
   else mypath:=FProjectPath;
 
   sl:=Tstringlist.create;

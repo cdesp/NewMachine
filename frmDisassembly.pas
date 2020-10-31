@@ -299,6 +299,7 @@ var
   frmdis: Tfrmdis;
   Instructions:TInstrList;
   BreakPList:TBreakPointList;
+  WorkingDir:String='';
 
 implementation
 uses unbMemory,ustrings,uDisAsm,math,Printers,uAsm,uNBTypes, New, frmCPUWin,
@@ -1237,6 +1238,7 @@ begin
   if OpenTextFileDialog1.Execute then
   Begin
    asmText.Lines.LoadFromFile(OpenTextFileDialog1.FileName);
+   WorkingDir:=extractfilepath(OpenTextFileDialog1.FileName);
    ProjText.Lines.clear;
    SaveTextFileDialog1.FileName:=OpenTextFileDialog1.FileName;
    SaveBinFileDialog.FileName:=changefileext(OpenTextFileDialog1.FileName,'.bin');
