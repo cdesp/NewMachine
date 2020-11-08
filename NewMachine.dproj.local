@@ -56,5 +56,6 @@
     <Transaction>2017/06/18 13:43:59.000.199,G:\_Programming\NB Emulator\Emulation\SRC_Delphi_Ver3\Unit1.pas=G:\_Programming\NB Emulator\Emulation\SRC_Delphi_Ver3\Z80Intf.pas</Transaction>
     <Transaction>2017/06/18 21:30:51.000.565,=G:\_Programming\NB Emulator\Emulation\SRC_Delphi_Ver3\Z80Package\Z80BaseClass.pas</Transaction>
     <Transaction>2020/07/25 09:47:47.000.230,C:\Users\Χρήστος\OneDrive\Documents\Embarcadero\Studio\Projects\NewMachine\uNBCop.pas=</Transaction>
+    <Transaction>2020/10/31 15:06:42.854,G:\_Programming\NewMachine\NewMachine.dproj=G:\_Programming\NewMachine\NewBrain.dproj</Transaction>
   </Transactions>
 </BorlandProject>

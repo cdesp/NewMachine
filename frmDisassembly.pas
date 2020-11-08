@@ -235,6 +235,11 @@ type
     procedure Button13Click(Sender: TObject);
     procedure SpeedButton10Click(Sender: TObject);
     procedure Button14Click(Sender: TObject);
+    procedure AdTerminal1DblClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Edit2Change(Sender: TObject);
+    procedure Edit6Change(Sender: TObject);
+    procedure Edit7Change(Sender: TObject);
   private
     msgref:integer;
     cx,cy:Integer;
@@ -313,6 +318,11 @@ Begin
   frmdis.Show;
 end;
 
+
+procedure Tfrmdis.AdTerminal1DblClick(Sender: TObject);
+begin
+ adTerminal1.Clearall;
+end;
 
 procedure Tfrmdis.ApdComPort1PortClose(Sender: TObject);
 begin
@@ -542,6 +552,21 @@ begin
  edit1.Hint:=inttohex(strtoint(edit1.Text),4)+'h';
 end;
 
+procedure Tfrmdis.Edit2Change(Sender: TObject);
+begin
+  edit2.Hint:=inttohex(strtoint(edit2.Text),4)+'h';
+end;
+
+procedure Tfrmdis.Edit6Change(Sender: TObject);
+begin
+  edit6.Hint:=inttohex(strtoint(edit6.Text),4)+'h';
+end;
+
+procedure Tfrmdis.Edit7Change(Sender: TObject);
+begin
+  edit7.Hint:=inttohex(strtoint(edit7.Text),4)+'h';
+end;
+
 procedure Tfrmdis.DoDisAsmPrint;
 Var i:Integer;
     MAxy,y,spc:Integer;
@@ -728,7 +753,7 @@ begin
   PageControl2.DoubleBuffered:=true;
   panel2.DoubleBuffered:=True;
   panel3.DoubleBuffered:=True;
-  PageControl1.ActivePage:=TSDis;
+  PageControl1.ActivePage:=TSAsm;
   PageControl2.ActivePage:=TSSource;
   PageControl2Change(nil);
   if not assigned(fCPUWin) then
@@ -745,6 +770,8 @@ begin
    except
       //may be same port opened by the emulator
    end;
+  
+
 end;
 
 procedure Tfrmdis.FormMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -773,6 +800,14 @@ begin
    Handled:=true;
   end;
  end;
+end;
+
+procedure Tfrmdis.FormShow(Sender: TObject);
+begin
+ edit1.Text:='28672';
+   edit2.Text:='255';
+   edit6.Text:='0';
+   edit7.Text:='255';
 end;
 
 Function Tfrmdis.GetDefaultName:String;
@@ -1541,7 +1576,7 @@ begin
      s.Values[inttostr(HL+i)]:=inttostr(ord(q));
     End;
   End;
-  s.SaveToFile('NBLapMemDump.txt');
+  s.SaveToFile('NewMachineMemDump.txt');
   s.Free;
    adterminal1.Active:=true;
    BUTTON11.Tag:=0;
@@ -2209,6 +2244,10 @@ begin
   sl.SaveToFile(ChangeFileEXt(SaveBinFileDialog.FileName,'.txt'));
     //Save Global Symbol Table
   GlobLabels.Lines.SaveToFile(ChangeFileEXt(SaveBinFileDialog.FileName,'.GSYM'));
+  sl.Assign(GlobLabels.Lines);
+  for I := 0 to sl.Count-1 do
+   sl[i]:=stringreplace(sl[i],'=',' EQU ',[]);
+  sl.SaveToFile(ChangeFileEXt(SaveBinFileDialog.FileName,'.SYM'));
     //Save Binary Listing
   BinText.Lines.SaveToFile(ChangeFileEXt(SaveBinFileDialog.FileName,'.BLST'));
   if memErrors.Lines.Count>0 then

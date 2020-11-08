@@ -3,7 +3,7 @@
         <ProjectGuid>{5B0403F3-FDB0-48F1-A93C-FE9B7D0F6496}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="NewBrain.dproj">
+        <Projects Include="NewMachine.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Z80Package\Z80Emulator.cbproj">
@@ -17,14 +17,14 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="NewBrain">
-        <MSBuild Projects="NewBrain.dproj"/>
+    <Target Name="NewMachine">
+        <MSBuild Projects="NewMachine.dproj"/>
     </Target>
-    <Target Name="NewBrain:Clean">
-        <MSBuild Projects="NewBrain.dproj" Targets="Clean"/>
+    <Target Name="NewMachine:Clean">
+        <MSBuild Projects="NewMachine.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="NewBrain:Make">
-        <MSBuild Projects="NewBrain.dproj" Targets="Make"/>
+    <Target Name="NewMachine:Make">
+        <MSBuild Projects="NewMachine.dproj" Targets="Make"/>
     </Target>
     <Target Name="Z80Emulator">
         <MSBuild Projects="Z80Package\Z80Emulator.cbproj"/>
@@ -36,13 +36,13 @@
         <MSBuild Projects="Z80Package\Z80Emulator.cbproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="NewBrain;Z80Emulator"/>
+        <CallTarget Targets="NewMachine;Z80Emulator"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="NewBrain:Clean;Z80Emulator:Clean"/>
+        <CallTarget Targets="NewMachine:Clean;Z80Emulator:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="NewBrain:Make;Z80Emulator:Make"/>
+        <CallTarget Targets="NewMachine:Make;Z80Emulator:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
