@@ -722,10 +722,13 @@ procedure Tfrmdis.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if CommentsChanged then
     SaveComments;
-  fCPUWin.Tag:=9;
-  fCPUWin.Close;
-  fCPUWin.free;
-  fCPUWin:=nil;
+  if FCPUWIN<>NIL then
+  Begin
+    fCPUWin.Tag:=9;
+    fCPUWin.Close;
+    fCPUWin.free;
+    fCPUWin:=nil;
+  End;
   ApdComPort1.Open:=false;
 end;
 

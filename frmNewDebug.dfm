@@ -83,7 +83,7 @@ object NewDebug: TNewDebug
       OnClick = SpeedButton3Click
     end
     object SpeedButton4: TSpeedButton
-      Left = 626
+      Left = 637
       Top = 72
       Width = 23
       Height = 22
@@ -102,7 +102,7 @@ object NewDebug: TNewDebug
       Caption = 'Comma Seperated for bytes (no hex) or plain text'
     end
     object SpeedButton5: TSpeedButton
-      Left = 658
+      Left = 666
       Top = 72
       Width = 23
       Height = 22
@@ -111,6 +111,17 @@ object NewDebug: TNewDebug
       ParentShowHint = False
       ShowHint = True
       OnClick = SpeedButton5Click
+    end
+    object SpeedButton6: TSpeedButton
+      Left = 599
+      Top = 72
+      Width = 23
+      Height = 22
+      Hint = 'Single Step'
+      Caption = 'B'
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = SpeedButton6Click
     end
     object CheckBox1: TCheckBox
       Left = 296

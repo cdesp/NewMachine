@@ -2,3 +2,5 @@
 *.res
 __recovery/
 __history/
+*.obj
+*.exe

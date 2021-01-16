@@ -1,0 +1,5 @@
+10 FOR N% = 1 TO 5
+20 A$ = LEFT$("Hello",N%)
+30 B% = N%*10^(N%-1)
+40 PRINT A$,A$,A$,A$'B%,B%,B%,B%
+50 NEXT N%
