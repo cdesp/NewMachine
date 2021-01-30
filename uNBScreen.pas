@@ -105,7 +105,7 @@ CONST
 Var NBScreen:TNbScreen;
     CharArr:Array[0..2560] of byte; //charset array
     VideoMem:array[0..VideoTotal] of TColor;
-
+    scrollline:word=0;
 
 
 
@@ -150,7 +150,7 @@ begin
   vertmult:=1;
   EMUScrheight:=480; //variable
   EMUScrWidth:=800;
-
+  scrollline:=0;
 end;
 
 procedure TNBScreen.ClearScr;
@@ -408,7 +408,7 @@ begin
 
 
 
-
+ addr:=scrollline*VideoW;
 
  for i:=0 to nocy-1 do     //count lines
  Begin
@@ -417,7 +417,8 @@ begin
 
     ch:=Videomem[addr];
     inc(addr);
-
+    if addr>length(Videomem)-2 then
+      addr:=0;
     Drawpixel(j,i, ch );
 
   End; //for j
@@ -592,18 +593,20 @@ begin
 
    if showfps then
    Begin
-    Newscr.Surface.Canvas.TextOut(VideoW-100,5 ,'FPS    : '+inttostr(lastfps));
-    Newscr.Surface.Canvas.TextOut(VideoW-100,25,'MULT.  : '+Floattostr(fnewbrain.Emuls)+'/'+Floattostr(fnewbrain.Mhz));
-    Newscr.Surface.Canvas.TextOut(VideoW-100,45,'MHz    : '+Floattostr(fnewbrain.Emuls*4));
-    Newscr.Surface.Canvas.TextOut(VideoW-100,65,'Delay  : '+inttostr(nbdel));
+    Newscr.Surface.Canvas.TextOut(VideoW-150,5 ,'FPS      : '+inttostr(lastfps));
+    Newscr.Surface.Canvas.TextOut(VideoW-150,25,'MHz REAL : '+Floattostr(fnewbrain.Emuls)+'/'+Floattostr(fnewbrain.Mhz));
+    Newscr.Surface.Canvas.TextOut(VideoW-150,45,'MHz TARG : '+Floattostr(fnewbrain.Mhz));
+    Newscr.Surface.Canvas.TextOut(VideoW-150,65,'Delay    : '+inttostr(nbdel));
 //    Newscr.Surface.Canvas.TextOut(newscr.width-100,85,'Frm Skp: '+inttostr(maxpn));
-    Newscr.Surface.Canvas.TextOut(VideoW-100,85,'COP: '+inttostr(CPTM));
-    Newscr.Surface.Canvas.TextOut(v-100,105,'CLK: '+inttostr(CkTm));
+    Newscr.Surface.Canvas.TextOut(VideoW-250,85,'ems: '+inttostr(NEW.lastEMS));
+    Newscr.Surface.Canvas.TextOut(VideoW-250,105,'def: '+inttostr(NEW.idif));
+    Newscr.Surface.Canvas.TextOut(VideoW-250,125,'time: '+inttostr(NEW.lasttime));
+    Newscr.Surface.Canvas.TextOut(v-150,145,'CLK: '+inttostr(CkTm));
 //    Newscr.Surface.Canvas.TextOut(newscr.width-100,105 ,'FPS    : '+inttostr(fNewBrain.thrEmulate.FrameRate));
     if doHardware in newscr.NowOptions then
-     Newscr.Surface.Canvas.TextOut(VideoW-100,170,'HARDWARE')
+     Newscr.Surface.Canvas.TextOut(VideoW-150,170,'HARDWARE')
     else
-     Newscr.Surface.Canvas.TextOut(VideoW-100,170,'SOFTWARE')
+     Newscr.Surface.Canvas.TextOut(VideoW-150,170,'SOFTWARE')
    end;
 
    Newscr.Surface.Canvas.Release;

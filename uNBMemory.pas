@@ -224,11 +224,18 @@ begin
   // For i:=0 to 3 do
    //  CreatePage(i); // std ram
 
-  For i:=1 to 10 do
+  For i:=5 to 10 do
    CreatePage(i); // Exp ram 96k
 
-  LoadRom(20,'build6.bin');  //BBC BASIC + OS MAIN INTERFACE COMMANDS
-  LoadRom(30,'MYOS1.bin');  //OS MAIN COMMANDS
+
+
+   LoadRom(1,'G:\_Programming\_DOCS\Schematics\MyModular\EEPROMs\MYOS_2_0000.bin');
+//   LoadRom(1,'MYOS_2_0000.bin');
+   LoadRom(3,'Basic_4000.bin');
+
+
+  //LoadRom(20,'build6.bin');  //BBC BASIC + OS MAIN INTERFACE COMMANDS
+  //LoadRom(30,'MYOS1.bin');  //OS MAIN COMMANDS
 
 
 
@@ -241,9 +248,9 @@ begin
   SetPageInSlot(6,7,False); //C000
   SetPageInSlot(7,8,False); //E000
 
-  SetPageInSlot(0,20,False); //0000
-  SetPageInSlot(1,21,False); //2000
-  SetPageInSlot(2,30,False); //4000
+ // SetPageInSlot(0,20,False); //0000
+ // SetPageInSlot(1,21,False); //2000
+ // SetPageInSlot(2,30,False); //4000
 
 
    //move to 8200h
@@ -258,7 +265,7 @@ begin
  // nbmem.SetRomForce(hextoint('B323'),Hextoint('05'));
 
   //LOAD CHARSET TO MEMORY
-  move:=$4B00;  //19200
+  move:=$7500;  //19200
   for i := 0 to 2560 do
   Begin
     nbmem.SetRomForce(i+move,CharArr[i]);
@@ -480,7 +487,10 @@ var f:File;
       t,n,prevpage:Integer;
       fl:String;
 Begin
-   fl:=Fpath+FName;
+   if Pos('\',fname)=0 then
+    fl:=Fpath+FName
+   else
+     fl:=fname;
  try
    System.FileMode:=fmOpenRead;
    try

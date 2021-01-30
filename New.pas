@@ -140,6 +140,7 @@ type
     Memo1: TMemo;
     thrVideo: TTimer;
     timptimer: TTimer;
+    svserial: TCheckBox;
     procedure Button1Click(Sender: TObject);
     procedure Start1Click(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word;
@@ -200,6 +201,7 @@ type
     procedure newscrResize(Sender: TObject);
     procedure thrVideoTimer(Sender: TObject);
     procedure timptimerTimer(Sender: TObject);
+    procedure svserialClick(Sender: TObject);
 
 
   private
@@ -228,6 +230,8 @@ type
     function getDebugging: Boolean;
     procedure setDebugging(const Value: Boolean);
     procedure doImport;
+    function getemulsatspeedtime(eml, time: cardinal): longint;
+    function checkBpts: boolean;
 
   public
     { Public declarations }
@@ -273,7 +277,8 @@ var
   fNewBrain: TfNewBrain;
   LASTPC:WORD;  //last pc for debugging
   InterruptServed:Boolean=True;
-  NBDel:Integer=30;   //Emulation Delay
+  NBDel:Integer=33000;   //Emulation Delay
+  idif:integer;         //EMULATION DIF
   fl:String;
   pclist:Tlist=nil;
   SPlist:Tlist=nil;
@@ -282,6 +287,37 @@ var
   LastOut:Byte;
   LastError:string='';
   AppCaption:String='';
+
+ Pretick:Cardinal=0;
+    ems:Cardinal=0;
+    LASTEMS:cardinal;
+    lasttime:cardinal;
+
+    Doesc:Boolean=true;
+
+    //1.000.000 States is 1Mhz
+    //13000 States is 13ms in 1MHz Clock
+    //13000*4=52000 States is 13ms in 4Mhz Clock
+
+    //EMULATION IS FASTER BECAUSE WE 'REFRESH' THE SCREEN FASTER
+    //SHOULD FIND OUT HOW MANY ms NEWBRAIN NEEDS TO REFRESH THE SCREEN
+    //AND DELAY AS MUCH
+
+    cEmuls:integer=0;
+    sle:tstringlist=nil;
+    St:Integer=0;
+    emuled:Integer=0;
+    CopTime:Cardinal=0;
+    CLKTime:Cardinal=0;
+    EMUTime:Cardinal=0;
+    EMUReal:Cardinal=0;
+    EMUDif:Cardinal=0;
+    CpTm:Cardinal=0;
+    CkTm:Cardinal=0;
+    cpcnt,ckcnt:integer;
+    emudel:Integer=1;
+    CPUStates:longint=1*1000000; //4mhZ
+
 
 implementation
 uses uz80dsm,math, frmNewDebug,jcllogic, frmChrDsgn, frmAbout, frmTapeMgmt,
@@ -588,11 +624,25 @@ Begin
   NbIO.NBOut(LastOut,Value);
 End;
 
-
+Var mytimeinterrupt:cardinal=0;
 Function Getint:Boolean;
 Begin
 
+  result:=false;
+  if gettickcount-mytimeinterrupt>=17 then
+  Begin
+    INTERRUPT1:=TRUE;
+    InterruptServed:=FALSE;
+  end;
+  RESULT:=interrupt1;
+
 End;
+
+procedure clearinterrupt;
+Begin
+  mytimeinterrupt:=gettickcount;
+  InterruptServed:=true;
+end;
 
 {
 Procedure RETI;cdecl;
@@ -603,13 +653,15 @@ End;
 Const MAxHist=50;
 Var Prepc:Word;
     NTI:iNTEGER=0;
+    Dostop:boolean;
 
 procedure StepProc(Const pc: word);
 var
     sp:word;
     IF1:word;
+
 Begin
- fnewbrain.thrEmulate.enabled:=false;
+ //fnewbrain.thrEmulate.enabled:=false;
 {$IFDEF NBDEBUG}
 // sp:=  z80_get_reg(Z80_REG_SP);
 // if pclist=nil then
@@ -640,15 +692,17 @@ Begin
 //  Else
 //   inc(nti);
 {$ENDIF}
-  newdebug.checkbreak(pc);
+  Dostop:=  newdebug.checkbreak(pc);
   Prepc:=pc;
   IF1:=z80_get_reg(Z80_REG_IFF1);
-  if fnewbrain.debugging AND NOT STOPPED then
+  if dostop or (fnewbrain.debugging AND NOT STOPPED) then
   Begin
    z80_stop_emulating;
    Stopped:=true;
   End;
- fnewbrain.thrEmulate.enabled:=true;
+
+
+//  fnewbrain.thrEmulate.enabled:=true
 End;
 
 //interface with emulation DLL
@@ -983,7 +1037,7 @@ begin
 //   thremulate:=nil;
    timeBeginPeriod(1);
    Savedialog1.initialdir:=root+'Progs\';
-   Mhz:=1;//4
+   Mhz:=8;
    statusbar1.TabStop:=false;
 //   statusbar1.onkeydown:=FormKeyDown;
 //   statusbar1.onkeyup:=FormKeyUp;
@@ -993,33 +1047,6 @@ begin
     FillCharArray;
 end;
 
-Var Pretick:Cardinal=0;
-    ems:Cardinal=0;
-
-    Doesc:Boolean=true;
-
-    //1.000.000 States is 1Mhz
-    //13000 States is 13ms in 1MHz Clock
-    //13000*4=52000 States is 13ms in 4Mhz Clock
-
-    //EMULATION IS FASTER BECAUSE WE 'REFRESH' THE SCREEN FASTER
-    //SHOULD FIND OUT HOW MANY ms NEWBRAIN NEEDS TO REFRESH THE SCREEN
-    //AND DELAY AS MUCH
-
-    cEmuls:integer=0;
-    sle:tstringlist=nil;
-    St:Integer=0;
-    emuled:Integer=0;
-    CopTime:Cardinal=0;
-    CLKTime:Cardinal=0;
-    EMUTime:Cardinal=0;
-    EMUReal:Cardinal=0;
-    EMUDif:Cardinal=0;
-    CpTm:Cardinal=0;
-    CkTm:Cardinal=0;
-    cpcnt,ckcnt:integer;
-    emudel:Integer=1;
-    CPUStates:longint=20000000; //4mhZ
 
 
 var copcnt:cardinal=0;
@@ -1034,7 +1061,7 @@ begin
  try
   StartEmulation;
  finally
-  thrEmulate.Enabled:=true;
+    thrEmulate.Enabled:=true;
  end;
 end;
 
@@ -1045,44 +1072,88 @@ begin
    nbscreen.PaintVideo;
 end;
 
+var emulate:integer=2000;
 
-
-procedure TfNewBrain.DoEmulation(st:integer=40000);
-var dif,tr:Real;
-    idif,tmdif:Integer;
-    Pretick2:Cardinal;
+//should return tstates difference
+function TfNewBrain.getemulsatspeedtime(eml,time:cardinal):longint;
+var t,sd:real;
 Begin
+  //eml tstates at time
+  t:=Mhz*CPUSTates;//convert speed at states
+  //t states at 1 sec
+  sd:=(t*time)/1000; //should done tstates at time
+  emuls:=eml*(1000/time)/CPUStates;//in MHZ
+  emuls:=Trunc(emuls*100) / 100;
+  result:=trunc(sd-eml);
+end;
+
+
+var Pretick2:cardinal;
+    mydelay,extradel:integer;
+
+    lastmhz1,lastmhz2:real;
+    meanamhz:real;
+    OLDINT,oldnbdel:integer;
+    wasdebug:boolean=false;
+    EXECUTINGINTERRUPT:BOOLEAN=FALSE;
+procedure TfNewBrain.DoEmulation(st:integer=40000);
+var dif:Real;
+    tr,m1:integer;
+    tmdif:Integer;
+    tmellapsed:Cardinal;
+Begin
+
+
   if sle=nil then sle:=tstringlist.create;
   if bootok and ((NBkey=$80) or (nbkey=0))  then
      CheckKeyBoard;
-  If Debugging then
+  If Debugging or checkBpts then
   Begin
-    if emuled>=st then
-    Begin
-     if InterruptServed then
-     Begin
-      Emuled:=0;
-      InterruptServed:=false;
-     End;
-    End;
     Stopped:=false;
-    emuled:=emuled+Z80_Emulate(st-emuled);
+    oldint:=thrEmulate.Interval;
+    oldnbdel:=nbdel;
+    thrEmulate.Interval:=0;
+    NBDEL:=1;
+    wasdebug:=true;
+    if not debugging and checkBpts then
+         emuled:=emuled+Z80_Emulate(st)
+    else
+     //emuled:=emuled+Z80_Emulate(st-emuled);
+     emuled:=emuled+Z80_Emulate(st);
+    EXECUTINGINTERRUPT:=FALSE;
   End
   Else
   Begin
-     Emuled:=0;
-     if InterruptServed then
+     if wasdebug then
      Begin
-      InterruptServed:=false;
+      wasdebug:=false;
+      nbdel:=oldnbdel;
+      thrEmulate.Interval:=oldint;
      End;
+     Emuled:=0;
 //     EMUReal:=emureal+(st*1000) div 4000000; //time to process st Tstates @ 4Mhz
-     EMUReal:=emureal+st div trunc((CPUStates * Mhz)); //time to process st Tstates @ 4Mhz
-     st:=Z80_Emulate(st);
+//     EMUReal:=emureal+st DIV trunc((CPUStates * Mhz)); //time to process st Tstates @ 4Mhz
+    // EMUReal:=emureal+st;
+
+     // st:=Z80_Emulate(st);
+      st:=Z80_Emulate(emulate);
+      EXECUTINGINTERRUPT:=FALSE;
     // EMUDif:=Stopwatch.ElapsedMilliseconds-EMUTime;
 
   End;
-  if getint  then //check if there is an interrupt
+  if EXECUTINGINTERRUPT then EXIT;
+  //check if there is an interrupt
+  if GETINT then
+  Begin
+  // z80_set_reg(Z80_REG_IFF1,1);
+   EXECUTINGINTERRUPT:=TRUE;
    st:=st+Myz80.Z_Interrupt;
+
+   clearinterrupt;
+  end;
+
+  if DEBUGGING then EXIT;
+
  { Inc(cEmuls);
   if cemuls<2000 then
    sle.add(inttostr(st)+'  '+fl)
@@ -1094,35 +1165,88 @@ Begin
   }
   Ems:=Ems+st;//Tstates
 
-  If GetTickCount-Pretick2 >=100 then
+  tmellapsed:=GetTickCount-Pretick2;
+  If  tmellapsed>=1000 then
   Begin
     Pretick2:=GetTickCount;
     //how many tstates should have done
-    EMUReal:=trunc((GetTickCount-Pretick)  *(CPUStates * Mhz) / 1000);
-    idif:=ems-emureal;
-    tr:=idif*1000/(CPUStates * Mhz);
-    if (tr<100) and (tr>0) then
-     sleep(trunc(tr));
+//    EMUReal:=trunc((GetTickCount-Pretick)  *(CPUStates * Mhz) );
+    lastmhz2:=lastmhz1;
+    lastmhz1:=trunc(emuls);
+    idif:=getemulsatspeedtime(ems,tmellapsed);
+    if idif>0 then
+     m1:=1 else m1:=-1;
+    meanamhz:=(emuls+lastmhz1+lastmhz2) / 3;
+    idif:=abs(idif);
+    lastems:=ems;
+    lasttime:=tmellapsed;
+    Ems:=0;
 
+  if abs(meanamhz-mhz)>0.15 then
+  begin
+
+//    tr:=abs(trunc(idif/100000));
+    if idif>20000000 then
+      tr:=4000
+    else
+    if idif>15000000 then
+      tr:=2000
+    else
+    if idif>10000000 then
+      tr:=1000
+    else
+    if idif>7000000 then
+      tr:=500
+    else
+    if idif>4000000 then
+      tr:=100
+    else
+    if idif>3000000 then
+      tr:=50
+    else
+    if idif>1500000 then
+      tr:=10
+    else
+      tr:=5;
+
+    tr:=math.max(integer(1),integer(tr));
+
+    if m1>0 then
+     dec(nbdel,tr)
+    else
+    if m1<0 then
+      inc(nbdel,tr);
+
+      if nbdel<0 then
+       nbdel:=1;
+      if nbdel>50000 then
+       nbdel:=49000;
+
+     emulate:=50000-nbdel;
+//      tr:=nbdel div 80;
+   //  if (thrEmulate.Interval=1) and (tr=0) then
+    //  extradel:=nbdel*10;
+
+
+     thrEmulate.Interval:=0;
+
+    end;
+   // if thrEmulate.Interval>0 then
+     //extradel:=0;
+   // DELAY(0,nbdel mod 80);
+    //DELAY(0,nbdel);
 
   end;
 
 
-{  if ems>4000000 then
-  Begin
-    tr:=GetTickCount-Pretick;
-    delay(0,trunc(tr));
-//    sleep(trunc(tr));
-
-  end;}
-
+ {
   If GetTickCount-Pretick>=1000 then
   Begin
 
 
    // cpcnt:=0;
    //  ckcnt:=0;
-   Emuls:= Ems / 4000000;//4Mhz
+   Emuls:= Ems / (1000000);//4Mhz
    dif:=mhz-emuls;
 
      Stopwatch.Stop;
@@ -1142,39 +1266,10 @@ Begin
 //     end;
      EMUReal:=0;
      Stopwatch.Start;
-
-
-   if abs(dif)>0.09 then
-   Begin
-   if nbscreen.Lastfps>50 then
-   begin
-    inc(nbdel);
-   end
-   else if nbscreen.Lastfps<50 then
-    if nbdel>1 then
-     dec(nbdel);
-  end;
-//   idif:=Abs(Trunc(Dif*10) div 2);
-//   if idif=0 then idif:=1;
-//   if (nbdel=0) and (idif>1) then
-//   Begin
-//    Inc(maxpn);
-//    inc(nbdel,3);
-//   End;
-//   if abs(dif)>0.09 then //check how precise we want the emulation to be
-//   Begin
-//    if emuls<Mhz then
-//    Begin
-//      if (nbdel-idif)>0 then Dec(NBDel,idif)
-//      else
-//       if nbdel>0 then dec(nbdel);
-//     End
-//     Else
-//      if emuls>Mhz then Inc(NBDel,idif);
-//   End;//if abs
    Ems:=0;
    PreTick:=GetTickCount;
-  End; //gettickcount
+//   sleep(nbdel);
+  End; //gettickcount}
 End;
 
 procedure TfNewBrain.Button3Click(Sender: TObject);
@@ -1273,6 +1368,11 @@ begin
  thrEmulate.Enabled:=False;
 end;
 
+procedure TfNewBrain.svserialClick(Sender: TObject);
+begin
+ NEWSCR.SetFocus;
+end;
+
 procedure TfNewBrain.ResumeEmul;
 begin
  IsSuspended:=False;
@@ -1313,7 +1413,7 @@ procedure TfNewBrain.SetMHz1Click(Sender: TObject);
 var m:String;
 begin
  m:=floattostr(mhz);
- if inputquery('Input Cpu Multiplier ','Value (Float) (Default 1, NB~0.4)',m) then
+ if inputquery('Input Cpu Speed in MHz ','Value (Float) (Default 8)',m) then
  Begin
    try
      Mhz:=strtofloat(m);
@@ -1343,6 +1443,7 @@ begin
    end;
    MakeTapeButtons;
    Debug2Click(Sender);
+   Memo1.SetFocus;
 end;
 
 procedure TfNewBrain.SetBasicFile1Click(Sender: TObject);
@@ -1365,6 +1466,11 @@ procedure TfNewBrain.setDebugging(const Value: Boolean);
 begin
  bDebugging:=value;
  Z80Steping:=value;
+ if not value then
+ Begin
+   fnewbrain.thrEmulate.Tag:=0;
+ end;
+
 end;
 
 procedure TfNewBrain.WriteP1(s:String);
@@ -1385,7 +1491,11 @@ end;
 procedure TfNewBrain.timptimerTimer(Sender: TObject);
 var ch:char;
 Begin
-   if  length(kbuf)=0 then  timptimer.Enabled:=false
+   if  length(kbuf)=0 then
+   Begin
+     timptimer.Enabled:=false;
+     ShowMessage('Import Finished');
+   end
    else
    if mykey=0 then
    Begin
@@ -1425,7 +1535,6 @@ try
   // nbkeyboard.import(kbuf);
    keybFileinp:=true;
    doImport;
-   ShowMessage('Import Finished');
  End;
 Finally
   opdlg.free;
@@ -1888,6 +1997,11 @@ end;
 
 Var DebugTimer:Integer;
 
+function TfNewBrain.checkBpts:boolean;
+Begin
+  result:=(NewDebug<>nil) and (NewDebug.Visible);
+End;
+
 procedure TfNewBrain.StartEmulation;
 var pc:integer;
 begin
@@ -1910,14 +2024,15 @@ begin
          doone:=false;
          Doemulation(1);
         End;
-        Sleep(1);
+        //Sleep(1);
       End
       else
-       if (NewDebug<>nil) and (NewDebug.Visible) then
+       if checkBpts then
        begin
          pc:=z80_get_reg(Z80_REG_PC);
          Z80_StepProc(PC);
-         Doemulation(1);
+         if not dostop then
+           Doemulation(1);
        end
       else
        doEmulation;

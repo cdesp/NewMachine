@@ -95,6 +95,17 @@ object fNewBrain: TfNewBrain
           Gap = 3
           DimColor = 16384
         end
+        object svserial: TCheckBox
+          Left = 320
+          Top = 13
+          Width = 113
+          Height = 17
+          Caption = 'Load/Save to Serial'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          OnClick = svserialClick
+        end
       end
     end
     object Panel2: TPanel
@@ -254,6 +265,7 @@ object fNewBrain: TfNewBrain
     end
     object Setup1: TMenuItem
       Caption = 'NB Setup'
+      Visible = False
       object WithExpansion1: TMenuItem
         Caption = 'With Expansion Interface Module'
         OnClick = WithExpansion1Click
@@ -282,6 +294,7 @@ object fNewBrain: TfNewBrain
       object VFDisplayUp1: TMenuItem
         Caption = 'VF Display Up'
         Checked = True
+        Visible = False
         OnClick = VFDisplayUp1Click
       end
       object ShowInstructions1: TMenuItem
@@ -292,9 +305,11 @@ object fNewBrain: TfNewBrain
     end
     object N3: TMenuItem
       Caption = '-'
+      Visible = False
     end
     object ape1: TMenuItem
       Caption = 'Tape'
+      Visible = False
       object TapeManagement1: TMenuItem
         Action = acTapeManagement
       end
@@ -304,6 +319,7 @@ object fNewBrain: TfNewBrain
     end
     object Storage1: TMenuItem
       Caption = 'Disk'
+      Visible = False
       object DiskManagement1: TMenuItem
         Action = acDiskManagement
       end
@@ -325,6 +341,7 @@ object fNewBrain: TfNewBrain
     end
     object N1: TMenuItem
       Caption = '-'
+      Visible = False
     end
     object Tools1: TMenuItem
       Caption = 'Tools'
@@ -381,6 +398,7 @@ object fNewBrain: TfNewBrain
     end
     object E1: TMenuItem
       Caption = 'External Tools'
+      Visible = False
       object NBDigitizer1: TMenuItem
         Caption = 'NB Digitizer'
         OnClick = NBDigitizer1Click
@@ -411,7 +429,7 @@ object fNewBrain: TfNewBrain
       end
       object Disassembly1: TMenuItem
         Caption = 'Assembly/Disassembly'
-        ShortCut = 120
+        ShortCut = 123
         OnClick = Disassembly1Click
       end
     end

@@ -52,16 +52,21 @@ type
     SvLdFile:TFileStream;
     SvLdInLenHI:boolean;
 
-    procedure DoPort0Out(Value: Byte);
+    procedure DoPort32Out(Value: Byte);
     procedure getregisters;
-    function DoPort0In(Value: Byte): byte;
+    function DoPort32In(Value: Byte): byte;
     function DoPort7In(Value: Byte): Byte;
     procedure DoPort4Out(Value: Byte);
 
-    procedure DoPort5Out(Value: Byte);
-    procedure DoLastCommand;
-    function DoPort32In(Value: Byte): Byte;
-    procedure DoPort32Out(Value: Byte);
+    procedure DoPort16Out(Value: Byte);
+    function DoLastCommand:byte;
+    function DoPort56In(Value: Byte): Byte;
+    procedure DoPort56Out(Value: Byte);
+    function DoPort37In(Value: Byte): Byte;
+    function DoPort24In(Value: Byte): Byte;
+    procedure DoPort17Out(Value: Byte);
+    function DoPort17In(Value: Byte): byte;
+    procedure DoPort64Out(Value: Byte);
 
 
 
@@ -87,9 +92,11 @@ CONST
 
 
 Var
-
+       ldsv:boolean=false;
        NBIO:TNBInOutSupport=nil;
        mykey:word=0;
+       tmr1:cardinal;
+       interrupt1:boolean=FALSE;
 
 
 implementation
@@ -142,9 +149,13 @@ Var value:integer;
 begin
    Value:=z80_get_reg(Z80_REG_AF);
    case port of
-      0: Result:=DoPort0In(Value);
+
       7: Result:=DoPort7In(Value);
-     32: Result:=DoPort32In(Value);
+     17: RESULT:=DoPort17In(Value); //LCD data
+     24: Result:=DoPort24In(Value); //USB KEYB
+     32: Result:=DoPort32In(Value); //RS232
+     37: Result:=DoPort37In(Value);
+     56: Result:=DoPort56In(Value);
    end;
 
 end;
@@ -152,16 +163,37 @@ end;
 procedure TNBInOutSupport.NBout(Port:Byte;Value:Byte);
 begin
     case port of
-      0: DoPort0Out(Value);
       4: DoPort4Out(Value);
-      5: DoPort5Out(Value);
-     32: DoPort32Out(Value);
+     16: DoPort16Out(Value);//LCD command
+     17: DoPort17Out(Value);//LCD data
+     32: DoPort32Out(Value);//RS232
+     56: DoPort56Out(Value);//SAVE
+     64: DoPort64Out(Value);//Interrupt device
    end;
 end;
 
 
+function TNBInOutSupport.DoPort24In(Value: Byte): Byte;
+var k:integer;
+Begin
+  k:=0;
+  if interrupt1 THEN
+  BEGIN
+    k:=1;//bit 0,1,2 is for the 8 interrupts
+    K:=7-K;
+  END;
 
-function TNBInOutSupport.DoPort32In(Value: Byte): Byte;
+  Result:= 64+K;
+End;
+
+function TNBInOutSupport.DoPort37In(Value: Byte): Byte;
+Begin
+ Result:=32;  //UART READY
+  if (mykey<>0) OR (Fnewbrain.svserial.checked and ldsv) then
+   result:=result+1;
+End;
+
+function TNBInOutSupport.DoPort56In(Value: Byte): Byte;
 var btread:Integer;
 Begin
    case SvLdstat of
@@ -172,24 +204,31 @@ Begin
                SvLdFile:=TFileStream.Create(BASICPATH+SvLdFname,fmOpenRead);
               except
                 //todo:return an error filename not found
+                Result:=0;
               end;
              End;
              if svldinlenHI then
              begin
-                result:=(SvLdFile.Size shr 8) and $FF;
-                SvLdstat:=BYTES;
+               if assigned(SvLdFile) then
+                 result:=(SvLdFile.Size shr 8) and $FF
+               else
+                 result:=0;
+               SvLdstat:=BYTES;
              end
              else
              Begin
-                result:=SvLdFile.Size and $FF;
-                SvLdInLenHI:=true;
+               if assigned(SvLdFile) then
+                result:=SvLdFile.Size and $FF
+               else
+                result:=0;
+               SvLdInLenHI:=true;
              End;
            End;
      BYTES:Begin
              if SvLdFile=nil then
              begin
                //todo:send an error
-               result:=0;
+               result:=04; //file not found
                exit;
              end;
              btread:=SvLdFile.read(result,1);
@@ -200,13 +239,15 @@ Begin
                SvLdInLenHI:=false;
                SvLdstat:=SVNONE;
                SvLdFname:='';
+               ldsv:=false;
+
              end;
            End;
    end;
 
 End;
 
-procedure TNBInOutSupport.DoPort32Out(Value:Byte);
+procedure TNBInOutSupport.DoPort56Out(Value:Byte);
 Begin
    case SvLdstat of
      SVNONE:if value=$DD then
@@ -240,25 +281,53 @@ Begin
                SvLdLen:=-1;
                SvLdstat:=SVNONE;
                SvLdFname:='';
+               ldsv:=false;
              end;
            End;
    end;
 
 End;
 
-procedure TNBInOutSupport.DoPort0Out(Value:Byte);
+
+
+procedure TNBInOutSupport.DoPort32Out(Value:Byte);
 Begin
  // ODS('Port 0 Out ='+inttostr(Value)+' '+chr(value));
-  screenout(  chr(value));
+  ldsv:=ldsv or (fNewBrain.svserial.Checked and (value=$DD));
 
+ if fNewBrain.svserial.Checked and ldsv then
+    DoPort56Out(Value)
+ else
+ Begin
+  screenout(  chr(value));
+  ldsv:=false;
+ End;
 End;
 
-function TNBInOutSupport.DoPort0In(Value: Byte): Byte;
+procedure TNBInOutSupport.DoPort64Out(Value:Byte);
+Begin
+ // ODS('Port 0 Out ='+inttostr(Value)+' '+chr(value));
+  if value=0 then
+  Begin
+    interrupt1:=false;
+  End;
+End;
+
+
+
+function TNBInOutSupport.DoPort32In(Value: Byte): Byte;
 Begin
  //ODS('Port 0 IN ='+inttostr(mykey));
+ ldsv:=ldsv or (fNewBrain.svserial.Checked and (value=$DD));
 
- result:=mykey;
- mykey:=0;
+ if fNewBrain.svserial.Checked and ldsv then
+    RESULT:=DoPort56In(Value)
+ else
+ Begin
+  ldsv:=false;
+  result:=mykey;
+  mykey:=0;
+ End;
 End;
 
 //flags
@@ -290,22 +359,39 @@ Begin
 
 End;
 
-procedure TNBInOutSupport.DoPort5Out(Value:Byte);
+procedure TNBInOutSupport.DoPort16Out(Value:Byte);
 Begin
  // ODS('Port 5 Out ='+inttostr(Value)+' '+chr(value));
+ iscommnd:=TRUE;
   lastData:=Value;
   DoLastCommand;
 End;
 
+procedure TNBInOutSupport.DoPort17Out(Value:Byte);
+Begin
+ // ODS('Port 5 Out ='+inttostr(Value)+' '+chr(value));
+ iscommnd:=false;
+  lastData:=Value;
+  DoLastCommand;
+End;
+
+function TNBInOutSupport.DoPort17In(Value:Byte):byte;
+Begin
+ iscommnd:=false;
+ result:=DoLastCommand;
+End;
+
+
 //Video stuff emulate 7Intch LCD with ssd1963
 
-Type TLCDCommands=(NONE,SETXY_X, SETXY_Y, SETXY);
+Type TLCDCommands=(NONE,SETXY_X, SETXY_Y, SETXY,GETPIXEL,SLAREA,SLSTART);
 Var LCDCommand:TLCDCommands;
     dataBytes:array[0..10] of byte;
     di:integer=0;
     setX1,setX2,SetY1,SetY2:word;
     BytesExpected:Integer;
     Kx,Ky:word;
+    fixtop,fixbot,scrarea,scls:word;
 
 Procedure swap(var n1:word;var n2:word);
 var t:integer;
@@ -330,7 +416,19 @@ Begin
   result:= TORGB(r,g,b);
 End;
 
-procedure TNBInOutSupport.DoLastCommand;
+function encColor(col:Tcolor):word;
+var r,g,b:byte;
+    resh,resl:byte;
+begin
+  r:=col shr 16;
+  g:=(col shr 8) and $ff;
+  b:=col and $ff;
+  resh:=(r or (g shr 5));
+  resl:=(g shl 3) or (b shr 2);
+  result:=resh shl 8+resl;
+end;
+
+function TNBInOutSupport.DoLastCommand;
 
        procedure CheckCommandFinished;
        var addr:integer;
@@ -378,6 +476,41 @@ procedure TNBInOutSupport.DoLastCommand;
                       LCDCommand:=NONE;
                    End;
                  End;
+            GETPIXEL:Begin   //2 bytes for each color
+                       addr:=Ky*VideoW+kx;
+                       Color:=VideoMem[addr];
+                       color:=encColor(color);
+                       if di mod 2=1 then  //hi byte
+                        result:=Color shr 8
+                       else
+                       if di mod 2=0 then //2nd byte of color low byte
+                       Begin
+                         result:=Color and $ff;
+                         inc(Kx);  dec(BytesExpected);
+                         if Kx>setX2 then   //WAS >=
+                         Begin
+                           Kx:=setX1;
+                           inc(Ky);
+                         End;
+                         if Ky>setY2 then  //probably finished BytesExpectedshould be 0
+                          LCDCommand:=NONE;
+                       End;
+                     End;
+            SLAREA:Begin
+                      if di=6 then
+                      Begin
+                       fixtop:= dataBytes[0] shl 8 OR dataBytes[1];
+                       scrarea:=dataBytes[2] shl 8 OR dataBytes[3];
+                       fixbot:=dataBytes[2] shl 8 OR dataBytes[3];
+                      End;
+            end;
+            SLSTART:Begin
+                      if di=2 then
+                      Begin
+                        scls:= dataBytes[0] shl 8 OR dataBytes[1];
+                        unbscreen.scrollline:=scls;
+                      End;
+            End;
             NONE:Begin
                     di:=0;
                     //shouldnt come here
@@ -393,6 +526,9 @@ procedure TNBInOutSupport.DoLastCommand;
            $2a:LCDCommand:= SETXY_X; //4 bytes  x1,x2
            $2b:LCDCommand:= SETXY_Y; //4 bytes  y1,y2
            $2c:LCDCommand:= SETXY;  // Accept data
+           $2e:LCDCommand:= GETPIXEL;
+           $33:LCDCommand:= SLAREA;
+           $37:LCDCommand:= SLSTART;
          else
          Begin
             LCDCommand:= NONE;
@@ -404,6 +540,7 @@ procedure TNBInOutSupport.DoLastCommand;
 
 
 Begin
+   result:=0;
    if isCommnd then SetLCDCommand
    else
    Begin //DATA
