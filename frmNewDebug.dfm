@@ -54,7 +54,7 @@ object NewDebug: TNewDebug
       Top = 72
       Width = 23
       Height = 22
-      Hint = 'Continue'
+      Hint = 'Continue (f9)'
       Caption = 'C'
       ParentShowHint = False
       ShowHint = True
@@ -65,7 +65,7 @@ object NewDebug: TNewDebug
       Top = 72
       Width = 23
       Height = 22
-      Hint = 'Debug'
+      Hint = 'Debug (f11)'
       Caption = 'D'
       ParentShowHint = False
       ShowHint = True
@@ -76,7 +76,7 @@ object NewDebug: TNewDebug
       Top = 72
       Width = 23
       Height = 22
-      Hint = 'Single Step'
+      Hint = 'Single Step (f7)'
       Caption = 'S'
       ParentShowHint = False
       ShowHint = True
@@ -117,7 +117,7 @@ object NewDebug: TNewDebug
       Top = 72
       Width = 23
       Height = 22
-      Hint = 'Single Step'
+      Hint = 'Step Over (f8)'
       Caption = 'B'
       ParentShowHint = False
       ShowHint = True

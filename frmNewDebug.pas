@@ -345,7 +345,7 @@ begin
  if bps=nil then exit;
  if bps.Count=0 then exit;
  idx:=bps.indexof(inttohex(pc,4));
- If (idx>-1) and (not fnewbrain.debugging) then
+ If (idx>-1) {and (not fnewbrain.debugging)} then
  Begin
   z80_stop_emulating;
   Stopped:=true;

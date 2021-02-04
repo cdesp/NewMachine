@@ -1141,18 +1141,22 @@ Begin
     // EMUDif:=Stopwatch.ElapsedMilliseconds-EMUTime;
 
   End;
+   if DEBUGGING OR (tmpbpt<>-1) then EXIT;
   if EXECUTINGINTERRUPT then EXIT;
   //check if there is an interrupt
   if GETINT then
   Begin
   // z80_set_reg(Z80_REG_IFF1,1);
-   EXECUTINGINTERRUPT:=TRUE;
-   st:=st+Myz80.Z_Interrupt;
+   if z80_get_reg(Z80_REG_IFF1)=1 then
+   Begin
+     EXECUTINGINTERRUPT:=TRUE;
+     st:=st+Myz80.Z_Interrupt;
+     clearinterrupt;
+   end;
 
-   clearinterrupt;
   end;
 
-  if DEBUGGING then EXIT;
+
 
  { Inc(cEmuls);
   if cemuls<2000 then

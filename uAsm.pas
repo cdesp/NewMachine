@@ -289,6 +289,8 @@ Begin
       s:=Copy(s,3,maxint)+'h';
      if (s[1]='$') and (S[2] in ValidHex) then
       s:=Copy(s,2,maxint)+'h';
+    // if s[length(s)]='h' then
+    //  s:='$'+copy(s,1,length(s)-1);
      l:=Length(s);
      if s[1] in  ['0'..'9'] then
      begin 

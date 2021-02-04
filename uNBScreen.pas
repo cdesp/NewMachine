@@ -184,7 +184,7 @@ Var
        else
         s[8-i]:=Lowercase(s[8-i])[1];
       NewDebug.debugscr.Surface.Canvas.
-        TextOut(Col3,1*h,'FL : '+s);
+        TextOut(Col2,1*h,'FL : '+s);
     End;
 
     Procedure PAintSP;
@@ -312,7 +312,7 @@ Begin
 
     For i:=0 to 7 do
      if nbmem.mainslots[i]<>nil then
-      TextOut(Col2,(10+i)*h,'M/S '+inttostr(i)+' : '+Inttostr(nbmem.mainslots[i].Page)+'.'+nbmem.mainslots[i].Name)
+      TextOut(Col2,(10+i)*h,'M/S '+inttostr(i)+' : '+Inttostr(nbmem.mainslots[i].Page)+'.'+extractfilename(nbmem.mainslots[i].Name))
      Else
       TextOut(Col2,(10+i)*h,'M/S '+inttostr(i)+' : 000.N/A');
 
@@ -323,7 +323,7 @@ Begin
 
     For i:=0 to 7 do
      if nbmem.Altslots[i]<>nil then
-       TextOut(Col2,(21+i)*h,'A/S '+inttostr(i)+' : '+Inttostr(nbmem.altslots[i].Page)+'.'+nbmem.Altslots[i].Name)
+       TextOut(Col2,(21+i)*h,'A/S '+inttostr(i)+' : '+Inttostr(nbmem.altslots[i].Page)+'.'+extractfilename(nbmem.Altslots[i].Name))
      Else
        TextOut(Col2,(21+i)*h,'A/S '+inttostr(i)+' : 0.N/A');
 

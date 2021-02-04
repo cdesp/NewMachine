@@ -478,6 +478,8 @@ function TNBInOutSupport.DoLastCommand;
                  End;
             GETPIXEL:Begin   //2 bytes for each color
                        addr:=Ky*VideoW+kx;
+                       if addr>sizeof(VideoMem) then exit;
+
                        Color:=VideoMem[addr];
                        color:=encColor(color);
                        if di mod 2=1 then  //hi byte
