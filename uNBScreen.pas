@@ -58,7 +58,7 @@ Type
        HasText: Boolean;
        Printedlines: Integer;
        procedure dopaint(Sender: TObject);
-    procedure putPixel(const x, y: integer; px: TColor);
+       procedure putPixel(const x, y: integer; px: TColor);
   public
        horzmult:Integer;
        vertmult:Integer;
@@ -101,8 +101,8 @@ CONST
     VideoH=480;
     VideoTotal=VideoW*VideoH;
 
-
-Var NBScreen:TNbScreen;
+Var
+    NBScreen:TNbScreen;
     CharArr:Array[0..2560] of byte; //charset array
     VideoMem:array[0..VideoTotal] of TColor;
     scrollline:word=0;
@@ -409,6 +409,12 @@ begin
 
 
  addr:=scrollline*VideoW;
+ if addr>videototal then
+ begin
+   ODS('scrollline error');
+   exit;
+ end;
+
 
  for i:=0 to nocy-1 do     //count lines
  Begin
@@ -441,7 +447,8 @@ procedure TNBScreen.putPixel(Const x,y:integer;px:TColor);
 var addr:integer;
 Begin
    addr:=y*800+x;
-   VideoMem[addr]:=px;
+   if addr<VideoTotal then
+     VideoMem[addr]:=px;
 
 End;
 
@@ -553,11 +560,18 @@ var
     IsDev33:Boolean;
     nStart:Integer;
 begin
-   Result:=false;
-   Printedlines:=0;
+ Result:=false;
 
  try
+   Printedlines:=0;
+  if not assigned(newscr) then exit;
+
+  TRY
    if not newscr.candraw then exit;
+  EXCEPT
+   NEWSCR:=NIL;
+   EXIT;
+  END;
    Inc(fps);
 
   lengx:=8; //8x10 chars
@@ -672,8 +686,8 @@ var
     nbb:byte;
 
 Begin
-   xmax:=640 div 8;
-   ymax:=256 ;
+   xmax:=800 div 8;
+   ymax:=480 ;
 
    for y := 0 to ymax - 1 do
      for x := 0 to xmax - 1 do

@@ -233,6 +233,7 @@ type
     function getemulsatspeedtime(eml, time: cardinal): longint;
     function checkBpts: boolean;
 
+
   public
     { Public declarations }
     keybFileinp:Boolean;
@@ -242,6 +243,7 @@ type
 
     DoOne: Boolean;
     Constructor Create(Aowner:TComponent);Override;
+    procedure clearinterrupt(v: byte);
     procedure StartEmulation;
     procedure SuspendEmul;
     procedure ResumeEmul;
@@ -625,6 +627,7 @@ Begin
 End;
 
 Var mytimeinterrupt:cardinal=0;
+    mytimeinterrupt2:cardinal=0;
 Function Getint:Boolean;
 Begin
 
@@ -634,13 +637,23 @@ Begin
     INTERRUPT1:=TRUE;
     InterruptServed:=FALSE;
   end;
-  RESULT:=interrupt1;
+  if gettickcount-mytimeinterrupt2>=22 then
+  Begin
+    INTERRUPT2:=TRUE;
+    InterruptServed:=FALSE;
+  end;
+
+  RESULT:=interrupt1 OR INTERRUPT2;
 
 End;
 
-procedure clearinterrupt;
+procedure TfNewBrain.clearinterrupt(v:byte);
 Begin
-  mytimeinterrupt:=gettickcount;
+  if v=0 then
+   mytimeinterrupt:=gettickcount;
+  if v=1 then
+   mytimeinterrupt2:=gettickcount;
+
   InterruptServed:=true;
 end;
 
@@ -1068,8 +1081,16 @@ end;
 
 procedure TfNewBrain.thrVideoTimer(Sender: TObject);
 begin
- if nbscreen<>nil then
-   nbscreen.PaintVideo;
+ thrVideo.enabled:=false;
+ try
+  if nbscreen<>nil then
+   try
+    nbscreen.PaintVideo;
+   except
+   end;
+  finally
+   thrVideo.enabled:=true;
+  end;
 end;
 
 var emulate:integer=2000;
@@ -1151,7 +1172,13 @@ Begin
    Begin
      EXECUTINGINTERRUPT:=TRUE;
      st:=st+Myz80.Z_Interrupt;
-     clearinterrupt;
+     if interrupt2 then
+       clearinterrupt(1)
+     ELSE
+     if interrupt1 then
+       clearinterrupt(0);
+
+
    end;
 
   end;

@@ -3,9 +3,9 @@
 	<Transactions>
     <Transaction>2017/06/17 19:51:30.000.883,=C:\Users\CDesp\Documents\Embarcadero\Studio\Projects\Package1PCH1.h</Transaction>
     <Transaction>2017/06/17 19:51:30.000.858,=rtl.bpi</Transaction>
-    <Transaction>2017/06/17 19:52:51.000.923,C:\Users\CDesp\Documents\Embarcadero\Studio\Projects\Package1PCH1.h=G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Pack.h</Transaction>
-    <Transaction>2017/06/17 19:53:03.000.668,C:\Users\CDesp\Documents\Embarcadero\Studio\Projects\Package1.cbproj=G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Emulator.cbproj</Transaction>
-    <Transaction>2017/06/17 19:53:23.000.722,G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Pack.h=G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Emulator.h</Transaction>
+    <Transaction>2017/06/17 19:52:51.000.923,G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Pack.h=C:\Users\CDesp\Documents\Embarcadero\Studio\Projects\Package1PCH1.h</Transaction>
+    <Transaction>2017/06/17 19:53:03.000.668,G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Emulator.cbproj=C:\Users\CDesp\Documents\Embarcadero\Studio\Projects\Package1.cbproj</Transaction>
+    <Transaction>2017/06/17 19:53:23.000.722,G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Emulator.h=G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Pack.h</Transaction>
     <Transaction>2017/06/17 20:50:48.000.534,=G:\_Programming\NB Emulator\Emulation\Z80Package\Z80BaseClass.pas</Transaction>
     <Transaction>2017/06/18 11:24:47.000.408,=G:\_Programming\NB Emulator\Emulation\Z80Package\z80emu.c</Transaction>
     <Transaction>2017/06/18 11:55:37.000.077,G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Emulator.h=G:\_Programming\NB Emulator\Emulation\Z80Package\Z80Emulator.h</Transaction>

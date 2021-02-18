@@ -97,6 +97,7 @@ Var
        mykey:word=0;
        tmr1:cardinal;
        interrupt1:boolean=FALSE;
+       interrupt2:boolean=FALSE;
 
 
 implementation
@@ -177,10 +178,16 @@ function TNBInOutSupport.DoPort24In(Value: Byte): Byte;
 var k:integer;
 Begin
   k:=0;
+  if interrupt2 THEN
+  BEGIN
+    k:=2;//bit 0,1,2 is for the 8 interrupts
+    K:=8-K; //1 1 0
+  END
+  else
   if interrupt1 THEN
   BEGIN
     k:=1;//bit 0,1,2 is for the 8 interrupts
-    K:=7-K;
+    K:=8-K; //1 1 1
   END;
 
   Result:= 64+K;
@@ -307,10 +314,15 @@ End;
 procedure TNBInOutSupport.DoPort64Out(Value:Byte);
 Begin
  // ODS('Port 0 Out ='+inttostr(Value)+' '+chr(value));
-  if value=0 then
+  if value =0 then
   Begin
     interrupt1:=false;
   End;
+  if value =1 then
+  Begin
+    interrupt2:=false;
+  End;
+  //fNewbrain.clearinterrupt(value);
 End;
 
 
@@ -460,6 +472,8 @@ function TNBInOutSupport.DoLastCommand;
                     di:=0;
                     addr:=Ky*VideoW+kx;
                     if (ky>479) or (kx>799) then exit;
+                    if addr>=VideoTotal-2 THEN EXIT;
+                    if addr<0 then exit;
 
                    TRY
                     VideoMem[addr]:=Color;
@@ -478,17 +492,20 @@ function TNBInOutSupport.DoLastCommand;
                  End;
             GETPIXEL:Begin   //2 bytes for each color
                        addr:=Ky*VideoW+kx;
-                       if addr>sizeof(VideoMem) then exit;
+                       if addr>=VideoTotal-2 then exit;
+                       if addr<0 then exit;
+
 
                        Color:=VideoMem[addr];
                        color:=encColor(color);
-                       if di mod 2=1 then  //hi byte
+                       if di =1 then  //hi byte
                         result:=Color shr 8
                        else
-                       if di mod 2=0 then //2nd byte of color low byte
+                       if di =2 then //2nd byte of color low byte
                        Begin
                          result:=Color and $ff;
                          inc(Kx);  dec(BytesExpected);
+                         di:=0;
                          if Kx>setX2 then   //WAS >=
                          Begin
                            Kx:=setX1;
@@ -546,6 +563,11 @@ Begin
    if isCommnd then SetLCDCommand
    else
    Begin //DATA
+      if di>length(dataBytes) then
+      begin
+       ODS('DI TOO BIG.ERROR!!!');
+       di:=0;
+      end;
       dataBytes[di]:=lastData;
       inc(di);
       CheckCommandFinished;
