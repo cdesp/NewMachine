@@ -1,2 +1,1 @@
-6:15:03 μμPC: 0000,0000 screen resizs
-6:15:07 μμPC: 0FA8,0FA8 KEY=66 NEW=66
+4:09:22 μμPC: 0000,0000 screen resizs

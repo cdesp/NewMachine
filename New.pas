@@ -1141,7 +1141,7 @@ Begin
     else
      //emuled:=emuled+Z80_Emulate(st-emuled);
      emuled:=emuled+Z80_Emulate(st);
-    EXECUTINGINTERRUPT:=FALSE;
+
   End
   Else
   Begin
@@ -1158,7 +1158,7 @@ Begin
 
      // st:=Z80_Emulate(st);
       st:=Z80_Emulate(emulate);
-      EXECUTINGINTERRUPT:=FALSE;
+
     // EMUDif:=Stopwatch.ElapsedMilliseconds-EMUTime;
 
   End;
@@ -1178,7 +1178,7 @@ Begin
      if interrupt1 then
        clearinterrupt(0);
 
-
+      EXECUTINGINTERRUPT:=FALSE;
    end;
 
   end;

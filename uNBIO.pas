@@ -149,6 +149,7 @@ function TNBInOutSupport.NBIn(Port:Byte): byte;
 Var value:integer;
 begin
    Value:=z80_get_reg(Z80_REG_AF);
+   Result:=00;
    case port of
 
       7: Result:=DoPort7In(Value);
@@ -181,13 +182,13 @@ Begin
   if interrupt2 THEN
   BEGIN
     k:=2;//bit 0,1,2 is for the 8 interrupts
-    K:=8-K; //1 1 0
+    K:=7-K; //1 0 1   ;5 FOR INT 2
   END
   else
   if interrupt1 THEN
   BEGIN
     k:=1;//bit 0,1,2 is for the 8 interrupts
-    K:=8-K; //1 1 1
+    K:=7-K; //1 1 0  ;6 FOR INT 1
   END;
 
   Result:= 64+K;
