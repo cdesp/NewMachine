@@ -630,8 +630,9 @@ Var mytimeinterrupt:cardinal=0;
     mytimeinterrupt2:cardinal=0;
 Function Getint:Boolean;
 Begin
-
   result:=false;
+  if newdebug.Visible then exit;
+
   if gettickcount-mytimeinterrupt>=17 then
   Begin
     INTERRUPT1:=TRUE;

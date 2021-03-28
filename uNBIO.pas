@@ -67,6 +67,12 @@ type
     procedure DoPort17Out(Value: Byte);
     function DoPort17In(Value: Byte): byte;
     procedure DoPort64Out(Value: Byte);
+    function DoPort72In(Value: Byte): Byte;
+    procedure DoPort72Out(Value: Byte);
+    procedure SerialOut(s: String);
+    procedure DoPort73Out(Value: Byte);
+    function DoPort75In(Value: Byte): Byte;
+    procedure DoPort75Out(Value: Byte);
 
 
 
@@ -158,6 +164,8 @@ begin
      32: Result:=DoPort32In(Value); //RS232
      37: Result:=DoPort37In(Value);
      56: Result:=DoPort56In(Value);
+     72: Result:=DoPort72In(Value);    //I2c
+     75: Result:=DoPort75In(Value);    //I2c
    end;
 
 end;
@@ -171,8 +179,42 @@ begin
      32: DoPort32Out(Value);//RS232
      56: DoPort56Out(Value);//SAVE
      64: DoPort64Out(Value);//Interrupt device
+     72: DoPort72Out(Value);//I2C device
+     73: DoPort73Out(Value);//I2C device
+     75: DoPort75Out(Value);//I2C device
    end;
 end;
+
+procedure TNBInOutSupport.SerialOut(s:String);
+Begin
+   fnewbrain.Memo1.Lines.Add(s);
+End;
+
+function TNBInOutSupport.DoPort72In(Value: Byte): Byte;
+Begin
+ result:=$28; //MASTER_DATA_W_ACK
+End;
+
+function TNBInOutSupport.DoPort75In(Value: Byte): Byte;
+Begin
+ result:=8; //SET BIT 3
+End;
+
+
+procedure TNBInOutSupport.DoPort72Out(Value:Byte);
+Begin
+  Serialout(inttostr(value));
+End;
+
+procedure TNBInOutSupport.DoPort73Out(Value:Byte);
+Begin
+  Serialout(inttostr(value));
+End;
+
+procedure TNBInOutSupport.DoPort75Out(Value:Byte);
+Begin
+  Serialout(inttostr(value));
+End;
 
 
 function TNBInOutSupport.DoPort24In(Value: Byte): Byte;
