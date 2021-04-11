@@ -73,6 +73,12 @@ type
     procedure DoPort73Out(Value: Byte);
     function DoPort75In(Value: Byte): Byte;
     procedure DoPort75Out(Value: Byte);
+    function DoPort48In(Value: Byte): Byte;
+    procedure DoPort48Out(Value: Byte);
+    function DoPort53In(Value: Byte): Byte;
+    function DoPort54In(Value: Byte): Byte;
+    procedure exec_cmd(V:Byte);
+    function getfreefilestream: TFilestream;
 
 
 
@@ -96,8 +102,36 @@ CONST
     COMMD_SAVE=10;
     COMMD_LOAD=20;
 
+OPENCARD 	  = 1;
+OPENFILE 	  = 2;
+CLOSEFILE 	= 3;
+READBLOCK 	= 6;
+WRITEBLOCK 	= 7;
+POSITIONS 	= 8;
+POSITIONG 	= 9;
+LISTDIR 	  = 10;
+CHANGEDIR 	= 11;
+FILESIZE 	  = 12;
+INVALIDCMD 	= 99;
 
-Var
+FCMDOK 		= 200;
+FNOTDIR 	= 201;
+FNOTFND 	= 202;
+FNOMOR 		= 203;
+
+var strgcmd:array[0..3] of byte;
+    comd_k:integer=0;
+    sendbuf:TmemoryStream=nil;
+    recvbuf:TmemoryStream=nil;
+    totrecv:integer;
+    totsend:integer;
+    state:integer;
+    filename:ansistring;
+    retval:byte;
+    Maindir:String;
+    opfiles:array[0..9] of TFileStream;
+    curdir:string;
+
        ldsv:boolean=false;
        NBIO:TNBInOutSupport=nil;
        mykey:word=0;
@@ -107,9 +141,10 @@ Var
 
 
 implementation
-uses uNBMemory,uNBScreen,new,sysutils,jclLogic,z80baseclass,uNBCop,windows,uNBCPM,unbtypes;
+uses uNBMemory,uNBScreen,new,sysutils,jclLogic,z80baseclass,uNBCop,windows,uNBCPM,unbtypes,vcl.forms;
 
 constructor TNBInOutSupport.Create;
+var i:integer;
 begin
      inherited;
 
@@ -120,6 +155,12 @@ begin
      SvLdLen:=-1;
      SvLdFile:=nil;
      SvLdInLenHI:=false;
+     maindir:=extractfilepath(application.exename)+'\BASIC\';
+     //maindir:='d:\NEWMStorage\';
+     curdir:=MAINDIR;
+     for I := 0 to length(opfiles)-1 do
+      opfiles[i]:=nil;
+
 end;
 
 
@@ -162,7 +203,10 @@ begin
      17: RESULT:=DoPort17In(Value); //LCD data
      24: Result:=DoPort24In(Value); //USB KEYB
      32: Result:=DoPort32In(Value); //RS232
-     37: Result:=DoPort37In(Value);
+     37: Result:=DoPort37In(Value); //RS232
+     48: Result:=DoPort48In(Value); //RS232 for storage -->Arduino
+     53: Result:=DoPort53In(Value); //LSR RS232 for storage -->Arduino
+     54: Result:=DoPort54In(Value); //MSR RS232 for storage -->Arduino
      56: Result:=DoPort56In(Value);
      72: Result:=DoPort72In(Value);    //I2c
      75: Result:=DoPort75In(Value);    //I2c
@@ -177,6 +221,7 @@ begin
      16: DoPort16Out(Value);//LCD command
      17: DoPort17Out(Value);//LCD data
      32: DoPort32Out(Value);//RS232
+     48: DoPort48Out(Value);//RS232 for storage -->Arduino
      56: DoPort56Out(Value);//SAVE
      64: DoPort64Out(Value);//Interrupt device
      72: DoPort72Out(Value);//I2C device
@@ -242,6 +287,20 @@ Begin
   if (mykey<>0) OR (Fnewbrain.svserial.checked and ldsv) then
    result:=result+1;
 End;
+
+function TNBInOutSupport.DoPort53In(Value: Byte): Byte;
+Begin
+ Result:=32;  //UART READY
+ // if (mykey<>0) OR (Fnewbrain.svserial.checked and ldsv) then
+   result:=result+1; //Always ready
+End;
+
+function TNBInOutSupport.DoPort54In(Value: Byte): Byte;
+Begin
+//cts IS bit 4
+ Result:=16 ;//0 = cts NOT READY
+End;
+
 
 function TNBInOutSupport.DoPort56In(Value: Byte): Byte;
 var btread:Integer;
@@ -354,6 +413,256 @@ Begin
  End;
 End;
 
+
+
+function TNBInOutSupport.getfreefilestream:TFilestream;
+var
+  i: Integer;
+Begin
+  result:=nil;
+  for i := 0 to 9 do
+   if opfiles[i]=nil then
+   Begin
+    opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenRead);
+    result:=opfiles[i];
+    retval:=i;
+    break;
+   End;
+
+
+End;
+
+procedure DirtoStream(dr:string;st:TmemoryStream);
+var SR      : TSearchRec;
+    ch:ansichar;
+
+    procedure writeNL;
+    Begin
+      ch:=#13;
+      st.Write(ch,1);
+    End;
+
+    procedure writestring(s:AnsiString);
+    Begin
+      st.Write(s[1],length(s));
+    End;
+
+var k:integer;
+Begin
+   writeNL;writestring('DIRECTORY ['+extractfilepath(dr)+']');writeNL;
+   k:=0;
+   if FindFirst(dr + '*.*', faArchive, SR) = 0 then
+   begin
+      repeat
+        if (sr.Attr and faDirectory) = sr.Attr then
+          writestring('  <DIR>  ')
+        else
+          writestring('         ');
+        writestring(SR.name);writeNL;
+        inc(k);
+      until FindNext(SR) <> 0;
+      system.SysUtils.findclose(SR);
+   end;
+   writeNL;writestring('Total Files:'+inttostr(k));writeNL;
+   st.SaveToFile('d:\test.txt');
+   st.Position:=0;
+
+End;
+
+
+procedure TNBInOutSupport.exec_cmd(V:Byte);
+var cmd:byte;
+
+  function getfilename:boolean;
+  var
+    I: Integer;
+    ch:ansichar;
+    s:string;
+    Begin
+        result:=false;
+         if not assigned(recvbuf) then
+         Begin
+           recvbuf:=TmemoryStream.Create;
+           filename:='';
+         End
+         else
+          if v<>0 then //expect a zero terminated string
+          Begin
+            recvbuf.Write(v,1);
+           // s:=chr(V);
+           // outputdebugstring(PWideChar(s));
+          End
+          else
+          Begin
+            //we got the filename
+            recvbuf.Position:=0;
+            for I := 0 to recvbuf.Size-1 do
+            Begin
+               recvbuf.Read(ch,1);
+               filename:=filename+ch;
+            End;
+            recvbuf.Free;
+            recvbuf:=nil;
+            result:=true;
+          End;
+
+    End;
+
+
+var fs:TFileStream;
+
+Begin
+   cmd:=strgcmd[0];
+
+   case cmd of
+       OPENCARD:Begin
+         curdir:=MAINDIR;
+         retval:=FCMDOK;
+       End;
+       OPENFILE:Begin
+           if getfilename then
+           Begin
+             if fileexists(curdir+filename) then
+               getfreefilestream  //RETVAL IS THE POSITION
+             else
+               retval:=FNOTFND;
+           End;
+       End;
+       CLOSEFILE:Begin
+          fs:=opfiles[strgcmd[1]];
+          opfiles[strgcmd[1]]:=nil;
+          fs.free;
+       End;
+       READBLOCK:Begin
+          fs:=opfiles[strgcmd[1]];
+          if not assigned(fs) then
+            raise exception.Create('Filestream not opened');
+          totsend:=strgcmd[2]*256+strgcmd[3];
+          if (totsend=0) or
+              (totsend>(fs.Size-fs.Position)) then
+                 totsend:=fs.Size-fs.Position;
+          State:=1;
+       End;
+       LISTDIR:Begin
+           sendbuf:=TmemoryStream.Create;
+           DirtoStream(curdir,sendbuf);
+           //sendbuf.LoadFromFile('d:\teststorage.txt');
+       End;
+       CHANGEDIR:Begin
+           if getfilename then
+           Begin
+             if directoryexists(maindir+filename) then
+             Begin
+              try
+               curdir:=maindir+filename+'\';
+               retval:=FCMDOK;
+              except
+                retval:=FNOTDIR
+              end;
+             End;
+           end;
+       End;
+   end;
+End;
+
+function TNBInOutSupport.DoPort48In(Value: Byte): Byte;
+var cmd:byte;
+    fs:TFileStream;
+
+    procedure SetCommandEnd;
+    Begin
+      result:=retval;
+      strgcmd[0]:=0;
+      strgcmd[1]:=0;
+      strgcmd[2]:=0;
+      strgcmd[3]:=0;
+      comd_k:=0;
+    End;
+
+Begin
+   cmd:=strgcmd[0];
+   result:=0;
+ //this is the serial input to storage
+ case cmd of
+       OPENCARD:Begin
+           SetCommandEnd;
+       End;
+       OPENFILE:Begin
+          SetCommandEnd;
+       End;
+       CLOSEFILE:Begin
+          SetCommandEnd;
+       End;
+       LISTDIR:Begin
+         if assigned(sendbuf) then
+         Begin
+          if sendbuf.Read(result,1)=0 then
+          Begin
+             sendbuf.Free;
+             sendbuf:=nil;
+             result:=255;//signals end of directory listing
+             retval:=FCMDOK;
+          End;
+         End
+         else
+          SetCommandEnd;
+       End;
+       CHANGEDIR:Begin
+          SetCommandEnd;
+       End;
+       READBLOCK:Begin
+         if state=1 then
+         Begin
+           result:=totsend div 256;       //hi byte
+           inc(state);
+         End
+         ELSE
+         if state=2  then
+         Begin
+           result:=totsend mod 256;       //low byte
+           inc(state);
+         End
+         ELSE
+         if state=3 then //send the bytes
+         Begin
+           fs:=opfiles[strgcmd[1]];
+           fs.Read(result,1);
+           dec(totsend);
+           if totsend=0 then
+           Begin
+             inc(state);
+             retval:=FCMDOK;
+           End;
+         End
+         ELSE
+         if state=4 then //ret status
+          SetCommandEnd;
+       End;
+ end;
+
+End;
+
+
+procedure TNBInOutSupport.DoPort48Out(Value:Byte);
+
+Begin
+ //this is the output for storage device
+ //1st are 4 byte the command
+ if comd_k<4 then
+ Begin
+   retval:=255;
+   totsend:=0;
+   totrecv:=0;
+   state:=0;
+   strgcmd[comd_k]:=Value;
+   inc(comd_k);
+ End;
+ if comd_k=4 then exec_cmd(value);
+
+
+End;
+
+
 procedure TNBInOutSupport.DoPort64Out(Value:Byte);
 Begin
  // ODS('Port 0 Out ='+inttostr(Value)+' '+chr(value));
@@ -384,6 +693,8 @@ Begin
   mykey:=0;
  End;
 End;
+
+
 
 //flags
 function TNBInOutSupport.DoPort7In(Value: Byte): Byte;
@@ -620,5 +931,7 @@ Begin
 
 End;
 
+
+initialization
 
 end.
