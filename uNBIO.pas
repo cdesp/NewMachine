@@ -423,12 +423,28 @@ Begin
   for i := 0 to 9 do
    if opfiles[i]=nil then
    Begin
-    opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenRead);
-    result:=opfiles[i];
-    retval:=i;
-    break;
+    try
+     if strgcmd[1]=0 then
+      opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenRead)
+     else
+     if strgcmd[1]=1 then
+       opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenWrite)
+     else
+     if strgcmd[1]=2 then
+       opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenReadWrite)
+     else
+     if strgcmd[1]=4 then
+       opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenReadWrite or fmCreate);
+     result:=opfiles[i];
+     retval:=i;
+     break;
+    except
+      result:=nil;
+      retval:=FNOTFND;
+    end;
    End;
-
+   if i=9 then
+       retval:=FNOMOR;
 
 End;
 
@@ -521,12 +537,7 @@ Begin
        End;
        OPENFILE:Begin
            if getfilename then
-           Begin
-             if fileexists(curdir+filename) then
-               getfreefilestream  //RETVAL IS THE POSITION
-             else
-               retval:=FNOTFND;
-           End;
+               getfreefilestream;  //RETVAL IS THE POSITION
        End;
        CLOSEFILE:Begin
           fs:=opfiles[strgcmd[1]];
@@ -542,6 +553,24 @@ Begin
               (totsend>(fs.Size-fs.Position)) then
                  totsend:=fs.Size-fs.Position;
           State:=1;
+       End;
+       WRITEBLOCK:Begin
+         fs:=opfiles[strgcmd[1]];
+         if not assigned(fs) then
+            raise exception.Create('Filestream not opened');
+         if State=0 then
+         Begin
+          totrecv:=strgcmd[2]*256+strgcmd[3];
+          State:=1;
+         End
+         else
+         Begin
+           //receive totrecv bytes and save them to fs
+           fs.Write(v,1);
+           dec(totrecv);
+           if totrecv=0 then
+             retval:=FCMDOK;
+         End;
        End;
        LISTDIR:Begin
            sendbuf:=TmemoryStream.Create;
@@ -638,6 +667,9 @@ Begin
          if state=4 then //ret status
           SetCommandEnd;
        End;
+       WRITEBLOCK:begin
+          SetCommandEnd;
+       end;
  end;
 
 End;
