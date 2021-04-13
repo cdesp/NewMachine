@@ -112,6 +112,7 @@ POSITIONG 	= 9;
 LISTDIR 	  = 10;
 CHANGEDIR 	= 11;
 FILESIZE 	  = 12;
+ENDOFFILE	  = 13;
 INVALIDCMD 	= 99;
 
 FCMDOK 		= 200;
@@ -493,7 +494,6 @@ var cmd:byte;
   var
     I: Integer;
     ch:ansichar;
-    s:string;
     Begin
         result:=false;
          if not assigned(recvbuf) then
@@ -526,7 +526,7 @@ var cmd:byte;
 
 
 var fs:TFileStream;
-
+var newpos:integer;
 Begin
    cmd:=strgcmd[0];
 
@@ -591,6 +591,25 @@ Begin
              End;
            end;
        End;
+       POSITIONS:Begin
+         fs:=opfiles[strgcmd[1]];
+         newpos:=strgcmd[2]*256+strgcmd[3];
+         fs.Position:=newpos;
+         retval:=FCMDOK;
+       end;
+       POSITIONG: Begin
+          state:=1;
+       end;
+       FILESIZE:Begin
+          state:=1;
+       end;
+       ENDOFFILE:Begin
+         fs:=opfiles[strgcmd[1]];
+         if fs.Position>=fs.Size then
+          retval:=255     //-1
+         else
+          retval:= FCMDOK;
+       end;
    end;
 End;
 
@@ -670,6 +689,55 @@ Begin
        WRITEBLOCK:begin
           SetCommandEnd;
        end;
+       POSITIONs: Begin
+          SetCommandEnd;
+       end;
+       POSITIONG: Begin
+          if State=1 then
+          Begin
+            inc(state);
+            fs:=opfiles[strgcmd[1]];
+            result:=fs.Position div 256;
+          End
+          else
+          if State=2 then
+          Begin
+            inc(state);
+            fs:=opfiles[strgcmd[1]];
+            result:=fs.Position mod 256;
+          End
+          else
+          if State=3 then
+          Begin
+            retval:=FCMDOK;
+            SetCommandEnd
+          End;
+       end;
+       FILESIZE:Begin
+          if State=1 then
+          Begin
+            inc(state);
+            fs:=opfiles[strgcmd[1]];
+            result:=fs.Size div 256;
+          End
+          else
+          if State=2 then
+          Begin
+            inc(state);
+            fs:=opfiles[strgcmd[1]];
+            result:=fs.Size mod 256;
+          End
+          else
+          if State=3 then
+          Begin
+            retval:=FCMDOK;
+            SetCommandEnd
+          End;
+       end;
+       ENDOFFILE:Begin
+          SetCommandEnd;
+       end;
+
  end;
 
 End;
