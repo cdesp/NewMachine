@@ -79,6 +79,7 @@ type
     function DoPort54In(Value: Byte): Byte;
     procedure exec_cmd(V:Byte);
     function getfreefilestream: TFilestream;
+    procedure DoPort8Out(Value: Byte);
 
 
 
@@ -219,6 +220,7 @@ procedure TNBInOutSupport.NBout(Port:Byte;Value:Byte);
 begin
     case port of
       4: DoPort4Out(Value);
+      8: DoPort8Out(Value);
      16: DoPort16Out(Value);//LCD command
      17: DoPort17Out(Value);//LCD data
      32: DoPort32Out(Value);//RS232
@@ -230,6 +232,12 @@ begin
      75: DoPort75Out(Value);//I2C device
    end;
 end;
+
+procedure TNBInOutSupport.DoPort8Out(Value:Byte);
+Begin
+ ods(INTTOSTR(value));
+End;
+
 
 procedure TNBInOutSupport.SerialOut(s:String);
 Begin

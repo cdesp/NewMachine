@@ -4,3 +4,4 @@ __recovery/
 __history/
 *.obj
 *.exe
+*.dmp

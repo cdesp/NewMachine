@@ -231,7 +231,7 @@ begin
 
    LoadRom(1,'G:\_Programming\_DOCS\Schematics\MyModular\EEPROMs\MYOS_2_0000.bin');
 //   LoadRom(1,'MYOS_2_0000.bin');
-   LoadRom(3,'Basic_4000.bin');
+   LoadRom(3,'G:\_Programming\_DOCS\Schematics\MyModular\EEPROMs\BBCBASIC\Basic_4000.bin');
 
 
   //LoadRom(20,'build6.bin');  //BBC BASIC + OS MAIN INTERFACE COMMANDS
