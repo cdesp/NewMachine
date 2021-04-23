@@ -235,7 +235,7 @@ end;
 
 procedure TNBInOutSupport.DoPort8Out(Value:Byte);
 Begin
- ods(INTTOSTR(value));
+ //ods(INTTOSTR(value));
 End;
 
 
@@ -450,6 +450,7 @@ Begin
     except
       result:=nil;
       retval:=FNOTFND;
+      break;
     end;
    End;
    if i=9 then
@@ -476,7 +477,7 @@ var k:integer;
 Begin
    writeNL;writestring('DIRECTORY ['+extractfilepath(dr)+']');writeNL;
    k:=0;
-   if FindFirst(dr + '*.*', faArchive, SR) = 0 then
+   if FindFirst(dr + '*.*', FaDirectory OR faArchive, SR) = 0 then
    begin
       repeat
         if (sr.Attr and faDirectory) = sr.Attr then
