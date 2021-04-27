@@ -551,7 +551,11 @@ Begin
        CLOSEFILE:Begin
           fs:=opfiles[strgcmd[1]];
           opfiles[strgcmd[1]]:=nil;
-          fs.free;
+          try
+           if assigned(fs) then
+            fs.free;
+          except
+          end;
        End;
        READBLOCK:Begin
           fs:=opfiles[strgcmd[1]];
