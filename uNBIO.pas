@@ -79,7 +79,7 @@ type
     function DoPort54In(Value: Byte): Byte;
     procedure exec_cmd(V:Byte);
     function getfreefilestream: TFilestream;
-    procedure DoPort8Out(Value: Byte);
+    procedure DoPort0Out(Value: Byte);
 
 
 
@@ -143,7 +143,7 @@ var strgcmd:array[0..3] of byte;
 
 
 implementation
-uses uNBMemory,uNBScreen,new,sysutils,jclLogic,z80baseclass,uNBCop,windows,uNBCPM,unbtypes,vcl.forms;
+uses uNBMemory,uNBScreen,new,sysutils,jclLogic,z80baseclass,windows,uNBCPM,unbtypes,vcl.forms;
 
 constructor TNBInOutSupport.Create;
 var i:integer;
@@ -219,8 +219,8 @@ end;
 procedure TNBInOutSupport.NBout(Port:Byte;Value:Byte);
 begin
     case port of
+      0: Doport0Out(Value); //MMU Paging
       4: DoPort4Out(Value);
-      8: DoPort8Out(Value);
      16: DoPort16Out(Value);//LCD command
      17: DoPort17Out(Value);//LCD data
      32: DoPort32Out(Value);//RS232
@@ -233,9 +233,22 @@ begin
    end;
 end;
 
-procedure TNBInOutSupport.DoPort8Out(Value:Byte);
+procedure TNBInOutSupport.DoPort0Out(Value:Byte);
+var bc,b:integer;
 Begin
- //ods(INTTOSTR(value));
+ //MMU paging system
+ bc:=z80_get_reg(Z80_REG_BC);
+ b:=bc shr 8;
+ b:=b shr 5; //a15-a13 --> a2-a0
+ //b is the 8k bank  0-7
+ //value is the page (0-7) is the default
+ if nbmem.ChipExists(value) then
+   nbmem.SetPageInSlot(b,value,False)
+ else
+  ODS('ERR:Page '+inttostr(value)+' does not exist');
+
+
+
 End;
 
 

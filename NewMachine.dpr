@@ -40,7 +40,8 @@ uses
   uUpdate in 'uUpdate.pas' {frmUpdate},
   uz80dsm in 'uz80dsm.pas' {frmDisasm},
   Z80Intf in 'Z80Intf.pas',
-  Z80BaseClass in 'Z80Package\Z80BaseClass.pas';
+  Z80BaseClass in 'Z80Package\Z80BaseClass.pas',
+  frmVGA in 'frmVGA.pas' {fVGA};
 
 {$R *.res}
 
@@ -58,5 +59,6 @@ begin
   Application.CreateForm(TfrmPerif, frmPerif);
   Application.CreateForm(Tfsplash, fsplash);
   Application.CreateForm(TfrmUpdate, frmUpdate);
+  Application.CreateForm(TfVGA, fVGA);
   Application.Run;
 end.

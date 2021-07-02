@@ -25,15 +25,11 @@ object frmdis: Tfrmdis
     Top = 0
     Width = 844
     Height = 763
-    ActivePage = TSAsm
+    ActivePage = TSDis
     Align = alClient
     TabOrder = 0
     object TSDis: TTabSheet
       Caption = 'Disassembler'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Splitter1: TSplitter
         Left = 533
         Top = 105
@@ -447,10 +443,6 @@ object frmdis: Tfrmdis
     object TSAsm: TTabSheet
       Caption = 'Assembler'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel4: TPanel
         Left = 0
         Top = 0
@@ -932,6 +924,23 @@ object frmdis: Tfrmdis
           Caption = 'ZEROES ON FILE'
           TabOrder = 2
         end
+        object Button15: TButton
+          Left = 376
+          Top = 19
+          Width = 54
+          Height = 20
+          Caption = 'EXEC @'
+          TabOrder = 3
+          OnClick = Button15Click
+        end
+        object Edit8: TEdit
+          Left = 436
+          Top = 19
+          Width = 53
+          Height = 21
+          TabOrder = 4
+          Text = '49152'
+        end
       end
       object PageControl2: TPageControl
         Left = 0
@@ -953,10 +962,6 @@ object frmdis: Tfrmdis
         object TSProj: TTabSheet
           Caption = 'Project'
           ImageIndex = 6
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object ProjText: TMemo
             Left = 0
             Top = 0
@@ -980,10 +985,6 @@ object frmdis: Tfrmdis
         end
         object TSSource: TTabSheet
           Caption = 'Source'
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object asmText: TMemo
             Left = 0
             Top = 0
@@ -1008,10 +1009,6 @@ object frmdis: Tfrmdis
         object TSBinary: TTabSheet
           Caption = 'Compiled (Binary)'
           ImageIndex = 1
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object BinText: TMemo
             Left = 0
             Top = 0
@@ -1040,10 +1037,6 @@ object frmdis: Tfrmdis
         object TSSymbols: TTabSheet
           Caption = 'Symbols'
           ImageIndex = 2
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object memLabels: TMemo
             Left = 0
             Top = 0
@@ -1069,10 +1062,6 @@ object frmdis: Tfrmdis
         object TSGlob: TTabSheet
           Caption = 'Global Symbols'
           ImageIndex = 5
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object GlobLabels: TMemo
             Left = 0
             Top = 0
@@ -1098,10 +1087,6 @@ object frmdis: Tfrmdis
         object TSMessages: TTabSheet
           Caption = 'Messages'
           ImageIndex = 3
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object memMessages: TMemo
             Left = 0
             Top = 0
@@ -1124,10 +1109,6 @@ object frmdis: Tfrmdis
         object TSErrors: TTabSheet
           Caption = 'Errors'
           ImageIndex = 4
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object memErrors: TMemo
             Left = 0
             Top = 0
@@ -1150,10 +1131,6 @@ object frmdis: Tfrmdis
         object TabSheet1: TTabSheet
           Caption = 'Send to Z80'
           ImageIndex = 7
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object Label8: TLabel
             Left = 38
             Top = 25

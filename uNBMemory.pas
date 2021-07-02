@@ -65,6 +65,7 @@ Type
      procedure LoadRom(FromPageNo: Byte; FName: String; NextForward: Boolean = True);
      procedure SetPageInSlot(Slot,Page:integer;Alt:Boolean);
      function GetDirectMem(Const Page,Addr:Integer): Byte;
+     procedure SetDirectMem(const Page, Addr: Integer; Value: Byte);
      procedure CreatePage(PageNo:Integer);
      procedure DestroyPage(PageNo:Integer);
      constructor Create;
@@ -162,11 +163,26 @@ end;
 
 function TNBMemory.GetDirectMem(Const Page,Addr:Integer): Byte;
 begin
- if ChipExists(Page) And (Length(NBPages[Page].Memory)>Addr) then
+ if ChipExists(Page) then
+ Begin
+  if (Length(NBPages[Page].Memory)>Addr) then
    result:= NBPages[Page].Memory[Addr]
+  else
+   result:=GetDirectMem(Page+1,Addr-Length(NBPages[Page].Memory));
+ End
  Else
    Result:=0;
 end;
+
+Procedure TNBMemory.SetDirectMem(Const Page,Addr:Integer;Value:Byte);
+begin
+ if ChipExists(Page) then
+  if (Length(NBPages[Page].Memory)>Addr) then
+   NBPages[Page].Memory[Addr]:=Value
+  else
+   SetDirectMem(Page+1,Addr-Length(NBPages[Page].Memory),Value);
+end;
+
 
 function TNBMemory.GetRom(Addr: Integer): Byte;
 Var slt:Integer;
@@ -224,14 +240,16 @@ begin
   // For i:=0 to 3 do
    //  CreatePage(i); // std ram
 
-  For i:=5 to 10 do
-   CreatePage(i); // Exp ram 96k
+  For i:=4 to 7 do
+   CreatePage(i); // 32k ram
+  For i:=8 to 11 do
+   CreatePage(i); // 32k dual port ram
 
 
 
-   LoadRom(1,'G:\_Programming\_DOCS\Schematics\MyModular\EEPROMs\MYOS_2_0000.bin');
+   LoadRom(0,'G:\_Programming\_DOCS\Schematics\MyModular\EEPROMs\MYOS_2_0000.bin');
 //   LoadRom(1,'MYOS_2_0000.bin');
-   LoadRom(3,'G:\_Programming\_DOCS\Schematics\MyModular\EEPROMs\BBCBASIC\Basic_4000.bin');
+   LoadRom(2,'G:\_Programming\_DOCS\Schematics\MyModular\EEPROMs\BBCBASIC\Basic_4000.bin');
 
 
   //LoadRom(20,'build6.bin');  //BBC BASIC + OS MAIN INTERFACE COMMANDS
@@ -239,14 +257,14 @@ begin
 
 
 
-  SetPageInSlot(0,1,False); //0000   ram Original chips
-  SetPageInSlot(1,2,False); //2000   video only here
-  SetPageInSlot(2,3,False); //4000
-  SetPageInSlot(3,4,False); //6000
-  SetPageInSlot(4,5,False); //8000
-  SetPageInSlot(5,6,False); //A000
-  SetPageInSlot(6,7,False); //C000
-  SetPageInSlot(7,8,False); //E000
+  SetPageInSlot(0,0,False); //0000   ram Original chips
+  SetPageInSlot(1,1,False); //2000   video only here
+  SetPageInSlot(2,2,False); //4000
+  SetPageInSlot(3,3,False); //6000
+  SetPageInSlot(4,4,False); //8000
+  SetPageInSlot(5,5,False); //A000
+  SetPageInSlot(6,6,False); //C000
+  SetPageInSlot(7,7,False); //E000
 
  // SetPageInSlot(0,20,False); //0000
  // SetPageInSlot(1,21,False); //2000
@@ -265,11 +283,11 @@ begin
  // nbmem.SetRomForce(hextoint('B323'),Hextoint('05'));
 
   //LOAD CHARSET TO MEMORY
-  move:=$7500;  //19200
-  for i := 0 to 2560 do
-  Begin
-    nbmem.SetRomForce(i+move,CharArr[i]);
-  End;
+//  move:=$7500;  //19200
+//  for i := 0 to 2560 do
+// Begin
+//    nbmem.SetRomForce(i+move,CharArr[i]);
+//  End;
 
 
  // nbmem.SetRomForce(hextoint('310F'),Hextoint('FF'));   //for HIMEM = FFFF
@@ -281,8 +299,8 @@ begin
 //  nbmem.SetRomForce($6306,00);  //CURSOR Y
 
 
-  fnewbrain.WithExpansion1.checked:=false;
-  PageEnabled:=false;
+  fnewbrain.WithExpansion1.checked:=true;
+  PageEnabled:=true;
 end;
 
 

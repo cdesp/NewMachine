@@ -170,6 +170,8 @@ type
     Edit6: TEdit;
     Edit7: TEdit;
     Button14: TButton;
+    Button15: TButton;
+    Edit8: TEdit;
     procedure asmTextKeyPress(Sender: TObject; var Key: Char);
     procedure asmTextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure BinTextKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -240,6 +242,7 @@ type
     procedure Edit2Change(Sender: TObject);
     procedure Edit6Change(Sender: TObject);
     procedure Edit7Change(Sender: TObject);
+    procedure Button15Click(Sender: TObject);
   private
     msgref:integer;
     cx,cy:Integer;
@@ -308,7 +311,7 @@ var
 
 implementation
 uses unbMemory,ustrings,uDisAsm,math,Printers,uAsm,uNBTypes, New, frmCPUWin,
-  frmOSWin,uAsmPrj;
+  frmOSWin,uAsmPrj,Z80BaseClass;
 
 {$R *.dfm}
 
@@ -1665,6 +1668,13 @@ begin
     showmessage(inttohex(newcol));
    End;
 
+end;
+
+procedure Tfrmdis.Button15Click(Sender: TObject);
+var addr:word;
+begin
+  addr:=strtoint(edit8.Text);
+  z80_set_reg(Z80_REG_PC,addr)
 end;
 
 //Send a Program through RS232 to NBLaptop

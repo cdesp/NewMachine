@@ -157,7 +157,7 @@ Var
 
 implementation
 uses windows,sysutils,
-     New,uNbscreen,uNbMemory,uNBCop,forms,
+     New,uNbscreen,uNbMemory,forms,
      uNBIO,frmOptions;
 
 Var Kmap:TKeyBoardState;

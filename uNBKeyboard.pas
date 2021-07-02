@@ -157,7 +157,7 @@ Var
 
 implementation
 uses windows,sysutils,
-     New,uNbscreen,uNbMemory,uNBCop,forms,uNBio;
+     New,uNbscreen,uNbMemory,forms,uNBio;
 
 Procedure Delay(n:Cardinal);
 Var lst:Cardinal;

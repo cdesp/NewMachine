@@ -15,7 +15,7 @@ object fNewBrain: TfNewBrain
   KeyPreview = True
   Menu = MainMenu1
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDefault
   OnActivate = FormActivate
   OnCanResize = FormCanResize
   OnClose = FormClose
@@ -105,6 +105,24 @@ object fNewBrain: TfNewBrain
           State = cbChecked
           TabOrder = 0
           OnClick = svserialClick
+        end
+        object Button1: TButton
+          Left = 496
+          Top = 8
+          Width = 75
+          Height = 25
+          Caption = 'Graphics VGA'
+          TabOrder = 1
+          OnClick = Button1Click
+        end
+        object Button2: TButton
+          Left = 577
+          Top = 8
+          Width = 75
+          Height = 25
+          Caption = 'TEXT VGA'
+          TabOrder = 2
+          OnClick = Button2Click
         end
       end
     end
@@ -196,7 +214,7 @@ object fNewBrain: TfNewBrain
       Left = 13
       Top = 11
       Width = 800
-      Height = 504
+      Height = 600
       AutoInitialize = True
       AutoSize = False
       Color = clBlack
@@ -207,7 +225,7 @@ object fNewBrain: TfNewBrain
       Display.Height = 600
       Display.Width = 800
       Options = [doFlip, do3D, doDirectX7Mode, doHardware, doSelectDriver]
-      SurfaceHeight = 504
+      SurfaceHeight = 600
       SurfaceWidth = 800
       ParentShowHint = False
       ShowHint = False

@@ -141,6 +141,8 @@ type
     thrVideo: TTimer;
     timptimer: TTimer;
     svserial: TCheckBox;
+    Button1: TButton;
+    Button2: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Start1Click(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word;
@@ -202,6 +204,7 @@ type
     procedure thrVideoTimer(Sender: TObject);
     procedure timptimerTimer(Sender: TObject);
     procedure svserialClick(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
 
 
   private
@@ -232,6 +235,7 @@ type
     procedure doImport;
     function getemulsatspeedtime(eml, time: cardinal): longint;
     function checkBpts: boolean;
+    procedure LoadImage;
 
 
   public
@@ -326,7 +330,7 @@ uses uz80dsm,math, frmNewDebug,jcllogic, frmChrDsgn, frmAbout, frmTapeMgmt,
      uNBMemory,uNBIO,uNBCPM,uNBScreen,uNBTapes,uNBKeyboard2,
      frmDiskMgmt,mmsystem, frmOptions,shellapi, frmDrvInfo,SendKey,
      frmSplash,frmDisassembly,inifiles, frmRomVersion,ustrings, frmPeriferals,
-     frmInstructions, uUpdate,uStopwatch,z80intf;
+     frmInstructions, uUpdate,uStopwatch,z80intf, frmVGA;
 
 Var dbgsl:TStringlist=nil;
     stopwatch:TStopWatch;
@@ -739,7 +743,39 @@ End;
 
 procedure TfNewBrain.Button1Click(Sender: TObject);
 begin
-  doemulation;
+LoadImage;
+frmvga.isGraph:=true;
+end;
+
+procedure TfNewBrain.Button2Click(Sender: TObject);
+var staddr,addr,i:integer;
+  j: Integer;
+  ch:byte;
+  fclr,bclr:byte;
+begin
+  staddr:=$0000;
+
+
+  for j := 0 to 20-1 do
+  Begin
+   if j mod 2=1 then
+    ch:=64
+   else ch:=33;
+   fclr:=random(15);
+   bclr:=random(15);
+   if fclr=bclr then
+    bclr:=15-fclr;
+   for i := 0 to 40-1 do
+   Begin
+     addr:=staddr+i+(j*40);
+     nbmem.SetDirectMem(8,addr,ch);
+     nbmem.SetDirectMem(8,addr+1024,fclr+bclr shl 4);
+//     nbmem.SetRom(addr,ch);
+//     nbmem.SetRom(addr+1024,fclr+bclr shl 4);
+     inc(ch);
+   End;
+  end;
+   frmvga.isGraph:=false;
 end;
 
 constructor TfNewBrain.Create(Aowner: TComponent);
@@ -752,6 +788,51 @@ begin
   acStEmul.Enabled:=true;
   acRomSel.Enabled:=true;
 end;
+
+procedure TfNewBrain.LoadImage;
+Var img:Timage;
+    i,x,y:integer;
+    bt,bh,bl:byte;
+    coll,colh:tColor;
+
+    function makergb(col:TColor):byte;
+    Const thres=83;
+    var r,g,b,i:byte;
+    Begin
+       result:=0;
+       b     := Col;
+       g     := Col shr 8;
+       r     := Col shr 16;
+       if r>thres then
+         result:=result or 4;
+       if g>thres then
+         result:=result or 2;
+       if b>thres then
+         result:=result or 1;
+       if (r>127) or (g>127) or (b>127) then //intensity
+          result:=result or 8;
+    end;
+
+Begin
+  img:=timage.Create(nil);
+  img.Picture.Bitmap.PixelFormat:= pf4bit;
+  img.Picture.LoadFromFile('img.bmp');
+  i:=0;
+  for y:=0 to 200-1 do
+    for x:=0 to 160-1 do
+    Begin
+      coll:=img.Canvas.Pixels[x*2,y];
+      colh:=img.Canvas.Pixels[x*2+1,y];
+      bl:=makergb(coll);
+      bh:=makergb(colh);
+      bt:=bl or (bh shl 4);
+      nbmem.SetDirectMem(8,i,bt);
+     // nbmem.SetRomForce($8000+i,bt);
+      inc(i);
+    end;
+ // image1.Picture.Assign(img.Picture);
+  img.Free;
+End;
 
 procedure TfNewBrain.Start1Click(Sender: TObject);
 begin
@@ -797,6 +878,7 @@ begin
   nbscreen.Clearscr;
   halted:=false;
 
+
    LoadCharset('CharSet2.chr');
   //---- Z80 Engine interface
   nbmem.Fpath:=root+'\roms\';
@@ -805,6 +887,9 @@ begin
   else
     WriteP1('Ram/Rom Setup from .ini');
     //todo:print to info panel the loaded rom version
+
+  fVGA.show;
+
 
  { For j:=0 to $1fff do
    nbmem.Rom[j]:=nbmem.rom[$e000+j];}
@@ -838,6 +923,9 @@ begin
   End;
  // MyZ80.Z_Set_Reg(Z80_REG_PC,hextoint('8200h'));
   thrvideo.Enabled:=true;
+
+
+
   Resumeemul;
 
   fNewbrain.SetFocus;
@@ -1476,6 +1564,7 @@ begin
    MakeTapeButtons;
    Debug2Click(Sender);
    Memo1.SetFocus;
+   left:=screen.DesktopWidth-width-10-80;
 end;
 
 procedure TfNewBrain.SetBasicFile1Click(Sender: TObject);
@@ -1906,6 +1995,8 @@ procedure TfNewBrain.FormResize(Sender: TObject);
 begin
   if fDrvInfo.Visible then
    fDrvInfo.DoResize1;
+  if fvga.visible then
+   fVGA.DoResize1;
 end;
 
 procedure TfNewBrain.FormCanResize(Sender: TObject; var NewWidth,
@@ -1913,6 +2004,9 @@ procedure TfNewBrain.FormCanResize(Sender: TObject; var NewWidth,
 begin
   if assigned(fDrvInfo) and fDrvInfo.Visible then
    fDrvInfo.DoResize1;
+  if assigned(fvga) and fvga.visible then
+   fVGA.DoResize1;
+
 end;
 
 procedure TfNewBrain.ShowSplash(DoShow:Boolean=true);

@@ -85,6 +85,8 @@
         <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
         <DCC_ExeOutput>G:\_Programming\NewMachine\Runtime\</DCC_ExeOutput>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
+        <VerInfo_Build>1</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.1;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -207,6 +209,10 @@
         </DCCReference>
         <DCCReference Include="Z80Intf.pas"/>
         <DCCReference Include="Z80Package\Z80BaseClass.pas"/>
+        <DCCReference Include="frmVGA.pas">
+            <Form>fVGA</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
