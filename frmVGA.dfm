@@ -32,10 +32,6 @@ object fVGA: TfVGA
     Align = alClient
     TabOrder = 0
     Traces = <>
-    ExplicitLeft = 168
-    ExplicitTop = 96
-    ExplicitWidth = 100
-    ExplicitHeight = 100
   end
   object Timer1: TTimer
     Enabled = False

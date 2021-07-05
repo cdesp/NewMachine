@@ -270,7 +270,7 @@ object fNewBrain: TfNewBrain
       object Restart1: TMenuItem
         Caption = 'Restart'
         Enabled = False
-        ShortCut = 117
+        ShortCut = 120
         OnClick = Restart1Click
       end
       object N2: TMenuItem

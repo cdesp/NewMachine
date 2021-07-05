@@ -24,7 +24,8 @@ type
 
 var
   fVGA: TfVGA;
-    isGraph:boolean;
+  isGraph:boolean;
+  isHires:boolean;
 
 implementation
 
@@ -43,7 +44,7 @@ var
   x,y: Integer;
   addr,staddr:Integer;
   bt,btl,bth:byte;
-
+  bt8:byte;
   col:tcolor;
 
 
@@ -73,10 +74,22 @@ var
   End;
 
 var xpix,ypix,clr:byte;
+    forecol,backcol:tcolor;
+    screenMode:Byte;
 
 Begin
    if not dxvga.candraw then exit;
 
+
+   screenMode:=nbmem.GetDirectMem(8,32760);
+   ishiRes:= (screenMode and 2=2);
+   isGraph:= not (screenMode and 1=1);
+   //00=graph low res    F5
+   //01=text low res     F6
+   //10=graph hires      F7
+   //11=text hires       F8
+   forecol:=clGreen;
+   backCol:=clBlack;
 
    staddr:=$0000;
    dxvga.BeginScene;
@@ -85,6 +98,44 @@ Begin
    //4bits per pixel
    //
 
+
+   if ishires then
+   Begin
+   for y := 0 to 400-1 do
+     for x:=0 to 640-1 do
+     Begin
+      if isgraph then //640x400 b/w
+      Begin
+       addr:=y*(640 div 8)+(x div 8);
+       bt:=nbmem.GetDirectMem(8,addr); //auto advances to other pages if addr>8000
+       xpix:=x mod 8;
+       if getbit(bt,xpix)=1 then
+         col:=forecol
+       else
+         col:=backcol;
+       end
+       else
+       Begin
+          //80x40 chars of 8x10 each b/w
+
+          addr:=(y div 10)*80  +(x div 8);
+          bt:=nbmem.GetDirectMem(8,addr);
+          //bt:=nbmem.ROM[addr];
+          xpix:=x  mod 8;
+          ypix:=y  mod 10;
+          bt:=ReverseBits(Chararr[bt+ypix*256]);//get line pattern for char
+          //clr:=nbmem.GetDirectMem(8,addr+1024);
+          if getbit(bt,xpix)=1 then
+           col:=forecol
+          else
+           col:=backcol;
+       End;
+       dxvga.Surface.Pixel[x,y]:=col;
+     End;
+
+   end
+   else    //lowres
+   Begin
    for y := 0 to 400-1 do
      for x:=0 to 640-1 do
      Begin
@@ -120,6 +171,7 @@ Begin
        End;
        dxvga.Surface.Pixel[x,y]:=col;
      End;
+    end;
 
    dxvga.Surface.Canvas.Release;
    {Flip the buffer}

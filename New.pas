@@ -937,7 +937,7 @@ function translatekey(key:word):word;
 var KeyState: TKeyboardState;
 begin
   GetKeyboardState(KeyState) ;
-
+   RESULT:=KEY;
 
  if ssShift in shft then
  Begin
@@ -953,7 +953,10 @@ begin
       56:result:=42;   //*
       57:result:=40;    //(
       48:result:=41;    //)
-
+      65..90: Begin
+               if (KeyState[VK_CAPITAL] = 0) then
+                 result:=key+32;
+              end;
       186:result:=58; // :
       107,187:result:=43; //+
       188:result:=60; //<
@@ -966,6 +969,11 @@ begin
       222:result:=34;
       39:result:=7;//->
       37:result:=5;//<-
+      116:RESULT:=3; //F5
+      117:RESULT:=$0B;   //F6
+      118:RESULT:=$83;       //F7
+      119:RESULT:=$0A;           //F8
+
 
      else result:=key;
    end;
@@ -987,7 +995,11 @@ begin
       219:result:=91; // [
       221:result:=93; //]
       222:result:=96; //'
-      65..90:result:=key+32;
+      //65..90:result:=key+32;
+      65..90: Begin
+               if (KeyState[VK_CAPITAL] = 0) then
+                 result:=key+32;
+              end;
       39:result:=3;//->
       37:result:=4;//<-
       38:result:=11;//pano
@@ -996,17 +1008,12 @@ begin
       46:result:=2;//del
       8: result:=6;//backspase
       45:result:=1;//insert
-
+      116:RESULT:=3;
+      117:RESULT:=$0B;
+      118:RESULT:=$83;
+      119:RESULT:=$0A;
 
      else result:=key;
-   end;
-   if (KeyState[VK_CAPITAL] = 1) then
-   begin
-   if result in [65..90] then
-    result:=result+32
-   else
-   if result in [97..122] then
-    result:=result-32;
    end;
 End;
 

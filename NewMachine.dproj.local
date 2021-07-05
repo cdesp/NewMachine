@@ -2,7 +2,7 @@
 <BorlandProject>
 	<Transactions>
     <Transaction>2021/05/23 11:52:29.000.023,=G:\_Programming\NewMachine\Unit1.pas</Transaction>
-    <Transaction>2021/05/23 11:56:04.000.603,G:\_Programming\NewMachine\frmVGA.pas=G:\_Programming\NewMachine\Unit1.pas</Transaction>
-    <Transaction>2021/05/23 11:56:04.000.603,G:\_Programming\NewMachine\frmVGA.dfm=G:\_Programming\NewMachine\Unit1.dfm</Transaction>
+    <Transaction>2021/05/23 11:56:04.000.603,G:\_Programming\NewMachine\Unit1.dfm=G:\_Programming\NewMachine\frmVGA.dfm</Transaction>
+    <Transaction>2021/05/23 11:56:04.000.603,G:\_Programming\NewMachine\Unit1.pas=G:\_Programming\NewMachine\frmVGA.pas</Transaction>
   </Transactions>
 </BorlandProject>
