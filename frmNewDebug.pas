@@ -341,7 +341,7 @@ function TNewDebug.CheckBreak(Const pc:Word):boolean;
 var idx:integer;
 begin
  result:=false;
- if not visible then exit;
+ //if not visible then exit;
  if bps=nil then exit;
  if bps.Count=0 then exit;
  idx:=bps.indexof(inttohex(pc,4));

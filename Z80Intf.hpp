@@ -31,6 +31,8 @@ typedef void __fastcall (*TOutByteProc)(int Port, int NewByte);
 
 typedef bool __fastcall (*TGetInterrupt)();
 
+typedef bool __fastcall (*TIsBreakpointFunc)(int thepc);
+
 typedef void __fastcall (*TStepProc)(const System::Word pc);
 
 //-- var, const, procedure ---------------------------------------------------
@@ -39,6 +41,7 @@ extern DELPHI_PACKAGE TSetByteProc Z80_SetByte;
 extern DELPHI_PACKAGE TInByteFunc Z80_InB;
 extern DELPHI_PACKAGE TOutByteProc Z80_OutB;
 extern DELPHI_PACKAGE TGetInterrupt Z80_GetInterrupt;
+extern DELPHI_PACKAGE TIsBreakpointFunc Z80_IsBreakpoint;
 extern DELPHI_PACKAGE TStepProc Z80_StepProc;
 extern DELPHI_PACKAGE bool BreakEmulation;
 extern DELPHI_PACKAGE bool Z80Steping;

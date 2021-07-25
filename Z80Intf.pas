@@ -8,6 +8,7 @@ type
   TInByteFunc=function(port:integer):integer;
   TOutByteProc=Procedure(Port:integer;NewByte:integer);
   TGetInterrupt=function:Boolean;
+  TIsBreakpointFunc=function(thepc:Integer):Boolean;
   TStepProc=procedure (Const pc: word);
 
 
@@ -17,6 +18,7 @@ var
  Z80_InB:TInByteFunc=nil;
  Z80_OutB:TOutByteProc=nil;
  Z80_GetInterrupt:TGetInterrupt=nil;
+ Z80_IsBreakpoint:TIsBreakpointFunc=nil;
  Z80_StepProc:TStepProc=nil;
  BreakEmulation:Boolean=false;
  Z80Steping:boolean=false;

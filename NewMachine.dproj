@@ -175,7 +175,7 @@
         </DCCReference>
         <DCCReference Include="SendKey.pas"/>
         <DCCReference Include="strings.pas"/>
-        <DCCReference Include="uAsm.pas"/>
+        <DCCReference Include="..\Z80 Assembler\uAsm.pas"/>
         <DCCReference Include="uAsmPrj.pas"/>
         <DCCReference Include="UDISASM.PAS"/>
         <DCCReference Include="uNBCPM.pas"/>

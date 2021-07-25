@@ -38,11 +38,13 @@ public:
 	Z80intf::TInByteFunc Z80_InB;
 	Z80intf::TOutByteProc Z80_OutB;
 	Z80intf::TGetInterrupt Z80_GetInterrupt;
+	Z80intf::TIsBreakpointFunc Z80_IsBreakpoint;
 	int __fastcall Z_GetByte(int Addr);
 	void __fastcall Z_SetByte(int Addr, int b);
 	int __fastcall Z_InB(int port);
 	void __fastcall Z_OutB(int port, int b);
 	bool __fastcall Z_GetInterrupt();
+	bool __fastcall Z_IsBreakpoint(int thepc);
 	void __fastcall Z_StepProc();
 	virtual int __fastcall Z_Emulate(int cycles) = 0 ;
 	virtual void __fastcall Z_Reset() = 0 ;
@@ -54,6 +56,7 @@ public:
 	virtual void __fastcall setZ80_InB(Z80intf::TInByteFunc f) = 0 ;
 	virtual void __fastcall setZ80_OutB(Z80intf::TOutByteProc f) = 0 ;
 	virtual void __fastcall setZ80_GetInterrupt(Z80intf::TGetInterrupt f) = 0 ;
+	virtual void __fastcall setZ80_IsBreakpoint(Z80intf::TIsBreakpointFunc f) = 0 ;
 public:
 	/* TObject.Create */ inline __fastcall TZ80Interface() : System::TObject() { }
 	/* TObject.Destroy */ inline __fastcall virtual ~TZ80Interface() { }

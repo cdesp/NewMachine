@@ -21,7 +21,7 @@ class __declspec(delphiclass) TZ80Class : public TZ80Interface
 
 		virtual int __fastcall Z_Emulate(int cycles)  ;
 		virtual void __fastcall Z_Reset(void)  ;
-        virtual int __fastcall Z_Interrupt(void);
+		virtual int __fastcall Z_Interrupt(void);
 		virtual int __fastcall Z_Get_Reg(z80_register Reg)  ;
 		virtual void __fastcall Z_Set_Reg(z80_register Reg, int value)  ;
 		virtual void __fastcall setZ80_getByte(Z80intf::TGetByteFunc f);
@@ -29,6 +29,7 @@ class __declspec(delphiclass) TZ80Class : public TZ80Interface
 		virtual void __fastcall setZ80_InB(Z80intf::TInByteFunc f);
 		virtual void __fastcall setZ80_OutB(Z80intf::TOutByteProc f);
 		virtual void __fastcall setZ80_GetInterrupt(Z80intf::TGetInterrupt f);
+        virtual void __fastcall setZ80_IsBreakpoint(Z80intf::TIsBreakpointFunc f);
 };
 
 TZ80Interface* MyZ80;

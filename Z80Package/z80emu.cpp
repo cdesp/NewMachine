@@ -2606,8 +2606,13 @@ emulate_next_instruction:
                 }
 
 				if (elapsed_cycles >= number_cycles)
+						goto stop_emulation;
 
-                        goto stop_emulation;
+                bool bp;
+				//check for breakpoint
+				Z80_IsBreakpoint(pc,bp);
+				if (bp)
+				  goto stop_emulation;
 
         }
 

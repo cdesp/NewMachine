@@ -37,6 +37,7 @@ Type
        Z80_InB:TInByteFunc;
        Z80_OutB:TOutByteProc;
        Z80_GetInterrupt:TGetInterrupt;
+       Z80_IsBreakpoint:TIsBreakpointFunc;
     Protected
     Public
       //implemented in Delphi
@@ -45,6 +46,7 @@ Type
       Function Z_InB(port: Integer):Integer;
       Procedure Z_OutB(port:Integer;b:Integer);
       Function Z_GetInterrupt:boolean;
+      Function Z_IsBreakpoint(thepc:Integer):boolean;
       Procedure Z_StepProc;
      //implemented in C++
       Function Z_Emulate(cycles: integer): integer;Virtual;Abstract;
@@ -57,6 +59,7 @@ Type
       procedure setZ80_InB(f:TInByteFunc); Virtual;Abstract;
       procedure setZ80_OutB(f:TOutByteProc); Virtual;Abstract;
       procedure setZ80_GetInterrupt(f:TGetInterrupt); Virtual;Abstract;
+      procedure setZ80_IsBreakpoint(f:TIsBreakpointFunc); Virtual;Abstract;
   End;
 
   function CreateCPPDescClass:TZ80Interface; external 'Z80Emulator.bpl';
@@ -75,6 +78,11 @@ end;
 function TZ80Interface.Z_GetInterrupt: boolean;
 begin
   result:=Z80_GetInterrupt;
+end;
+
+function TZ80Interface.Z_IsBreakpoint(thepc:Integer): boolean;
+begin
+ result:=Z80_IsBreakpoint(thepc);
 end;
 
 function TZ80Interface.Z_InB(port: Integer): Integer;

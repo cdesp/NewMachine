@@ -497,6 +497,14 @@ Begin
 End;
 
 //Call back from emulator DLL
+
+
+function IsBkpnt(thePc:Integer):Boolean;
+Begin
+  result:=newdebug.CheckBreak(thePC);
+End;
+
+
 Function READBYTE(ADDR:Integer):Integer;
 Var a:word;
 Begin
@@ -710,14 +718,15 @@ Begin
 //  Else
 //   inc(nti);
 {$ENDIF}
-  Dostop:=  newdebug.checkbreak(pc);
-  Prepc:=pc;
   IF1:=z80_get_reg(Z80_REG_IFF1);
-  if dostop or (fnewbrain.debugging AND NOT STOPPED) then
-  Begin
-   z80_stop_emulating;
-   Stopped:=true;
-  End;
+//  Dostop:=  newdebug.checkbreak(pc);
+  Prepc:=pc;
+
+//  if dostop or (fnewbrain.debugging AND NOT STOPPED) then
+//  Begin
+//   z80_stop_emulating;
+//   Stopped:=true;
+//  End;
 
 
 //  fnewbrain.thrEmulate.enabled:=true
@@ -738,6 +747,7 @@ Begin
       myz80.setZ80_InB(NewIn);
       myz80.setZ80_OutB(Newout);
       myz80.setZ80_GetInterrupt(GetInt);
+      myz80.setZ80_IsBreakpoint(IsBkpnt);
    //   z80_set_reti(@RETI);
 End;
 
@@ -2132,7 +2142,8 @@ Var DebugTimer:Integer;
 
 function TfNewBrain.checkBpts:boolean;
 Begin
-  result:=(NewDebug<>nil) and (NewDebug.Visible);
+  //result:=(NewDebug<>nil) and (NewDebug.Visible);
+  result:=false;
 End;
 
 procedure TfNewBrain.StartEmulation;

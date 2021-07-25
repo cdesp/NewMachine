@@ -20,7 +20,7 @@ uses
   New in 'New.pas' {fNewBrain},
   SendKey in 'SendKey.pas',
   strings in 'strings.pas',
-  uAsm in 'uAsm.pas',
+  uAsm in '..\Z80 Assembler\uAsm.pas',
   uAsmPrj in 'uAsmPrj.pas',
   UDISASM in 'UDISASM.PAS',
   uNBCPM in 'uNBCPM.pas',

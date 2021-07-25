@@ -138,6 +138,12 @@ extern "C" {
  (x) = MyZ80->Z_GetInterrupt();          \
 }
 
+#define Z80_IsBreakpoint(thepc,x)         \
+{                                   \
+ (x) = MyZ80->Z_IsBreakpoint(thepc);          \
+}
+
+
 #ifdef __cplusplus
 }
 #endif

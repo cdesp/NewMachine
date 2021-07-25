@@ -54,6 +54,7 @@ int __fastcall TZ80Class::Z_Interrupt(void)
    return Z80Interrupt(&zstate,0,NULL);
 }
 
+
 int __fastcall TZ80Class::Z_Get_Reg(z80_register Reg)
 {
   switch(Reg)
@@ -156,6 +157,13 @@ void __fastcall TZ80Class::setZ80_GetInterrupt(Z80intf::TGetInterrupt f)
 {
  Z80_GetInterrupt =f;
 }
+
+
+void __fastcall TZ80Class::setZ80_IsBreakpoint(Z80intf::TIsBreakpointFunc f)
+{
+ Z80_IsBreakpoint =f;
+}
+
 
 extern "C" __declspec(dllexport) TZ80Interface* __stdcall CreateCPPDescClass()
 {
