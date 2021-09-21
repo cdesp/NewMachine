@@ -347,7 +347,7 @@ begin
  idx:=bps.indexof(inttohex(pc,4));
  If (idx>-1) {and (not fnewbrain.debugging)} then
  Begin
-  z80_stop_emulating;
+  //z80_stop_emulating;
   Stopped:=true;
   fnewbrain.debugging:=true;
   result:=true;

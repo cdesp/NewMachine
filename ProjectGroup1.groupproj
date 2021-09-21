@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{5B0403F3-FDB0-48F1-A93C-FE9B7D0F6496}</ProjectGuid>
+        <ProjectGuid>{02806186-890A-4AEF-8B4E-3CFC017557F1}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="NewMachine.dproj">

@@ -2610,8 +2610,8 @@ emulate_next_instruction:
 
                 bool bp;
 				//check for breakpoint
-				Z80_IsBreakpoint(pc,bp);
-				if (bp)
+				Z80_GetIsBreakpoint(pc,bp);
+				if (bp==true)
 				  goto stop_emulation;
 
         }

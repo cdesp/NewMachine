@@ -290,14 +290,14 @@ Begin
   k:=0;
   if interrupt2 THEN
   BEGIN
-    k:=2;//bit 0,1,2 is for the 8 interrupts
-    K:=7-K; //1 0 1   ;5 FOR INT 2
+    k:=1;//bit 0,1,2 is for the 8 interrupts
+    K:=7-K; //1 0 1   ;6 FOR INT 2
   END
   else
   if interrupt1 THEN
   BEGIN
-    k:=1;//bit 0,1,2 is for the 8 interrupts
-    K:=7-K; //1 1 0  ;6 FOR INT 1
+    k:=0;//bit 0,1,2 is for the 8 interrupts
+    K:=7-K; //1 1 0  ;7 FOR INT 1
   END;
 
   Result:= 64+K;

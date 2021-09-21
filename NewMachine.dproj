@@ -57,7 +57,7 @@
         <DCC_UnitSearchPath>G:\_Programming\Comps_10.4\tpapro_5.00\run;G:\_Programming\Comps_10.4\delphix\Source;G:\_Programming\Comps_10.4\jdled;G:\_Programming\Comps_10.4\ExpEval;G:\_Programming\Comps_10.4\Others;G:\_Programming\Comps_10.4\regexp\Source;G:\_Programming\Comps_10.4\VGLib\Units;G:\_Programming\Comps_10.4\tpapro_5.00\version 4 units in queue for upgrade;G:\_Programming\Comps_10.4\ts;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <DCC_UsePackage>DBXSqliteDriver;DataSnapServerMidas;DBXDb2Driver;DBXInterBaseDriver;vclactnband;vclFireDAC;DataSnapFireDAC;svnui;tethering;JvGlobus;FireDACADSDriver;JvPluginSystem;DBXMSSQLDriver;JvMM;DatasnapConnectorsFreePascal;FireDACMSSQLDriver;vcltouch;JvBands;vcldb;bindcompfmx;svn;Intraweb;DBXOracleDriver;JvNet;JvJans;inetdb;JvAppFrm;FmxTeeUI;emsedge;JvDotNetCtrls;fmx;fmxdae;vclib;JvWizards;FireDACDBXDriver;dbexpress;IndyCore;vclx;JvPageComps;dsnap;DataSnapCommon;JvDB;DataSnapConnectors;VCLRESTComponents;JclDeveloperTools;A407_R120;vclie;bindengine;DBXMySQLDriver;FireDACOracleDriver;FireDACMySQLDriver;DBXFirebirdDriver;JvCmp;JvHMI;FireDACCommonODBC;DataSnapClient;bindcompdbx;IndyIPCommon;JvCustom;vcl;DBXSybaseASEDriver;IndyIPServer;JvXPCtrls;IndySystem;FireDACDb2Driver;dsnapcon;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;TeeDB;JDLedD6;Jcl;JvCore;emshosting;JvCrypt;FireDACPgDriver;ibmonitor;FireDACASADriver;DBXOdbcDriver;FireDACTDataDriver;FMXTee;DbxCommonDriver;JvDlgs;JvRuntimeDesign;ibxpress;Tee;JvManagedThreads;DataSnapServer;xmlrtl;DataSnapNativeClient;fmxobj;vclwinx;ibxbindings;rtl;FireDACDSDriver;DbxClientDriver;JvTimeFramework;DBXSybaseASADriver;CustomIPTransport;vcldsnap;JvSystem;JvStdCtrls;bindcomp;appanalytics;DBXInformixDriver;IndyIPClient;bindcompvcl;TeeUI;JvPascalInterpreter;dbxcds;VclSmp;JvDocking;adortl;FireDACODBCDriver;JclVcl;DataSnapIndy10ServerTransport;dsnapxml;DataSnapProviderClient;dbrtl;inetdbxpress;FireDACMongoDBDriver;IndyProtocols;JvControls;JvPrintPreview;JclContainers;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>DBXSqliteDriver;DataSnapServerMidas;DBXDb2Driver;DBXInterBaseDriver;vclactnband;vclFireDAC;DataSnapFireDAC;svnui;tethering;FireDACADSDriver;DBXMSSQLDriver;DatasnapConnectorsFreePascal;FireDACMSSQLDriver;vcltouch;vcldb;bindcompfmx;svn;DBXOracleDriver;inetdb;FmxTeeUI;emsedge;fmx;fmxdae;vclib;FireDACDBXDriver;dbexpress;IndyCore;vclx;dsnap;DataSnapCommon;DataSnapConnectors;VCLRESTComponents;JclDeveloperTools;A407_R120;vclie;bindengine;DBXMySQLDriver;FireDACOracleDriver;FireDACMySQLDriver;DBXFirebirdDriver;FireDACCommonODBC;DataSnapClient;bindcompdbx;IndyIPCommon;vcl;DBXSybaseASEDriver;IndyIPServer;IndySystem;FireDACDb2Driver;dsnapcon;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;TeeDB;JDLedD6;Jcl;emshosting;FireDACPgDriver;FireDACASADriver;DBXOdbcDriver;FireDACTDataDriver;FMXTee;DbxCommonDriver;Tee;DataSnapServer;xmlrtl;DataSnapNativeClient;fmxobj;vclwinx;rtl;FireDACDSDriver;DbxClientDriver;DBXSybaseASADriver;CustomIPTransport;vcldsnap;bindcomp;appanalytics;DBXInformixDriver;IndyIPClient;bindcompvcl;TeeUI;dbxcds;VclSmp;adortl;FireDACODBCDriver;JclVcl;DataSnapIndy10ServerTransport;dsnapxml;DataSnapProviderClient;dbrtl;FireDACMongoDBDriver;IndyProtocols;JclContainers;fmxase</DCC_UsePackage>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -85,8 +85,8 @@
         <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
         <DCC_ExeOutput>G:\_Programming\NewMachine\Runtime\</DCC_ExeOutput>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_Build>1</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.1;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>5</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.5;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -97,9 +97,9 @@
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>13</VerInfo_Build>
+        <VerInfo_Build>14</VerInfo_Build>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.13;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.14;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <DCC_ExeOutput>G:\_Programming\NewMachine\Runtime</DCC_ExeOutput>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>

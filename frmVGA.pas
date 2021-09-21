@@ -147,9 +147,9 @@ Begin
        btl:=bt and $0f;
        bth:=(bt and $f0) shr 4;
        if x mod 4<2 then
-         col:=get4bitcolor(btl)
+         col:=get4bitcolor(btH)
        else
-         col:=get4bitcolor(bth);
+         col:=get4bitcolor(btL);
        end
        else
        Begin

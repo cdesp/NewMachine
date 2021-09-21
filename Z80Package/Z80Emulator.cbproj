@@ -109,9 +109,9 @@
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>17</VerInfo_Build>
+        <VerInfo_Build>20</VerInfo_Build>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.17;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.20;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <IncludePath>G:\_Programming\NewMachine;$(IncludePath)</IncludePath>
         <ILINK_LibraryPath>G:\_Programming\NewMachine;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <FinalOutputDir>G:\_Programming\NewMachine\Runtime\</FinalOutputDir>
@@ -187,14 +187,14 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\19.0\BPL\Z80Emulator.bpl" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>Z80Emulator.bpl</RemoteName>
+                <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'=='true'" LocalName="$(BDS)\bin64\cc64260mt.dll" Class="DependencyModule">
+                    <Platform Name="Win64">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'=='true'" LocalName="$(BDS)\bin64\cc64260mt.dll" Class="DependencyModule">
-                    <Platform Name="Win64">
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\19.0\BPL\Z80Emulator.bpl" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>Z80Emulator.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -645,12 +645,12 @@ Begin
   result:=false;
   if newdebug.Visible then exit;
 
-  if gettickcount-mytimeinterrupt>=17 then
+  if gettickcount-mytimeinterrupt>=22 then
   Begin
     INTERRUPT1:=TRUE;
     InterruptServed:=FALSE;
   end;
-  if gettickcount-mytimeinterrupt2>=22 then
+  if gettickcount-mytimeinterrupt2>=42 then
   Begin
     INTERRUPT2:=TRUE;
     InterruptServed:=FALSE;
@@ -742,6 +742,7 @@ Begin
       Z80_OutB:=Newout;
       Z80_GetInterrupt:=Getint;
       z80_StepProc:=Stepproc;
+      Z80_IsBreakpoint:=  IsBkpnt;
       myz80.setZ80_getByte(Readbyte);
       myz80.setZ80_SetByte(WriteByte);
       myz80.setZ80_InB(NewIn);
@@ -1324,27 +1325,33 @@ Begin
 
 //    tr:=abs(trunc(idif/100000));
     if idif>20000000 then
-      tr:=4000
+      tr:=7000
     else
     if idif>15000000 then
-      tr:=2000
+      tr:=5000
     else
     if idif>10000000 then
-      tr:=1000
+      tr:=4000
     else
     if idif>7000000 then
-      tr:=500
+      tr:=3000
     else
     if idif>4000000 then
-      tr:=100
+      tr:=2000
     else
     if idif>3000000 then
-      tr:=50
+      tr:=2000
     else
     if idif>1500000 then
-      tr:=10
+      tr:=300
     else
-      tr:=5;
+    if idif>1000000 then
+      tr:=20
+    else
+    if idif>50000 then
+      tr:=4
+    ELSE
+      tr:=1;
 
     tr:=math.max(integer(1),integer(tr));
 
