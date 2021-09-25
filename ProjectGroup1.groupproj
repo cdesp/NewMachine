@@ -6,9 +6,6 @@
         <Projects Include="NewMachine.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Z80Package\Z80Emulator.cbproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -26,23 +23,14 @@
     <Target Name="NewMachine:Make">
         <MSBuild Projects="NewMachine.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Z80Emulator">
-        <MSBuild Projects="Z80Package\Z80Emulator.cbproj"/>
-    </Target>
-    <Target Name="Z80Emulator:Clean">
-        <MSBuild Projects="Z80Package\Z80Emulator.cbproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Z80Emulator:Make">
-        <MSBuild Projects="Z80Package\Z80Emulator.cbproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="NewMachine;Z80Emulator"/>
+        <CallTarget Targets="NewMachine"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="NewMachine:Clean;Z80Emulator:Clean"/>
+        <CallTarget Targets="NewMachine:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="NewMachine:Make;Z80Emulator:Make"/>
+        <CallTarget Targets="NewMachine:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

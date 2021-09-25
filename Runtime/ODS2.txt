@@ -1,136 +1,95 @@
-7:07:23 μμPC: 0000,0000 screen resizs
-7:08:10 μμPC: C001,C001 ERR:Page 192 does not exist
-7:08:10 μμPC: 14C4,14C4 ERR:Page 192 does not exist
-7:08:10 μμPC: 151A,151A ERR:Page 192 does not exist
-7:08:11 μμPC: 0A0B,0A0B ERR:Page 192 does not exist
-7:08:11 μμPC: 13E5,13E5 ERR:Page 192 does not exist
-7:08:11 μμPC: 13E5,13E5 ERR:Page 192 does not exist
-7:08:11 μμPC: 09F3,09F3 ERR:Page 192 does not exist
-7:08:12 μμPC: 0A02,0A02 ERR:Page 192 does not exist
-7:08:13 μμPC: 1A81,1A81 ERR:Page 192 does not exist
-7:08:13 μμPC: 1A81,1A81 ERR:Page 192 does not exist
-7:08:13 μμPC: 13F4,13F4 ERR:Page 192 does not exist
-7:08:15 μμPC: 18B3,18B3 ERR:Page 192 does not exist
-7:08:15 μμPC: 1A85,1A85 ERR:Page 192 does not exist
-7:08:15 μμPC: 1A85,1A85 ERR:Page 192 does not exist
-7:08:15 μμPC: 1A85,1A85 ERR:Page 192 does not exist
-7:08:16 μμPC: 1570,1570 ERR:Page 192 does not exist
-7:08:17 μμPC: 0A0D,0A0D ERR:Page 192 does not exist
-7:08:17 μμPC: 0A09,0A09 ERR:Page 192 does not exist
-7:08:17 μμPC: 0A02,0A02 ERR:Page 192 does not exist
-7:08:18 μμPC: 13DC,13DC ERR:Page 192 does not exist
-7:08:18 μμPC: 18B6,18B6 ERR:Page 192 does not exist
-7:08:18 μμPC: 13F1,13F1 ERR:Page 192 does not exist
-7:08:18 μμPC: 13F1,13F1 ERR:Page 192 does not exist
-7:08:19 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:19 μμPC: 13F1,13F1 ERR:Page 192 does not exist
-7:08:20 μμPC: 13E9,13E9 ERR:Page 192 does not exist
-7:08:20 μμPC: 1598,1598 ERR:Page 192 does not exist
-7:08:20 μμPC: 13E5,13E5 ERR:Page 192 does not exist
-7:08:20 μμPC: 20F2,20F2 ERR:Page 192 does not exist
-7:08:20 μμPC: 20F2,20F2 ERR:Page 192 does not exist
-7:08:20 μμPC: 1493,1493 ERR:Page 192 does not exist
-7:08:21 μμPC: 13E5,13E5 ERR:Page 192 does not exist
-7:08:22 μμPC: 20F2,20F2 ERR:Page 192 does not exist
-7:08:22 μμPC: 20F2,20F2 ERR:Page 192 does not exist
-7:08:22 μμPC: 1597,1597 ERR:Page 192 does not exist
-7:08:23 μμPC: 0A05,0A05 ERR:Page 192 does not exist
-7:08:23 μμPC: 20EF,20EF ERR:Page 192 does not exist
-7:08:23 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:23 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:24 μμPC: 09FD,09FD ERR:Page 192 does not exist
-7:08:24 μμPC: 09FC,09FC ERR:Page 192 does not exist
-7:08:24 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:24 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:25 μμPC: 09F7,09F7 ERR:Page 192 does not exist
-7:08:26 μμPC: 18B6,18B6 ERR:Page 192 does not exist
-7:08:26 μμPC: 0A05,0A05 ERR:Page 192 does not exist
-7:08:26 μμPC: 0A05,0A05 ERR:Page 192 does not exist
-7:08:26 μμPC: 14B0,14B0 ERR:Page 192 does not exist
-7:08:27 μμPC: 13E8,13E8 ERR:Page 192 does not exist
-7:08:27 μμPC: 13E8,13E8 ERR:Page 192 does not exist
-7:08:27 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:27 μμPC: 09F0,09F0 ERR:Page 192 does not exist
-7:08:28 μμPC: 13E9,13E9 ERR:Page 192 does not exist
-7:08:28 μμPC: 0A09,0A09 ERR:Page 192 does not exist
-7:08:28 μμPC: 0A07,0A07 ERR:Page 192 does not exist
-7:08:29 μμPC: 13D7,13D7 ERR:Page 192 does not exist
-7:08:29 μμPC: 1A7D,1A7D ERR:Page 192 does not exist
-7:08:29 μμPC: 13F9,13F9 ERR:Page 192 does not exist
-7:08:29 μμPC: 13F9,13F9 ERR:Page 192 does not exist
-7:08:30 μμPC: 09FE,09FE ERR:Page 192 does not exist
-7:08:31 μμPC: 13F1,13F1 ERR:Page 192 does not exist
-7:08:31 μμPC: 13F1,13F1 ERR:Page 192 does not exist
-7:08:31 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:31 μμPC: 158C,158C ERR:Page 192 does not exist
-7:08:32 μμPC: 0A16,0A16 ERR:Page 192 does not exist
-7:08:32 μμPC: 0A16,0A16 ERR:Page 192 does not exist
-7:08:32 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:32 μμPC: 09FA,09FA ERR:Page 192 does not exist
-7:08:33 μμPC: 20EF,20EF ERR:Page 192 does not exist
-7:08:33 μμPC: 13EB,13EB ERR:Page 192 does not exist
-7:08:33 μμPC: 13F7,13F7 ERR:Page 192 does not exist
-7:08:34 μμPC: 1583,1583 ERR:Page 192 does not exist
-7:08:34 μμPC: 0A02,0A02 ERR:Page 192 does not exist
-7:08:34 μμPC: 0A02,0A02 ERR:Page 192 does not exist
-7:08:34 μμPC: 14A1,14A1 ERR:Page 192 does not exist
-7:08:35 μμPC: 0A0D,0A0D ERR:Page 192 does not exist
-7:08:36 μμPC: 1A82,1A82 ERR:Page 192 does not exist
-7:08:36 μμPC: 0A0B,0A0B ERR:Page 192 does not exist
-7:08:36 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:36 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:37 μμPC: 20F2,20F2 ERR:Page 192 does not exist
-7:08:37 μμPC: 20F2,20F2 ERR:Page 192 does not exist
-7:08:37 μμPC: 1494,1494 ERR:Page 192 does not exist
-7:08:37 μμPC: 0A02,0A02 ERR:Page 192 does not exist
-7:08:38 μμPC: 1A81,1A81 ERR:Page 192 does not exist
-7:08:38 μμPC: 1411,1411 ERR:Page 192 does not exist
-7:08:38 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:39 μμPC: 1584,1584 ERR:Page 192 does not exist
-7:08:39 μμPC: 09FE,09FE ERR:Page 192 does not exist
-7:08:39 μμPC: 09FE,09FE ERR:Page 192 does not exist
-7:08:39 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:40 μμPC: 13F7,13F7 ERR:Page 192 does not exist
-7:08:41 μμPC: 20F2,20F2 ERR:Page 192 does not exist
-7:08:41 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:41 μμPC: 09FD,09FD ERR:Page 192 does not exist
-7:08:41 μμPC: 1588,1588 ERR:Page 192 does not exist
-7:08:42 μμPC: 13E9,13E9 ERR:Page 192 does not exist
-7:08:42 μμPC: 13E9,13E9 ERR:Page 192 does not exist
-7:08:42 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:42 μμPC: 1569,1569 ERR:Page 192 does not exist
-7:08:43 μμPC: 0A18,0A18 ERR:Page 192 does not exist
-7:08:43 μμPC: 0A18,0A18 ERR:Page 192 does not exist
-7:08:43 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:44 μμPC: 157E,157E ERR:Page 192 does not exist
-7:08:45 μμPC: 18B3,18B3 ERR:Page 192 does not exist
-7:08:45 μμPC: 1411,1411 ERR:Page 192 does not exist
-7:08:45 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:45 μμPC: 15A6,15A6 ERR:Page 192 does not exist
-7:08:46 μμPC: 20EF,20EF ERR:Page 192 does not exist
-7:08:46 μμPC: 13E8,13E8 ERR:Page 192 does not exist
-7:08:46 μμPC: 0A07,0A07 ERR:Page 192 does not exist
-7:08:46 μμPC: 14B0,14B0 ERR:Page 192 does not exist
-7:08:47 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:47 μμPC: 09EF,09EF ERR:Page 192 does not exist
-7:08:47 μμPC: 09FA,09FA ERR:Page 192 does not exist
-7:08:48 μμPC: 09F1,09F1 ERR:Page 192 does not exist
-7:08:48 μμPC: 20EF,20EF ERR:Page 192 does not exist
-7:08:48 μμPC: 09F6,09F6 ERR:Page 192 does not exist
-7:08:48 μμPC: 13F0,13F0 ERR:Page 192 does not exist
-7:08:49 μμPC: 13EB,13EB ERR:Page 192 does not exist
-7:08:49 μμPC: 18B3,18B3 ERR:Page 192 does not exist
-7:08:49 μμPC: 1411,1411 ERR:Page 192 does not exist
-7:08:49 μμPC: 09FD,09FD ERR:Page 192 does not exist
-7:08:50 μμPC: 1585,1585 ERR:Page 192 does not exist
-7:08:51 μμPC: 1A81,1A81 ERR:Page 192 does not exist
-7:08:51 μμPC: 15E2,15E2 ERR:Page 192 does not exist
-7:08:51 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:51 μμPC: 0A09,0A09 ERR:Page 192 does not exist
-7:08:52 μμPC: 18B6,18B6 ERR:Page 192 does not exist
-7:08:52 μμPC: 1411,1411 ERR:Page 192 does not exist
-7:08:52 μμPC: 0039,0039 ERR:Page 192 does not exist
-7:08:53 μμPC: 0A05,0A05 ERR:Page 192 does not exist
-7:08:55 μμPC: 0B92,0B92 ERR:Page 192 does not exist
-7:08:55 μμPC: 0B92,0B92 ERR:Page 192 does not exist
-7:08:55 μμPC: 09F6,09F6 ERR:Page 192 does not exist
+5:24:02 μμPC: 0000,0000 screen resizs
+5:24:09 μμPC: 2436,2436 KEY=66 NEW=66
+5:24:20 μμPC: 2439,2439 KEY=84 NEW=84
+5:24:20 μμPC: 0B42,0B42 KEY=69 NEW=69
+5:24:20 μμPC: 2432,2432 KEY=83 NEW=83
+5:24:21 μμPC: 0038,0038 KEY=84 NEW=84
+5:24:21 μμPC: 2438,2438 KEY=8 NEW=6
+5:24:22 μμPC: 0B3F,0B3F KEY=8 NEW=6
+5:24:23 μμPC: 2436,2436 KEY=8 NEW=6
+5:24:23 μμPC: 2439,2439 KEY=8 NEW=6
+5:24:24 μμPC: 2437,2437 KEY=49 NEW=49
+5:24:25 μμPC: 0038,0038 KEY=48 NEW=48
+5:24:25 μμPC: 0B3F,0B3F KEY=32 NEW=32
+5:24:26 μμPC: 2437,2437 KEY=80 NEW=80
+5:24:26 μμPC: 2436,2436 KEY=82 NEW=82
+5:24:26 μμPC: 2436,2436 KEY=79 NEW=79
+5:24:27 μμPC: 2439,2439 KEY=8 NEW=6
+5:24:27 μμPC: 0B3F,0B3F KEY=73 NEW=73
+5:24:28 μμPC: 2436,2436 KEY=78 NEW=78
+5:24:28 μμPC: 2436,2436 KEY=84 NEW=84
+5:24:28 μμPC: 2436,2436 KEY=32 NEW=32
+5:24:29 μμPC: 2437,2437 KEY=53 NEW=53
+5:24:29 μμPC: 2436,2436 KEY=13 NEW=13
+5:24:31 μμPC: 2439,2439 KEY=69 NEW=69
+5:24:31 μμPC: 2436,2436 KEY=68 NEW=68
+5:24:32 μμPC: 2436,2436 KEY=73 NEW=73
+5:24:32 μμPC: 2436,2436 KEY=84 NEW=84
+5:24:32 μμPC: 2436,2436 KEY=32 NEW=32
+5:24:33 μμPC: 2436,2436 KEY=49 NEW=49
+5:24:33 μμPC: 2436,2436 KEY=48 NEW=48
+5:24:34 μμPC: 2436,2436 KEY=8 NEW=6
+5:24:34 μμPC: 2436,2436 KEY=49 NEW=49
+5:24:35 μμPC: 2436,2436 KEY=48 NEW=48
+5:24:36 μμPC: 2436,2436 KEY=13 NEW=13
+5:24:38 μμPC: 0B3C,0B3C KEY=39 NEW=3
+5:24:39 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:40 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:41 μμPC: 2439,2439 KEY=39 NEW=3
+5:24:42 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:42 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:42 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:42 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:42 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2438,2438 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:43 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2438,2438 KEY=39 NEW=3
+5:24:43 μμPC: 0038,0038 KEY=39 NEW=3
+5:24:43 μμPC: 0038,0038 KEY=39 NEW=3
+5:24:43 μμPC: 0038,0038 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 0038,0038 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:43 μμPC: 0A7E,0A7E KEY=39 NEW=3
+5:24:43 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:43 μμPC: 0038,0038 KEY=39 NEW=3
+5:24:43 μμPC: 0038,0038 KEY=39 NEW=3
+5:24:43 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:44 μμPC: 0B3F,0B3F KEY=39 NEW=3
+5:24:44 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:44 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:44 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:44 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:44 μμPC: 0038,0038 KEY=39 NEW=3
+5:24:44 μμPC: 0038,0038 KEY=39 NEW=3
+5:24:44 μμPC: 2437,2437 KEY=39 NEW=3
+5:24:47 μμPC: 2436,2436 KEY=37 NEW=4
+5:24:48 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:49 μμPC: 2436,2436 KEY=37 NEW=4
+5:24:49 μμPC: 2437,2437 KEY=37 NEW=4
+5:24:49 μμPC: 2437,2437 KEY=37 NEW=4
+5:24:50 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:51 μμPC: 2436,2436 KEY=39 NEW=3
+5:24:51 μμPC: 0B3D,0B3D KEY=39 NEW=3
+5:24:52 μμPC: 2436,2436 KEY=8 NEW=6
+5:24:54 μμPC: 2436,2436 KEY=54 NEW=54
+5:24:57 μμPC: 2436,2436 KEY=13 NEW=13
+5:24:58 μμPC: 0038,0038 KEY=76 NEW=76
+5:24:58 μμPC: 2436,2436 KEY=73 NEW=73
+5:24:58 μμPC: 0038,0038 KEY=83 NEW=83
+5:24:58 μμPC: 2436,2436 KEY=84 NEW=84
+5:24:59 μμPC: 2433,2433 KEY=13 NEW=13

@@ -980,10 +980,10 @@ begin
       222:result:=34;
       39:result:=7;//->
       37:result:=5;//<-
-      116:RESULT:=3; //F5
-      117:RESULT:=$0B;   //F6
-      118:RESULT:=$83;       //F7
-      119:RESULT:=$0A;           //F8
+      116:RESULT:=165; //3 F5
+      117:RESULT:=166; //$0B;   //F6
+      118:RESULT:=167; //$83;       //F7
+      119:RESULT:=168;//$0A;           //F8
 
 
      else result:=key;
@@ -1019,10 +1019,10 @@ begin
       46:result:=2;//del
       8: result:=6;//backspase
       45:result:=1;//insert
-      116:RESULT:=3;
-      117:RESULT:=$0B;
-      118:RESULT:=$83;
-      119:RESULT:=$0A;
+      116:RESULT:=165;//3;
+      117:RESULT:=166;//$0B;
+      118:RESULT:=167;//$83;
+      119:RESULT:=168;//$0A;
 
      else result:=key;
    end;
