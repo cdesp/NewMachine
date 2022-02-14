@@ -80,6 +80,8 @@ type
     procedure exec_cmd(V:Byte);
     function getfreefilestream: TFilestream;
     procedure DoPort0Out(Value: Byte);
+    function DoPort120In(Value: Byte): Byte;
+    procedure DoPort120Out(Value: Byte);
 
 
 
@@ -140,6 +142,7 @@ var strgcmd:array[0..3] of byte;
        tmr1:cardinal;
        interrupt1:boolean=FALSE;
        interrupt2:boolean=FALSE;
+       interrupt3:boolean=FALSE;
 
 
 implementation
@@ -212,6 +215,7 @@ begin
      56: Result:=DoPort56In(Value);
      72: Result:=DoPort72In(Value);    //I2c
      75: Result:=DoPort75In(Value);    //I2c
+     120: Result:=DoPort120In(Value);    //PS/2 KB
    end;
 
 end;
@@ -230,6 +234,7 @@ begin
      72: DoPort72Out(Value);//I2C device
      73: DoPort73Out(Value);//I2C device
      75: DoPort75Out(Value);//I2C device
+     120: DoPort120Out(Value);//PS/2 KB
    end;
 end;
 
@@ -267,6 +272,11 @@ Begin
  result:=8; //SET BIT 3
 End;
 
+function TNBInOutSupport.DoPort120In(Value: Byte): Byte;
+Begin
+ result:=fnewbrain.getNewkey;
+End;
+
 
 procedure TNBInOutSupport.DoPort72Out(Value:Byte);
 Begin
@@ -283,11 +293,23 @@ Begin
   Serialout(inttostr(value));
 End;
 
+procedure TNBInOutSupport.DoPort120Out(Value:Byte);
+Begin
+ if Assigned(keylist) and (keylist.Count>0) then
+   new.kbint:=1;
+End;
+
 
 function TNBInOutSupport.DoPort24In(Value: Byte): Byte;
 var k:integer;
 Begin
   k:=0;
+  if interrupt3 then
+  Begin
+    k:=2;//bit 0,1,2 is for the 8 interrupts
+    K:=7-K; //1 0 0   ;6 FOR INT 3
+  End
+  else
   if interrupt2 THEN
   BEGIN
     k:=1;//bit 0,1,2 is for the 8 interrupts

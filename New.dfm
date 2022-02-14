@@ -1,12 +1,13 @@
 object fNewBrain: TfNewBrain
   Left = 288
-  Top = 157
+  Top = 50
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
-  Caption = 'My Computer'
+  Caption = 'Atlas Z80 Computer Emulator'
   ClientHeight = 712
   ClientWidth = 814
   Color = 764381
+  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -15,7 +16,7 @@ object fNewBrain: TfNewBrain
   KeyPreview = True
   Menu = MainMenu1
   OldCreateOrder = False
-  Position = poDefault
+  Position = poDesigned
   OnActivate = FormActivate
   OnCanResize = FormCanResize
   OnClose = FormClose
@@ -88,7 +89,7 @@ object fNewBrain: TfNewBrain
           Height = 30
           Thick = 2
           Colour = 4259648
-          Text = 'VERSION 0.00'
+          Text = 'VERSION 0.56'
           Len = 16
           LedWidth = 20
           BackColor = clBlack
@@ -224,7 +225,7 @@ object fNewBrain: TfNewBrain
       Display.FixedSize = False
       Display.Height = 600
       Display.Width = 800
-      Options = [doFlip, do3D, doDirectX7Mode, doHardware, doSelectDriver]
+      Options = [doAllowReboot, doWaitVBlank, doFlip, doHardware, doSelectDriver]
       SurfaceHeight = 600
       SurfaceWidth = 800
       ParentShowHint = False
@@ -563,7 +564,7 @@ object fNewBrain: TfNewBrain
     ColorDepth = cd32Bit
     Height = 32
     Width = 32
-    Left = 240
+    Left = 264
     Top = 112
     Bitmap = {
       494C010107000800040020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600

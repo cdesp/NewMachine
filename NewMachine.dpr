@@ -52,13 +52,14 @@ begin
   Application.CreateForm(TdmCommd, dmCommd);
   Application.CreateForm(TfrmProgress, frmProgress);
   Application.CreateForm(TfDrvInfo, fDrvInfo);
-  Application.CreateForm(TNewDebug, NewDebug);
   Application.CreateForm(TfTapeMgmt, fTapeMgmt);
   Application.CreateForm(TfDiskMgmt, fDiskMgmt);
   Application.CreateForm(Tfoptions, foptions);
+  Application.CreateForm(TNewDebug, NewDebug);
   Application.CreateForm(TfrmPerif, frmPerif);
   Application.CreateForm(Tfsplash, fsplash);
   Application.CreateForm(TfrmUpdate, frmUpdate);
   Application.CreateForm(TfVGA, fVGA);
+
   Application.Run;
 end.

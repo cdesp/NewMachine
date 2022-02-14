@@ -236,6 +236,8 @@ type
     function getemulsatspeedtime(eml, time: cardinal): longint;
     function checkBpts: boolean;
     procedure LoadImage;
+    procedure AddNewKeyPressed(nk: word);
+
 
 
   public
@@ -259,6 +261,8 @@ type
     procedure WriteP2(s: String);
     procedure Step;
     procedure ShowSplash(DoShow:Boolean=true);
+    function getNewKey: byte;
+
     property Root: string read GetRoot;
     property OLDOS: Byte read GetOLDOS;
     property Suspended: Boolean read IsSuspended;
@@ -323,6 +327,9 @@ var
     cpcnt,ckcnt:integer;
     emudel:Integer=1;
     CPUStates:longint=1*1000000; //4mhZ
+    keylist:tstringlist=nil;
+    kbint:integer=0;
+
 
 
 implementation
@@ -336,6 +343,7 @@ Var dbgsl:TStringlist=nil;
     stopwatch:TStopWatch;
     stopwatch2:TStopWatch;
     MyZ80:TZ80Interface;
+
 
 {$R *.DFM}
 
@@ -655,8 +663,14 @@ Begin
     INTERRUPT2:=TRUE;
     InterruptServed:=FALSE;
   end;
+  if kbint=1 then
+  Begin
+     INTERRUPT3:=TRUE;
+     InterruptServed:=FALSE;
+  end
+  ELSE   INTERRUPT3:=FALSE;
 
-  RESULT:=interrupt1 OR INTERRUPT2;
+  RESULT:=interrupt1 OR INTERRUPT2 OR INTERRUPT3;
 
 End;
 
@@ -1269,7 +1283,7 @@ Begin
     // EMUDif:=Stopwatch.ElapsedMilliseconds-EMUTime;
 
   End;
-   if DEBUGGING OR (tmpbpt<>-1) then EXIT;
+  // if DEBUGGING OR (tmpbpt<>-1) then EXIT;
   if EXECUTINGINTERRUPT then EXIT;
   //check if there is an interrupt
   if GETINT then
@@ -1447,7 +1461,8 @@ end;
 procedure TfNewBrain.Debug2Click(Sender: TObject);
 begin
  debug2.checked:= not debug2.checked;
- NewDebug.Visible:=debug2.checked;
+ if assigned(NewDebug) then
+   NewDebug.Visible:=debug2.checked;
 end;
 
 Function TfNewBrain.CreateOpenDialog:TOpenDialog;
@@ -1483,6 +1498,43 @@ begin
     shft:=Shift;
     mykey:=translatekey(key);
     ODS('KEY='+inttostr(key)+' NEW='+inttostr(mykey));
+    //TO EMULATE REAL KEYBOARD
+//    AddNewKeyPressed($58);//CAPS
+//    AddNewKeyPressed($F0);
+//    AddNewKeyPressed($58);    
+//    
+//    AddNewKeyPressed($21);//C
+//    AddNewKeyPressed($F0);
+//    AddNewKeyPressed($21);    
+end;
+
+procedure TfNewbrain.AddNewKeyPressed(nk:word);
+var k:integer;
+Begin
+  nk:=reversebits(byte(nk));
+  if keylist=nil then
+    keylist:=tstringlist.Create;
+
+  k:=keylist.Count; inc(k);
+  keylist.AddObject(inttostr(nk),tobject(nk));
+  kbint:=1;
+end;
+
+function TfNewbrain.getNewKey:byte;
+var k:integer;
+Begin
+   result:=0;
+   if not assigned(keylist) then exit;
+   k:=keylist.Count;
+   if k>0 then
+   Begin
+     result:=byte(keylist.Objects[0]);
+     keylist.Delete(0);
+     k:=keylist.Count;
+   end;
+
+   if k=0 then kbint:=0;
+
 end;
 
 Function ReverseBits(b1:Byte):Byte;
@@ -1587,8 +1639,8 @@ begin
    end;
    MakeTapeButtons;
    Debug2Click(Sender);
-   Memo1.SetFocus;
-   left:=screen.DesktopWidth-width-10-80;
+   //Memo1.SetFocus;
+   //left:=screen.DesktopWidth-width-10-80;
 end;
 
 procedure TfNewBrain.SetBasicFile1Click(Sender: TObject);

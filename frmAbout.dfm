@@ -20,9 +20,9 @@ object fAbout: TfAbout
   object Label1: TLabel
     Left = 16
     Top = 16
-    Width = 333
+    Width = 279
     Height = 29
-    Caption = 'NEWBRAIN EMULATOR Pro'
+    Caption = 'ATLAS Z80 EMULATOR'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -24
@@ -42,37 +42,6 @@ object fAbout: TfAbout
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
-  end
-  object Label5: TLabel
-    Left = 50
-    Top = 114
-    Width = 410
-    Height = 20
-    Caption = 'Testing && Newbrain Knowledge By Despoinidis Nick'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlue
-    Font.Height = -16
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label2: TLabel
-    Left = 76
-    Top = 140
-    Width = 356
-    Height = 48
-    Alignment = taCenter
-    Caption = 
-      'Many thanks goes to Newbrain Users Group site '#13#10'that gave me the' +
-      ' idea of creating this emulator plus '#13#10'the useful information an' +
-      'd newbrain programs '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMaroon
-    Font.Height = -13
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-    WordWrap = True
   end
   object Label4: TLabel
     Left = 321
@@ -99,38 +68,6 @@ object fAbout: TfAbout
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ParentFont = False
-  end
-  object Label7: TLabel
-    Left = 64
-    Top = 194
-    Width = 396
-    Height = 32
-    Alignment = taCenter
-    Caption = 
-      'Special Thanks to Colin Appleby and Albert Stuurman for informat' +
-      'ion, material and testing.'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMaroon
-    Font.Height = -13
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-    WordWrap = True
-  end
-  object Label8: TLabel
-    Left = 101
-    Top = 298
-    Width = 160
-    Height = 16
-    Cursor = crHandPoint
-    Caption = 'http://www.newbrainemu.eu'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -13
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsUnderline]
-    ParentFont = False
-    OnClick = Label8Click
   end
   object Label9: TLabel
     Left = 409
@@ -163,10 +100,10 @@ object fAbout: TfAbout
   object Label11: TLabel
     Left = 101
     Top = 320
-    Width = 153
+    Width = 238
     Height = 16
     Cursor = crHandPoint
-    Caption = 'http://www.newbrain.hcc.nl'
+    Caption = 'http://www.newbrainemu.eu/elecprojects'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
     Font.Height = -13
