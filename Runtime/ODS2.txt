@@ -1,1 +1,20 @@
-3:08:14 ììPC: 0000,0000 screen resizs
+6:46:15 ììPC: 0000,0000 screen resizs
+6:48:05 ììPC: 0C9D,0C9D KEY=13 NEW=13
+6:48:25 ììPC: 1A7B,1A7B BreakPoint Reached at PC :6994 1B52
+6:54:18 ììPC: 1BB0,1BB0 BreakPoint Reached at PC :6994 1B52
+6:54:42 ììPC: 1B53,1B53 BreakPoint Reached at PC :7000 1B58
+6:54:46 ììPC: 1B5B,1B5B BreakPoint Reached at PC :7007 1B5F
+6:56:33 ììPC: 0CA1,0CA1 KEY=13 NEW=13
+6:56:33 ììPC: 0CA2,0CA2 BreakPoint Reached at PC :6994 1B52
+6:57:22 ììPC: 1A7B,1A7B BreakPoint Reached at PC :6994 1B52
+6:57:29 ììPC: 1B53,1B53 BreakPoint Reached at PC :7000 1B58
+6:57:30 ììPC: 1B59,1B59 BreakPoint Reached at PC :7007 1B5F
+6:57:31 ììPC: 1B60,1B60 BreakPoint Reached at PC :6994 1B52
+6:57:31 ììPC: 1B53,1B53 BreakPoint Reached at PC :7000 1B58
+6:57:32 ììPC: 1B59,1B59 BreakPoint Reached at PC :7007 1B5F
+6:57:32 ììPC: 1B60,1B60 BreakPoint Reached at PC :6994 1B52
+6:57:32 ììPC: 1B53,1B53 BreakPoint Reached at PC :7000 1B58
+6:57:33 ììPC: 1B59,1B59 BreakPoint Reached at PC :7007 1B5F
+6:57:34 ììPC: 1B60,1B60 BreakPoint Reached at PC :6994 1B52
+6:57:35 ììPC: 1B53,1B53 BreakPoint Reached at PC :7000 1B58
+6:57:50 ììPC: 1B59,1B59 BreakPoint Reached at PC :7007 1B5F

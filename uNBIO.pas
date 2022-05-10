@@ -205,17 +205,17 @@ begin
    case port of
 
       7: Result:=DoPort7In(Value);
-     17: RESULT:=DoPort17In(Value); //LCD data
-     24: Result:=DoPort24In(Value); //USB KEYB
-     32: Result:=DoPort32In(Value); //RS232
-     37: Result:=DoPort37In(Value); //RS232
-     48: Result:=DoPort48In(Value); //RS232 for storage -->Arduino
-     53: Result:=DoPort53In(Value); //LSR RS232 for storage -->Arduino
-     54: Result:=DoPort54In(Value); //MSR RS232 for storage -->Arduino
+     $10+1: RESULT:=DoPort17In(Value); //LCD data
+     $68: Result:=DoPort24In(Value); //interrupt service input
+     $18: Result:=DoPort32In(Value); //RS232
+     $18+5: Result:=DoPort37In(Value); //RS232
+     $28: Result:=DoPort48In(Value); //RS232 for storage -->Arduino
+     $28+5: Result:=DoPort53In(Value); //LSR RS232 for storage -->Arduino
+     $28+6: Result:=DoPort54In(Value); //MSR RS232 for storage -->Arduino
      56: Result:=DoPort56In(Value);
-     72: Result:=DoPort72In(Value);    //I2c
-     75: Result:=DoPort75In(Value);    //I2c
-     120: Result:=DoPort120In(Value);    //PS/2 KB
+     $70: Result:=DoPort72In(Value);    //I2c
+     $70+3: Result:=DoPort75In(Value);    //I2c
+     $20: Result:=DoPort120In(Value);    //PS/2 KB
    end;
 
 end;
@@ -223,18 +223,18 @@ end;
 procedure TNBInOutSupport.NBout(Port:Byte;Value:Byte);
 begin
     case port of
-      0: Doport0Out(Value); //MMU Paging
+     $00: Doport0Out(Value); //MMU Paging
       4: DoPort4Out(Value);
-     16: DoPort16Out(Value);//LCD command
-     17: DoPort17Out(Value);//LCD data
-     32: DoPort32Out(Value);//RS232
-     48: DoPort48Out(Value);//RS232 for storage -->Arduino
+     $10: DoPort16Out(Value);//LCD command
+     $10+1: DoPort17Out(Value);//LCD data
+     $18: DoPort32Out(Value);//RS232
+     $28: DoPort48Out(Value);//RS232 for storage -->Arduino
      56: DoPort56Out(Value);//SAVE
-     64: DoPort64Out(Value);//Interrupt device
-     72: DoPort72Out(Value);//I2C device
-     73: DoPort73Out(Value);//I2C device
-     75: DoPort75Out(Value);//I2C device
-     120: DoPort120Out(Value);//PS/2 KB
+     $68: DoPort64Out(Value);//Interrupt device
+     $70: DoPort72Out(Value);//I2C device
+     $70+1: DoPort73Out(Value);//I2C device
+     $70+3: DoPort75Out(Value);//I2C device
+     $20: DoPort120Out(Value);//PS/2 KB
    end;
 end;
 
@@ -468,16 +468,16 @@ Begin
    if opfiles[i]=nil then
    Begin
     try
-     if strgcmd[1]=0 then
+     if strgcmd[2]=0 then
       opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenRead)
      else
-     if strgcmd[1]=1 then
+     if strgcmd[2]=1 then
        opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenWrite)
      else
-     if strgcmd[1]=2 then
+     if strgcmd[2]=2 then
        opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenReadWrite)
      else
-     if strgcmd[1]=4 then
+     if strgcmd[2]=4 then
        opfiles[i]:=TFilestream.Create(curdir+filename,fmOpenReadWrite or fmCreate);
      result:=opfiles[i];
      retval:=i;

@@ -255,6 +255,7 @@ object fNewBrain: TfNewBrain
       Caption = 'Emulation'
       object Start1: TMenuItem
         Action = acStEmul
+        ShortCut = 113
       end
       object Reset1: TMenuItem
         Action = acReset
