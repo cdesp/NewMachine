@@ -41,7 +41,8 @@ uses
   uz80dsm in 'uz80dsm.pas' {frmDisasm},
   Z80Intf in 'Z80Intf.pas',
   Z80BaseClass in 'Z80Package\Z80BaseClass.pas',
-  frmVGA in 'frmVGA.pas' {fVGA};
+  frmVGA in 'frmVGA.pas' {fVGA},
+  uSound in 'uSound.pas';
 
 {$R *.res}
 
@@ -60,6 +61,5 @@ begin
   Application.CreateForm(Tfsplash, fsplash);
   Application.CreateForm(TfrmUpdate, frmUpdate);
   Application.CreateForm(TfVGA, fVGA);
-
   Application.Run;
 end.

@@ -82,11 +82,15 @@ type
     procedure DoPort0Out(Value: Byte);
     function DoPort120In(Value: Byte): Byte;
     procedure DoPort120Out(Value: Byte);
+    procedure DoPort38Out(Value: Byte);
+    procedure doSoundCommand;
 
 
 
 
   public
+    sh,sl:byte;
+    sb:byte;
 
     kbint: Boolean;
     KeyPressed: Byte;
@@ -146,7 +150,7 @@ var strgcmd:array[0..3] of byte;
 
 
 implementation
-uses uNBMemory,uNBScreen,new,sysutils,jclLogic,z80baseclass,windows,uNBCPM,unbtypes,vcl.forms;
+uses usound,uNBMemory,uNBScreen,new,sysutils,jclLogic,z80baseclass,windows,uNBCPM,unbtypes,vcl.forms;
 
 constructor TNBInOutSupport.Create;
 var i:integer;
@@ -165,7 +169,7 @@ begin
      curdir:=MAINDIR;
      for I := 0 to length(opfiles)-1 do
       opfiles[i]:=nil;
-
+     sb:=0;
 end;
 
 
@@ -229,7 +233,8 @@ begin
      $10+1: DoPort17Out(Value);//LCD data
      $18: DoPort32Out(Value);//RS232
      $28: DoPort48Out(Value);//RS232 for storage -->Arduino
-     56: DoPort56Out(Value);//SAVE
+     $38: DoPort38Out(value);//sound module
+     //56: DoPort56Out(Value);//SAVE
      $68: DoPort64Out(Value);//Interrupt device
      $70: DoPort72Out(Value);//I2C device
      $70+1: DoPort73Out(Value);//I2C device
@@ -237,6 +242,63 @@ begin
      $20: DoPort120Out(Value);//PS/2 KB
    end;
 end;
+
+var lastNote:integer;
+
+
+procedure TNBInOutSupport.doSoundCommand;
+var ch:byte;
+    dat:integer;
+Begin
+  ch:=sh and $60 shr 5; //bits 5 & 6
+  if sh and $10 =$10 then  //sound volume
+  Begin
+    dat := sh and $0f;
+    ods ('Volume '+inttostr(ch)+'-->'+inttostr(dat));
+    if dat=15 then    NoteOff(lastNote, 127);
+
+  End
+  else
+  BEgin
+    dat :=(sh and $0f shr 2) *256 + (sh and $0f shl 6) or (sl and $3f);
+    ods ('Note '+inttostr(ch)+'-->'+inttostr(dat));
+    NoteOff(lastNote, 127);
+    if dat>127 then   //todo make an array with correct notes
+     dat := dat and $7f;
+    lastNote:=dat;
+    NoteOn(dat,127);
+
+  End;
+
+End;
+
+
+
+procedure TNBInOutSupport.DoPort38Out(Value:Byte);
+var ch:byte;
+    dat:integer;
+Begin
+  ODS('SND:Byte-> '+inttohex(value));
+  if sb=0 then
+  Begin
+   sh:=value;
+   if  (sh and $10)=$10 then //check volume
+   Begin
+     sl:=0;
+     doSoundCommand;
+     sb:=1;       //one byte command
+   End;
+  End
+  else
+  begin
+    sl:=value;
+    doSoundCommand;
+  end;
+  inc(sb);
+  if sb=2 then sb:=0;
+
+End;
+
 
 procedure TNBInOutSupport.DoPort0Out(Value:Byte);
 var bc,b:integer;

@@ -1,0 +1,22 @@
+10      sizex% = 300 : sizey% = 240
+20      maxiter% = 128
+30      VDU 23,22,sizex%;sizey%;8,8,16,128
+50      GCOL 1
+60      FOR X% = 0 TO 2*sizex%-2 STEP 2
+70        xi = X%/200 - 2
+80        FOR Y% = 0 TO sizey%-2 STEP 2
+90          yi = Y% / 200
+100          x = 0
+110          y = 0
+120          FOR I% = 1 TO maxiter%
+130            IF x*x+y*y > 4 THEN GOTO 170
+135	       C% = I% MOD 16
+140            xt = xi + x*x-y*y
+150            y = yi + 2*x*y
+160            x = xt
+170          NEXT
+180          IF I%>maxiter% THEN I%=0
+190          COLOUR C% : GCOL C%
+200          PLOT 69,X%,Y%+sizey% : PLOT 69,X%,-Y%+sizey%
+210        NEXT
+220      NEXT X%

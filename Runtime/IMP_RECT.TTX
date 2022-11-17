@@ -1,0 +1,12 @@
+20 left% = 50
+30 right% = 300
+40 bottom% = 50
+50 top% = 150
+60 COLOUR 5
+70 MOVE left%,bottom%:PLOT 5,right%,bottom%
+75 COLOUR 6
+80 MOVE left%,top%:PLOT 5,right%,top%
+85 COLOUR 7
+90 MOVE left%,bottom%:PLOT 5,left%,top%
+95 COLOUR 4
+100 MOVE right%,bottom%:PLOT 5,right%,top%
